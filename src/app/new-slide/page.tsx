@@ -1,34 +1,44 @@
-import Corner from '@/components/corners/Corner' // Adjusted import path
+'use client'
+
+import { useState, useEffect, useCallback } from 'react'
+import Garde from '@/components/slides/1-garde'
+import Synthese from '@/components/slides/2-synthese' // Assuming Synthese is the other component
+
+// Define the sequence of slide components
+const slideComponents = [
+	Garde,
+	Synthese,
+	// Add more slide components here in the desired order
+]
 
 export default function NewSlidePage() {
-	return (
-		<section className='relative min-h-screen bg-dark text-center text-foreground-dark flex flex-col items-center justify-center p-8'>
-			{/* Container for corners and content */}
-			<div className='relative w-full max-w-6xl mx-auto'>
-				{/* Four corners */}
-				<Corner position='top-left' offset='4rem' />
-				<Corner position='top-right' offset='4rem' />
-				<Corner position='bottom-left' offset='4rem' />
-				<Corner position='bottom-right' offset='4rem' />
+	const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
 
-				{/* Slide content */}
-				<div className='flex flex-col items-center px-32 py-32'> {/* Centering content with inner padding */}
-					<h1 className='text-6xl mb-12 tracking-widest text-primary font-[700]'>sapians</h1>
-					<h2 className='text-4xl mb-6 uppercase font-[600] text-background'>Relevé de portefeuille</h2>
-					<h3 className='text-6xl mb-4 text-primary font-[600]'>
-						Reporting Assurance Vie Wealins
-					</h3>
+	// Memoized keydown handler for navigation
+	const handleKeyDown = useCallback((event: KeyboardEvent) => {
+		if (event.key === 'ArrowRight') {
+			setCurrentSlideIndex((prevIndex) =>
+				(prevIndex + 1) % slideComponents.length
+			)
+		} else if (event.key === 'ArrowLeft') {
+			setCurrentSlideIndex((prevIndex) =>
+				(prevIndex - 1 + slideComponents.length) % slideComponents.length
+			)
+		}
+	}, []) // slideComponents.length is constant, so empty dependency array is fine
 
-					<div className='text-left text-background text-lg space-y-1 mt-8'> {/* Details section */}
-						<p><span >Conseiller :</span></p>
-						<p><span >Teneur de compte :</span> Quintet</p>
-						<p><span >Assureur :</span> Wealins</p>
-						<p><span >Numéro de compte :</span></p>
-					</div>
+	// Effect to add and remove the global keydown event listener
+	useEffect(() => {
+		window.addEventListener('keydown', handleKeyDown)
+		// Cleanup function to remove the event listener
+		return () => {
+			window.removeEventListener('keydown', handleKeyDown)
+		}
+	}, [handleKeyDown]) // Re-run effect if handleKeyDown (the callback itself) changes
 
-					<p className='text-primary text-2xl mt-16'>Février 2025</p>
-				</div>
-			</div>
-		</section>
-	)
+	// Get the component for the current slide
+	const CurrentSlideComponent = slideComponents[currentSlideIndex]
+
+	// Render the current slide component
+	return <CurrentSlideComponent />
 }
