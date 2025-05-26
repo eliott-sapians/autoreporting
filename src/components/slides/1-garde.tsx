@@ -12,21 +12,23 @@ export default function Garde() {
 				<Corner position='bottom-right' offset='1rem' />
 
 				{/* Slide content */}
-				<div className='flex flex-col items-center px-32 py-32'> {/* Centering content with inner padding */}
+				<div className='flex flex-col items-center px-16 py-16'> {/* Centering content with inner padding */}
 					<h1 className='text-6xl mb-12 tracking-widest text-primary font-[700]'>sapians</h1>
-					<h2 className='text-4xl mb-6 uppercase font-[600] text-background'>Relevé de portefeuille</h2>
-					<h3 className='text-6xl mb-4 text-primary font-[600]'>
+					<h2 className='text-4xl mb-4 uppercase font-[600] text-background'>Relevé de portefeuille</h2>
+					<h3 className='text-5xl mb-4 text-primary font-[600]'>
 						Reporting Assurance Vie Wealins
 					</h3>
 
-					<div className='text-left text-background text-lg space-y-1 mt-8'> {/* Details section */}
+					<div className='text-left text-background text-lg space-y-1 mt-16'> {/* Details section */}
 						<p><span >Conseiller :</span></p>
 						<p><span >Teneur de compte :</span> Quintet</p>
 						<p><span >Assureur :</span> Wealins</p>
 						<p><span >Numéro de compte :</span></p>
 					</div>
 
-					<p className='text-primary text-2xl mt-16'>Février 2025</p>
+					<div className='text-primary text-4xl mt-24'>
+                        Février 2025
+					</div>
 				</div>
 			</div>
 		</section>
