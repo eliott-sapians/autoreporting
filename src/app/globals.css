@@ -1,26 +1,138 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-outfit);
+  --font-mono: var(--font-outfit);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+[data-theme="sapians"] {
+  /* Original Sapians specific colors */
+  --font-family: Outfit;
+  --color-yellow-sapians-500: rgb(255, 255, 105);
+  --color-green-forest-sapians-500: rgb(58, 70, 66);
+  --color-green-sapians-100: rgb(181, 235, 217);
+  --color-green-sapians-300: rgb(125, 220, 188);
+  --color-green-sapians-500: rgb(70, 205, 169);
+  --color-grey-sapians-100: rgb(243, 243, 230);
+  --color-grey-sapians-200: rgb(232, 232, 225);
+  --color-grey-sapians-300: rgb(214, 214, 202);
+  --color-grey-sapians-500: rgb(197, 197, 180);
+  --color-grey-sapians-700: rgb(117, 125, 123);
+  --color-blue-atlante-sapians-100: rgb(155, 185, 199);
+  --color-blue-atlante-sapians-300: rgb(76, 132, 167);
+  --color-blue-atlante-sapians-500: rgb(0, 80, 130);
+  --color-blue-royal-sapians-100: rgb(171, 167, 219);
+  --color-blue-royal-sapians-300: rgb(108, 101, 192);
+  --color-blue-royal-sapians-500: rgb(45, 35, 165);
+  --color-lavande-sapians-100: rgb(219, 191, 239);
+  --color-lavande-sapians-300: rgb(192, 143, 227);
+  --color-lavande-sapians-500: rgb(165, 95, 215);
+  --color-orange-sapians-100: rgb(255, 197, 165);
+  --color-orange-sapians-300: rgb(255, 153, 97);
+  --color-orange-sapians-500: rgb(255, 110, 30);
+  --color-primary-foreground: rgb(0, 0, 0);
+  --color-primary-background: rgb(255, 255, 255);
+
+  /* Mapped semantic variables previously in :root */
+  --radius: 0.625rem;
+  --background: var(--color-primary-background);
+  --foreground: var(--color-primary-foreground);
+  --dark: var(--color-green-forest-sapians-500);
+  --foreground-dark: var(--color-yellow-sapians-500);
+  --card: var(--color-grey-sapians-200);
+  --card-foreground: var(--color-green-forest-sapians-500);
+  --popover: var(--color-grey-sapians-200);
+  --popover-foreground: var(--color-green-forest-sapians-500);
+  --primary: var(--color-yellow-sapians-500);
+  --primary-foreground: var(--color-green-forest-sapians-500);
+  --secondary: var(--color-blue-atlante-sapians-500);
+  --secondary-foreground: var(--color-grey-sapians-100);
+  --muted: var(--color-grey-sapians-300);
+  --muted-foreground: var(--color-grey-sapians-700);
+  --accent: var(--color-orange-sapians-300);
+  --accent-foreground: var(--color-green-forest-sapians-500);
+  --destructive: var(--color-orange-sapians-500);
+  --destructive-foreground: var(--color-grey-sapians-100);
+  --border: var(--color-grey-sapians-300);
+  --input: var(--color-grey-sapians-200);
+  --ring: var(--color-blue-atlante-sapians-300);
+
+  --chart-1: var(--color-green-sapians-500);
+  --chart-2: var(--color-blue-atlante-sapians-300);
+  --chart-3: var(--color-blue-royal-sapians-300);
+  --chart-4: var(--color-lavande-sapians-300);
+  --chart-5: var(--color-orange-sapians-300);
+
+  --sidebar: var(--color-grey-sapians-200);
+  --sidebar-foreground: var(--color-green-forest-sapians-500);
+  --sidebar-primary: var(--color-green-sapians-300);
+  --sidebar-primary-foreground: var(--color-green-forest-sapians-500);
+  --sidebar-accent: var(--color-yellow-sapians-500);
+  --sidebar-accent-foreground: var(--color-green-forest-sapians-500);
+  --sidebar-border: var(--color-grey-sapians-300);
+  --sidebar-ring: var(--color-blue-atlante-sapians-300);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom utility classes for Sapians theme colors */
+@layer utilities {
+  .bg-background-secondary {
+    background-color: var(--background-secondary) !important;
+  }
+  .text-foreground-secondary {
+    color: var(--foreground-secondary) !important;
+  }
+  .bg-dark {
+    background-color: var(--dark) !important;
+  }
+  .text-foreground-dark {
+    color: var(--foreground-dark) !important;
+  }
 }

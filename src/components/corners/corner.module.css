@@ -1,0 +1,92 @@
+.corner {
+  position: absolute;
+  display: block; /* Ensures it's treated as a block for positioning */
+  /* Define CSS Variables that will be set by the component's style prop */
+  /* Default values here are fallbacks if not set by component style prop,
+     but component always sets them via its own defaults or passed props. */
+  --corner-color: #f7ff54;
+  --corner-offset: 2rem;
+  --corner-length: 3.5rem;
+  --corner-thickness: 0.75rem; /* Component default is 0.75rem, user might set to 1.2rem via prop */
+}
+
+/* Base for all pseudo-elements */
+.corner::before,
+.corner::after {
+  content: '';
+  position: absolute;
+  background-color: var(--corner-color);
+}
+
+/* --- Top-left --- */
+.top-left {
+  top: var(--corner-offset);
+  left: var(--corner-offset);
+}
+/* When .corner also has .top-left */
+.corner.top-left::before { /* Horizontal arm */
+  width: var(--corner-length);
+  height: var(--corner-thickness);
+  top: 0;
+  left: 0;
+}
+.corner.top-left::after { /* Vertical arm */
+  width: var(--corner-thickness);
+  height: var(--corner-length);
+  top: 0;
+  left: 0;
+}
+
+/* --- Top-right --- */
+.top-right {
+  top: var(--corner-offset);
+  right: var(--corner-offset);
+}
+.corner.top-right::before { /* Horizontal arm */
+  width: var(--corner-length);
+  height: var(--corner-thickness);
+  top: 0;
+  right: 0; /* Anchors to the right of the span */
+}
+.corner.top-right::after { /* Vertical arm */
+  width: var(--corner-thickness);
+  height: var(--corner-length);
+  top: 0;
+  right: 0; /* Anchors to the right of the span */
+}
+
+/* --- Bottom-left --- */
+.bottom-left {
+  bottom: var(--corner-offset);
+  left: var(--corner-offset);
+}
+.corner.bottom-left::before { /* Horizontal arm */
+  width: var(--corner-length);
+  height: var(--corner-thickness);
+  bottom: 0; /* Anchors to the bottom of the span */
+  left: 0;
+}
+.corner.bottom-left::after { /* Vertical arm */
+  width: var(--corner-thickness);
+  height: var(--corner-length);
+  bottom: 0; /* Anchors to the bottom of the span */
+  left: 0;
+}
+
+/* --- Bottom-right --- */
+.bottom-right {
+  bottom: var(--corner-offset);
+  right: var(--corner-offset);
+}
+.corner.bottom-right::before { /* Horizontal arm */
+  width: var(--corner-length);
+  height: var(--corner-thickness);
+  bottom: 0;
+  right: 0;
+}
+.corner.bottom-right::after { /* Vertical arm */
+  width: var(--corner-thickness);
+  height: var(--corner-length);
+  bottom: 0;
+  right: 0;
+} 
