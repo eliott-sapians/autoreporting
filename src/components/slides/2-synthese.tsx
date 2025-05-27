@@ -50,7 +50,7 @@ export default function Synthese() {
                 </h2>
                 <p className='italic text-muted-foreground'>Données du 04.02.2025</p>
             </div>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-8 h-full'>
+            <div className='grid grid-cols-1 xl:grid-cols-2 gap-8 h-full'>
                 {/* First chart block: Répartition par poche */}
                 <div className='relative'>
                     <Corner position='top-left' offset='0.5rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
@@ -134,7 +134,7 @@ export default function Synthese() {
                                     nameKey='name'
                                     cx='50%' 
                                     cy='50%' 
-                                    outerRadius={180} 
+                                    outerRadius={160} 
                                     label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(1)}%`}
                                     className='text-base'
                                     labelLine={false}

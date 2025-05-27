@@ -28,7 +28,7 @@ export default function PocheCard({
     return (
         <div className='grid grid-cols-4'>
             <div className={`col-span-3 grid grid-cols-4 grid-rows-4 ${mainBgClass} ${mainTextColorClass}`}>        
-                <div className='col-span-3 row-span-2 flex items-center pl-4'>
+                <div className='col-span-4 row-span-2 flex items-center pl-4'>
                     <p className='text-lg font-bold'>{name}</p>
                 </div>
                 <div className={`col-span-3 row-span-2 grid grid-cols-2 ${amountBgClass} flex items-center pl-4`}>
@@ -45,5 +45,6 @@ export default function PocheCard({
                 </div>
             </div>
         </div>
+        
     )
 } 
