@@ -4,11 +4,13 @@ import { useState, useEffect, useCallback } from 'react'
 import Garde from '@/components/slides/1-garde'
 import Synthese from '@/components/slides/2-synthese' // Assuming Synthese is the other component
 import Zoom from '@/components/slides/3-zoom'
+import DetailProvision from '@/components/slides/4-detail-provision'
 // Define the sequence of slide components
 const slideComponents = [
 	Garde,
 	Synthese,
 	Zoom,
+	DetailProvision,
 	// Add more slide components here in the desired order
 ]
 

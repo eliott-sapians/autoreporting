@@ -74,7 +74,7 @@
   --color-primary-background: rgb(255, 255, 255);
 
   /* Mapped semantic variables previously in :root */
-  --radius: 0.625rem;
+  --radius: 0rem;
   --background: var(--color-primary-background);
   --foreground: var(--color-primary-foreground);
   --dark: var(--color-green-forest-sapians-500);
