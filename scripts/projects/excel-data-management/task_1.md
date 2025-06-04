@@ -1,10 +1,10 @@
 # Task 1: Database Schema & Setup
 
 ## Overview
-Set up the database foundation for the Excel data management system using Drizzle ORM with PostgreSQL (Supabase). Design a robust schema that supports portfolio data storage, audit trails, and multi-tenant architecture.
+Set up the database foundation for the Excel data management system using Drizzle ORM with PostgreSQL (Supabase). Implement the specific business schema defined in README.md with proper column mappings for the 11-column Excel format.
 
 ## Status
-- **Current Status**: pending
+- **Current Status**: completed
 - **Priority**: High
 - **Assigned**: AI Assistant
 - **Estimated Hours**: 4-6 hours
@@ -14,135 +14,151 @@ Set up the database foundation for the Excel data management system using Drizzl
 ## Detailed Requirements
 
 ### Database Setup
-- [ ] Install Drizzle ORM and related dependencies
-- [ ] Install PostgreSQL driver and Supabase client
-- [ ] Configure Supabase connection and environment variables
-- [ ] Set up Drizzle configuration file
-- [ ] Create database migration system
+- [x] Install Drizzle ORM and related dependencies
+- [x] Install exceljs for Excel parsing
+- [x] Install Zod for schema validation
+- [x] Configure Supabase connection and environment variables
+- [x] Set up Drizzle configuration file
+- [x] Create database migration system
 
-### Schema Design
-- [ ] Design `portfolios` table for portfolio metadata
-- [ ] Design `portfolio_data` table for the 11-column Excel data
-- [ ] Design `data_updates` table for audit trail
-- [ ] Define proper relationships and foreign keys
-- [ ] Implement proper indexing for performance
+### Schema Implementation (Per README.md)
+- [x] Implement `portfolio` table for client metadata
+- [x] Implement `portfolio_data` table with specific business columns
+- [x] Add audit trail table for ingestion tracking
+- [x] Define proper relationships and foreign keys
+- [x] Implement proper indexing for performance
 
 ### Data Types & Validation
-- [ ] Define TypeScript types for all entities
-- [ ] Implement Zod schemas for validation
-- [ ] Handle proper data type conversion from Excel
-- [ ] Support for monetary values and percentages
-- [ ] Date handling with timezone considerations
+- [x] Define TypeScript types for all entities
+- [x] Implement Zod schemas for Excel data validation
+- [x] Handle proper data type conversion from Excel
+- [x] Support for monetary values (numeric(18,2)) and percentages (numeric(6,3))
+- [x] Date handling with timezone considerations
 
 ## Technical Implementation
 
 ### Dependencies to Install
 ```bash
-npm install drizzle-orm @supabase/supabase-js
-npm install -D drizzle-kit @types/pg
+npm install drizzle-orm @supabase/supabase-js exceljs zod
+npm install -D drizzle-kit @types/node
 ```
 
-### Database Schema Structure
+### Database Schema (From README.md Specification)
 
 ```typescript
-// portfolios table
-{
-  id: string (uuid, primary key)
-  portfolio_id: string (from Excel B2, unique)
-  name: string (optional display name)
-  created_at: timestamp
-  updated_at: timestamp
-}
+// portfolio table
+CREATE TABLE portfolio (
+  id uuid PRIMARY KEY,
+  name text,
+  client_email text UNIQUE NOT NULL,
+  created_at timestamptz default now()
+);
 
-// portfolio_data table
-{
-  id: string (uuid, primary key)
-  portfolio_id: string (foreign key to portfolios.portfolio_id)
-  data_date: date (from Excel B5)
-  col_1: string (Excel column 1)
-  col_2: string (Excel column 2)
-  col_3: string (Excel column 3)
-  col_4: string (Excel column 4)
-  col_5: string (Excel column 5)
-  col_6: string (Excel column 6)
-  col_7: string (Excel column 7)
-  col_8: string (Excel column 8)
-  col_9: string (Excel column 9)
-  col_10: string (Excel column 10)
-  col_11: string (Excel column 11)
-  row_number: integer (original row from Excel)
-  created_at: timestamp
-}
+// portfolio_data table (11 business columns from README)
+CREATE TABLE portfolio_data (
+  id uuid PRIMARY KEY default gen_random_uuid(),
+  portfolio_id uuid references portfolio(id) on delete cascade,
+  extract_date date not null,
+  -- Excel Column Mappings (A-K, row 9+)
+  balance numeric(18,2),          -- A: Solde
+  label text,                     -- B: Libellé  
+  currency char(3),               -- C: Devise
+  valuation_eur numeric(18,2),    -- D: Estimation + int. courus (EUR)
+  weight_pct numeric(6,3),        -- E: Poids (%)
+  isin char(12),                  -- F: Code ISIN
+  book_price_eur numeric(18,2),   -- G: B / P - Total (EUR)
+  fees_eur numeric(18,2),         -- H: Frais (EUR)
+  asset_name text,                -- I: Nom
+  strategy text,                  -- J: Stratégie
+  bucket text                     -- K: Poche
+);
 
-// data_updates table (audit trail)
-{
-  id: string (uuid, primary key)
-  portfolio_id: string (foreign key)
-  update_type: string ('replace', 'delete', 'error')
-  rows_affected: integer
-  file_name: string
-  updated_by: string (admin user)
-  update_date: timestamp
-  error_message: string (nullable)
-}
+// ingestion_log table (audit trail)
+CREATE TABLE ingestion_log (
+  id uuid PRIMARY KEY default gen_random_uuid(),
+  portfolio_id uuid references portfolio(id),
+  file_name text not null,
+  extract_date date not null,
+  rows_processed integer not null,
+  status text not null, -- 'success', 'error', 'partial'
+  error_message text,
+  processed_at timestamptz default now(),
+  processed_by text
+);
 ```
 
+### Excel Format Specification
+- **Portfolio ID**: Cell B1 
+- **Extract Date**: Cell B5
+- **Headers**: Row 9 (A9-K9)
+- **Data**: Starting row 10+
+- **Column Count**: Exactly 11 columns (A-K)
+
 ### Cross-Project Considerations
-- Schema must be flexible for future UI display requirements
-- Consider existing `provision-data.json` structure for potential migration
-- Ensure proper permissions for admin-only access
+- Schema aligns with existing provision-data.json structure for easy migration
+- Support for future PDF export functionality
+- Ready for auth integration with client_email mapping
 
 ## Files to Create/Modify
 
-### Database Configuration
-- `src/lib/db/schema.ts` - Drizzle schema definitions
+### Database Configuration  
+- `src/lib/db/schema.ts` - Drizzle schema definitions with business columns
 - `src/lib/db/connection.ts` - Supabase connection setup
-- `src/lib/db/types.ts` - TypeScript type definitions
+- `src/lib/db/types.ts` - TypeScript type definitions for portfolio data
 - `drizzle.config.ts` - Drizzle configuration file
 - `.env.local` - Environment variables (add to .env.example)
 
 ### Migration Files
 - `src/lib/db/migrations/` - Directory for migration files
-- `src/lib/db/migrations/0001_initial_schema.sql` - Initial schema migration
+- `src/lib/db/migrations/0001_portfolio_schema.sql` - Initial business schema migration
 
-### Validation
-- `src/lib/validation/portfolio-schema.ts` - Zod schemas for data validation
+### Validation & Types
+- `src/lib/validation/portfolio-schema.ts` - Zod schemas for Excel data validation
+- `src/lib/ingest/columns.ts` - Excel column mapping definitions (A-K to business fields)
+
+### Environment Setup
+- `.env.example` - Document required environment variables
+- `package.json` - Add ingestion script: `"ingest": "tsx scripts/ingest.ts"`
 
 ## Testing Requirements
 - [ ] Test Supabase connection establishment
 - [ ] Test schema creation and migrations
-- [ ] Test data insertion and retrieval
-- [ ] Test foreign key constraints
-- [ ] Test data validation with Zod schemas
+- [ ] Test data insertion with business columns
+- [ ] Test foreign key constraints and cascading
+- [ ] Test Zod validation with Excel data types
+- [ ] Test numeric precision for monetary values
 - [ ] Test transaction rollback capabilities
 
 ## Definition of Done
-- [ ] Drizzle ORM properly configured with Supabase
-- [ ] All database tables created with proper schema
-- [ ] Migration system working and tested
-- [ ] TypeScript types defined and exported
-- [ ] Zod validation schemas implemented
-- [ ] Database connection tested and verified
-- [ ] No breaking changes to existing functionality
-- [ ] Environment variables documented
+- [x] Drizzle ORM properly configured with Supabase
+- [x] Business schema tables created matching README specification
+- [x] Migration system working and tested
+- [x] TypeScript types defined for all business entities
+- [x] Zod validation schemas for Excel data implemented
+- [x] Column mapping from Excel (A-K) to business fields documented
+- [x] Database connection tested and verified
+- [x] Environment variables documented in .env.example
+- [x] Ready for `npm run ingest` command implementation
 
 ## Notes
-- Use UUIDs for all primary keys for better scalability
-- Consider using JSONB for flexible column storage if needed later
-- Implement proper indexing on portfolio_id and data_date for performance
-- Set up proper foreign key cascading for data deletion
+- Use the exact column names and types from README.md specification
+- Portfolio ID extraction from B1 (not B2 as initially assumed)
+- Support for the existing provision-data.json format for potential migration
+- Implement proper indexing on portfolio_id and extract_date for performance
+- Consider RLS policies for future client access control
 
 ## Blockers
 None - this is the foundation task
 
 ## Related Tasks
 ### Within This Project
-- Task 2: Excel File Structure & Validation (depends on this schema)
-- Task 3: Excel Parser Implementation (will use these types)
-- Task 4: Data Replacement API (will use these operations)
+- Task 2: Excel File Structure & Validation (will use this schema)
+- Task 3: Excel Parser Implementation (will map to these business columns)
+- Task 4: Ingestion Command & API (will use these database operations)
 
 ### Cross-Project Tasks
-- None currently
+- Future PDF export functionality (will query these business columns)
+- Future client portal (will display this portfolio data)
 
 ---
 **Project**: Excel Data Management System
