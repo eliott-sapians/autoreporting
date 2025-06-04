@@ -24,7 +24,7 @@ export const VALID_CURRENCIES = [
 	'EUR', 'USD', 'GBP', 'CHF', 'CAD', 'AUD', 'JPY', 'SEK', 'NOK', 'DKK'
 ] as const
 
-// ISIN validation pattern (basic format check)
+// ISIN validation pattern (basic format check) - can be null
 export const ISIN_PATTERN = /^[A-Z]{2}[A-Z0-9]{9}[0-9]$/
 
 // Date validation rules
@@ -48,6 +48,70 @@ export const FILE_RULES = {
 	MAX_DATA_ROWS: 50
 } as const
 
+// French number formatting rules
+export const FRENCH_NUMBER_RULES = {
+	DECIMAL_SEPARATOR: ',',
+	THOUSANDS_SEPARATOR: ' ', // Space or empty
+	// Pattern to match French numbers: optional sign, digits, optional comma and decimal places
+	PATTERN: /^-?\d+(?:,\d+)?$/
+} as const
+
+// Utility functions for French number handling
+export const FRENCH_NUMBER_UTILS = {
+	/**
+	 * Parse French-formatted number string to JavaScript number
+	 * Handles comma as decimal separator
+	 */
+	parseFrenchNumber: (value: string | number): number | null => {
+		if (typeof value === 'number') {
+			return isNaN(value) ? null : value
+		}
+		
+		if (typeof value !== 'string') {
+			return null
+		}
+		
+		// Remove any whitespace
+		const cleaned = value.trim()
+		
+		if (cleaned === '' || cleaned === '-') {
+			return null
+		}
+		
+		// Replace French comma decimal separator with English dot
+		const normalized = cleaned.replace(',', '.')
+		
+		// Remove any thousand separators (spaces)
+		const withoutSpaces = normalized.replace(/\s/g, '')
+		
+		const parsed = parseFloat(withoutSpaces)
+		return isNaN(parsed) ? null : parsed
+	},
+
+	/**
+	 * Validate if a string represents a valid French number
+	 */
+	isValidFrenchNumber: (value: string | number): boolean => {
+		if (typeof value === 'number') {
+			return !isNaN(value)
+		}
+		
+		if (typeof value !== 'string') {
+			return false
+		}
+		
+		const parsed = FRENCH_NUMBER_UTILS.parseFrenchNumber(value)
+		return parsed !== null
+	},
+
+	/**
+	 * Format a number to French format (for display/error messages)
+	 */
+	formatToFrench: (value: number): string => {
+		return value.toString().replace('.', ',')
+	}
+} as const
+
 // Error message templates
 export const ERROR_MESSAGES = {
 	MISSING_PORTFOLIO_ID: 'Portfolio ID is required in cell B1',
@@ -61,7 +125,9 @@ export const ERROR_MESSAGES = {
 	INVALID_ISIN: (value: string) => 
 		`Invalid ISIN code "${value}". Must follow ISIN format`,
 	INVALID_NUMERIC: (column: string, value: any) => 
-		`Invalid numeric value in column ${column}: "${value}"`,
+		`Invalid numeric value in column ${column}: "${value}". Expected French number format (e.g., "123,45")`,
+	INVALID_FRENCH_NUMBER: (value: any) => 
+		`Invalid number format: "${value}". Expected French format with comma as decimal separator (e.g., "123,45")`,
 	INVALID_DATE: (value: any) => 
 		`Invalid date format: "${value}"`,
 	FILE_TOO_LARGE: (sizeMB: number) => 

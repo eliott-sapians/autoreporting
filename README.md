@@ -1,6 +1,6 @@
 # Suivi de Participation Portal
 
-**Automating the bi‑annual “suivi de participation” for every client in one click**
+**Automating the bi‑annual "suivi de participation" for every client in one click**
 
 ---
 
@@ -18,14 +18,14 @@ flowchart LR
 2. Run `pnpm run ingest` – rows are validated, written to **PostgreSQL**, and audit‑logged.
 3. Either:
 
-   * **Admin portal** → click **Export → PDF** and email the file **(Option A)**, **or**
-   * Send the client a magic‑link so they browse the live portal themselves **(Option B)**.
+   * **Admin portal** → click **Export → PDF** and email the file **(Option A)**, **or**
+   * Send the client a magic‑link so they browse the live portal themselves **(Option B)**.
 
 Two days of manual Excel → chart → PowerPoint busy‑work are gone.
 
 ---
 
-## 1  Problem we solve
+## 1  Problem we solve
 
 > Until now the family office rebuilt 100+ slide decks twice a year.
 > Every slide was a screenshot from Excel.
@@ -33,36 +33,38 @@ Two days of manual Excel → chart → PowerPoint busy‑work are gone.
 
 ---
 
-## 2  Key Features
+## 2  Key Features
 
 | Area         | What it does                                                                                                                 | Stack                             |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
-| Ingestion    | Parses a fixed 11‑column sheet (see §3) starting at row 9, grabs `B1` (Portfolio ID) & `B5` (extraction date), pushes to DB. | `exceljs`, `zod`, **Drizzle ORM** |
-| Reporting UI | Exact React clone of the legacy PowerPoint, responsive & brand‑compliant.                                                    | **Next.js 14**, **TailwindCSS**   |
+| Ingestion    | Parses a fixed 11‑column sheet (see §3) starting at row 9, grabs `B1` (Portfolio ID) & `B5` (extraction date), pushes to DB. | `exceljs`, `zod`, **Drizzle ORM** |
+| Reporting UI | Exact React clone of the legacy PowerPoint, responsive & brand‑compliant.                                                    | **Next.js 14**, **TailwindCSS**   |
 | Auth         | Magic‑link OTP via Supabase; each `user.email` ↔ `portfolio.id`.                                                             | **Supabase Auth**                 |
 | Roles        | **admin** (ingest & edit any portfolio) vs. **client** (read‑only own portfolio).                                            | RLS – *TODO*                      |
-| Export       | Headless Chromium prints every `/portfolio/[id]` route to PDF with header + footer.                                          | `@puppeteer/core`                 |
-| Ops          | CI placeholder; deploys easily to **Vercel + Supabase** or **Docker Compose**.                                               |                                   |
+| Export       | Headless Chromium prints every `/portfolio/[id]` route to PDF with header + footer.                                          | `@puppeteer/core`                 |
+| Ops          | CI placeholder; deploys easily to **Vercel + Supabase** or **Docker Compose**.                                               |                                   |
 
 ---
 
-## 3  Excel → DB mapping
+## 3  Excel → DB mapping
 
-| Column (row 9)                        | DB field         | Type          |
-| ------------------------------------- | ---------------- | ------------- |
-| **A  Solde**                          | `balance`        | numeric(18,2) |
-| **B  Libellé**                        | `label`          | text          |
-| **C  Devise**                         | `currency`       | char(3)       |
-| **D  Estimation + int. courus (EUR)** | `valuation_eur`  | numeric(18,2) |
-| **E  Poids (%)**                      | `weight_pct`     | numeric(6,3)  |
-| **F  Code ISIN**                      | `isin`           | char(12)      |
-| **G  B / P ‑ Total (EUR)**            | `book_price_eur` | numeric(18,2) |
-| **H  Frais (EUR)**                    | `fees_eur`       | numeric(18,2) |
-| **I  Nom**                            | `asset_name`     | text          |
-| **J  Stratégie**                      | `strategy`       | text          |
-| **K  Poche**                          | `bucket`         | text          |
+> **Important**: All numeric values in Excel files must use **French decimal separators** (comma `,`). Example: `123,45` not `123.45`.
 
-> **Heads‑up**: the user spec said “A9→H9” but listed 11 columns. We assume **A–K**. Adjust `src/lib/ingest/columns.ts` if your workbook differs.
+| Column (row 9)                        | DB field         | Type          | Example Value |
+| ------------------------------------- | ---------------- | ------------- | ------------- |
+| **A  Solde**                          | `balance`        | numeric(18,2) | `1 234,56`    |
+| **B  Libellé**                        | `label`          | text          | `Actions XYZ` |
+| **C  Devise**                         | `currency`       | char(3)       | `EUR`         |
+| **D  Estimation + int. courus (EUR)** | `valuation_eur`  | numeric(18,2) | `2 345,67`    |
+| **E  Poids (%)**                      | `weight_pct`     | numeric(6,3)  | `12,345`      |
+| **F  Code ISIN**                      | `isin`           | char(12)      | `FR0000120073`|
+| **G  B / P ‑ Total (EUR)**            | `book_price_eur` | numeric(18,2) | `3 456,78`    |
+| **H  Frais (EUR)**                    | `fees_eur`       | numeric(18,2) | `12,34`       |
+| **I  Nom**                            | `asset_name`     | text          | `Total SA`    |
+| **J  Stratégie**                      | `strategy`       | text          | `Actions`     |
+| **K  Poche**                          | `bucket`         | text          | `Core`        |
+
+> **Heads‑up**: the user spec said "A9→H9" but listed 11 columns. We assume **A–K**. Adjust `src/lib/ingest/columns.ts` if your workbook differs.
 
 ### Tables
 
@@ -99,19 +101,19 @@ CREATE TABLE portfolio_data (
 
 ---
 
-## 4  Deployment Modes
+## 4  Deployment Modes
 
-|               | **Option A – PDF‑only** | **Option B – Live portal (recommended)** |
+|               | **Option A – PDF‑only** | **Option B – Live portal (recommended)** |
 | ------------- | ----------------------- | ---------------------------------------- |
-| Ship time     | \~1 day                 | 3‑5 days (add RLS & auth UI polish)      |
+| Ship time     | \~1 day                 | 3‑5 days (add RLS & auth UI polish)      |
 | Client effort | none                    | OTP login (no password)                  |
-| Real‑time     | ❌ snapshot              | ✅ instant data                           |
+| Real‑time     | ❌ snapshot              | ✅ instant data                           |
 | Attachments   | Heavy e‑mail            | None – link only                         |
 | Future UX     | Limited                 | Drill‑down, alerts, etc.                 |
 
 ---
 
-## 5  Local Setup
+## 5  Local Setup
 
 ```bash
 pnpm i
@@ -121,7 +123,7 @@ pnpm drizzle:migrate         # creates tables
 pnpm dev                     # http://localhost:3000
 ```
 
-### Current env vars
+### Current env vars
 
 | Key                                     | Required? | Notes                                         |
 | --------------------------------------- | --------- | --------------------------------------------- |
@@ -134,7 +136,7 @@ pnpm dev                     # http://localhost:3000
 
 ---
 
-## 6  Commands
+## 6  Commands
 
 | Script                              | Description                                           |
 | ----------------------------------- | ----------------------------------------------------- |
@@ -144,7 +146,7 @@ pnpm dev                     # http://localhost:3000
 
 ---
 
-## 7  Roles & Security
+## 7  Roles & Security
 
 | Role                 | Permissions                                                | Enforcement |
 | -------------------- | ---------------------------------------------------------- | ----------- |
@@ -158,7 +160,7 @@ pnpm dev                     # http://localhost:3000
 
 ---
 
-## 8  CI / CD (coming soon)
+## 8  CI / CD (coming soon)
 
 ```txt
 name: CI
@@ -179,7 +181,7 @@ jobs:
 
 ---
 
-## 9  File Layout
+## 9  File Layout
 
 ```
 .
@@ -198,31 +200,31 @@ jobs:
 
 ---
 
-## 10  Roadmap
+## 10 Roadmap
 
 * [ ] **Finish RLS** policies & auth middleware.
 * [ ] **Add Jest tests** for ingest edge‑cases.
 * [ ] **Playwright e2e** for login & PDF export.
-* [ ] **CI pipeline** with lint + test + preview deploy.
+* [ ] **CI pipeline** with lint + test + preview deploy.
 * [ ] **Alerts** (Slack/email) when a new workbook is ingested.
 * [ ] **Multi‑language** (🇫🇷/🇬🇧) toggle.
 * [ ] **Drill‑down charts** & benchmark vs. index.
 
 ---
 
-## 11  Contributing
+## 11 Contributing
 
 1. Fork → branch → code.
 2. `pnpm test` must be green.
-3. Open a PR – GitHub Actions will comment a preview URL.
+3. Open a PR – GitHub Actions will comment a preview URL.
 4. A maintainer merges & deploys.
 
 ---
 
-## 12  License & Contact
+## 12 License & Contact
 
 Private – Internal Family Office use only. Ask `@dev‑ops` Slack channel for access.
 
 ---
 
-*Made with ❤️ & React by the Dev Ops team.*
+*Made with ❤️ & React by the Dev Ops team.*

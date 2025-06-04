@@ -47,6 +47,7 @@ src/lib/excel/
 - **Extension**: `.xlsx` files only
 - **Structure**: Exactly 11 columns (A-K)
 - **Size Limit**: 50MB maximum
+- **Number Format**: French locale with comma (`,`) as decimal separator
 
 ### Required Cells
 | Cell | Content | Validation |
@@ -54,20 +55,27 @@ src/lib/excel/
 | **B1** | Portfolio ID | Alphanumeric, 1-100 chars |
 | **B5** | Extraction Date | Valid date, 2000-2050 |
 
+### French Number Formatting
+**Critical**: All numeric data must use **French decimal separators**:
+- ✅ **Correct**: `123,45`, `1 234,56`, `-67,89`
+- ❌ **Incorrect**: `123.45`, `1234.56`, `-67.89`
+
+The validation system expects and validates French number format exclusively.
+
 ### Column Headers (Row 9)
-| Column | French Header | DB Field | Type | Description |
-|--------|---------------|----------|------|-------------|
-| A | Solde | `balance` | numeric(18,2) | Account balance |
-| B | Libellé | `label` | text | Asset label |
-| C | Devise | `currency` | char(3) | Currency code |
-| D | Estimation + int. courus (EUR) | `valuation_eur` | numeric(18,2) | EUR valuation |
-| E | Poids (%) | `weight_pct` | numeric(6,3) | Portfolio weight |
-| F | Code ISIN | `isin` | char(12) | ISIN identifier |
-| G | B / P - Total (EUR) | `book_price_eur` | numeric(18,2) | Book price EUR |
-| H | Frais (EUR) | `fees_eur` | numeric(18,2) | Fees in EUR |
-| I | Nom | `asset_name` | text | Asset name |
-| J | Stratégie | `strategy` | text | Investment strategy |
-| K | Poche | `bucket` | text | Asset bucket |
+| Column | French Header | DB Field | Type | Description | Example |
+|--------|---------------|----------|------|-------------|---------|
+| A | Solde | `balance` | numeric(18,2) | Account balance | `1 234,56` |
+| B | Libellé | `label` | text | Asset label | `Actions XYZ` |
+| C | Devise | `currency` | char(3) | Currency code | `EUR` |
+| D | Estimation + int. courus (EUR) | `valuation_eur` | numeric(18,2) | EUR valuation | `2 345,67` |
+| E | Poids (%) | `weight_pct` | numeric(6,3) | Portfolio weight | `12,345` |
+| F | Code ISIN | `isin` | char(12) | ISIN identifier | `FR0000120073` |
+| G | B / P - Total (EUR) | `book_price_eur` | numeric(18,2) | Book price EUR | `3 456,78` |
+| H | Frais (EUR) | `fees_eur` | numeric(18,2) | Fees in EUR | `12,34` |
+| I | Nom | `asset_name` | text | Asset name | `Total SA` |
+| J | Stratégie | `strategy` | text | Investment strategy | `Actions` |
+| K | Poche | `bucket` | text | Asset bucket | `Core` |
 
 ## 📂 Directory Structure
 

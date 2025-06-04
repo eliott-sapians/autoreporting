@@ -19,18 +19,21 @@ const portfolioIdSchema = z.string()
 const extractDateSchema = z.date({
 	required_error: 'Extract date is required',
 	invalid_type_error: 'Extract date must be a valid date'
-}).refine((date) => {
-	const year = date.getFullYear()
-	return year >= DATE_RULES.MIN_YEAR && year <= DATE_RULES.MAX_YEAR
-}, `Date must be between ${DATE_RULES.MIN_YEAR} and ${DATE_RULES.MAX_YEAR}`)
+	}).refine((date) => 
+	{
+		const year = date.getFullYear()
+		return year >= DATE_RULES.MIN_YEAR && year <= DATE_RULES.MAX_YEAR
+	}, 
+	`Date must be between ${DATE_RULES.MIN_YEAR} and ${DATE_RULES.MAX_YEAR}`)
 
 /**
  * Extract and validate Portfolio ID from cell B1
  */
-export function validatePortfolioId(worksheet: Worksheet, context: ValidationContext): {
+export function validatePortfolioId(worksheet: Worksheet, context: ValidationContext): 
+	{
 	portfolioId: string | null
 	errors: ValidationError[]
-} {
+	} {
 	const errors: ValidationError[] = []
 	
 	try {
@@ -175,17 +178,7 @@ function parseStringDate(dateString: string): Date | null {
 			return date
 		}
 	}
-	
-	// Try MM/DD/YYYY format
-	const mmddyyyy = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)
-	if (mmddyyyy) {
-		const [, month, day, year] = mmddyyyy
-		date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day))
-		if (!isNaN(date.getTime())) {
-			return date
-		}
-	}
-	
+
 	return null
 }
 

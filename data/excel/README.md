@@ -16,25 +16,37 @@ This directory contains Excel files for the portfolio data ingestion system.
 - **Columns**: Exactly 11 columns (A-K)
 - **Headers**: Row 9 must contain exact French column names
 - **Data**: Starting from row 10
+- **Number Format**: French decimal separator (comma `,`) for numeric values
 
 ### Required Cells
 - **B1**: Portfolio ID (UUID or string identifier)
 - **B5**: Extraction Date (valid date format)
 
+### French Number Formatting
+**Important**: All numeric values in the Excel file must use **French decimal separators**:
+- ✅ Correct: `123,45` (comma as decimal separator)
+- ❌ Incorrect: `123.45` (dot as decimal separator)
+
+Examples of valid French numbers:
+- `1 234,56` (with space as thousands separator)
+- `234,56` (simple decimal)
+- `123` (whole number)
+- `-45,67` (negative number)
+
 ### Column Headers (Row 9)
-| Column | Header (French)                  | Data Type     | Description |
-|--------|----------------------------------|---------------|-------------|
-| A      | Solde                           | numeric(18,2) | Balance     |
-| B      | Libellé                         | text          | Label       |
-| C      | Devise                          | char(3)       | Currency    |
-| D      | Estimation + int. courus (EUR)  | numeric(18,2) | Valuation   |
-| E      | Poids (%)                       | numeric(6,3)  | Weight %    |
-| F      | Code ISIN                       | char(12)      | ISIN Code   |
-| G      | B / P - Total (EUR)             | numeric(18,2) | Book Price  |
-| H      | Frais (EUR)                     | numeric(18,2) | Fees        |
-| I      | Nom                             | text          | Asset Name  |
-| J      | Stratégie                       | text          | Strategy    |
-| K      | Poche                           | text          | Bucket      |
+| Column | Header (French)                  | Data Type     | Description | Example Value |
+|--------|----------------------------------|---------------|-------------|---------------|
+| A      | Solde                           | numeric(18,2) | Balance     | `1 234,56`    |
+| B      | Libellé                         | text          | Label       | `Actions XYZ` |
+| C      | Devise                          | char(3)       | Currency    | `EUR`         |
+| D      | Estimation + int. courus (EUR)  | numeric(18,2) | Valuation   | `2 345,67`    |
+| E      | Poids (%)                       | numeric(6,3)  | Weight %    | `12,345`      |
+| F      | Code ISIN                       | char(12)      | ISIN Code   | `FR0000120073`|
+| G      | B / P - Total (EUR)             | numeric(18,2) | Book Price  | `3 456,78`    |
+| H      | Frais (EUR)                     | numeric(18,2) | Fees        | `12,34`       |
+| I      | Nom                             | text          | Asset Name  | `Total SA`    |
+| J      | Stratégie                       | text          | Strategy    | `Actions`     |
+| K      | Poche                           | text          | Bucket      | `Core`        |
 
 ## Usage Commands
 
@@ -54,7 +66,7 @@ pnpm run validate-excel
 - Headers must match exactly (case-sensitive French names)
 - Portfolio ID in B1 must be present and valid
 - Extraction date in B5 must be valid date format
-- All numeric fields must be valid numbers
+- **All numeric fields must use French decimal separators (comma `,`)**
 - Currency codes must be 3 characters
 - ISIN codes must follow proper format
 
@@ -63,8 +75,13 @@ pnpm run validate-excel
 If validation fails, you'll see detailed error messages in the console including:
 - Specific cell references for validation failures
 - Missing or incorrect headers
-- Data type mismatches
+- Data type mismatches (including incorrect decimal separators)
 - File format issues
+
+**Common French Number Format Errors:**
+- Using dot (`.`) instead of comma (`,`) as decimal separator
+- Invalid characters in numeric fields
+- Missing decimal separator when expected
 
 Fix the issues in your Excel file and run the command again.
 

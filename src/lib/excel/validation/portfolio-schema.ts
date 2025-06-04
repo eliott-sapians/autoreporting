@@ -1,25 +1,33 @@
 import { z } from 'zod'
+import { FRENCH_NUMBER_UTILS, ERROR_MESSAGES } from '@/lib/excel/constants/validation-rules'
+
+// Custom French number validation function
+const frenchNumber = (fieldName: string) => z.union([
+	z.number(),
+	z.string()
+]).refine(
+	(val) => FRENCH_NUMBER_UTILS.isValidFrenchNumber(val),
+	{
+		message: `${fieldName} must be a valid French number (use comma as decimal separator, e.g., "123,45")`
+	}
+).transform((val) => {
+	const parsed = FRENCH_NUMBER_UTILS.parseFrenchNumber(val)
+	if (parsed === null) {
+		throw new Error(`Invalid French number: ${val}`)
+	}
+	return parsed
+})
 
 // Excel row data validation schema (matches the 11 business columns)
 export const excelRowSchema = z.object({
-	balance: z.string().refine(val => !isNaN(parseFloat(val)), {
-		message: 'Balance must be a valid number'
-	}),
+	balance: frenchNumber('Balance'),
 	label: z.string().min(1, 'Label is required'),
 	currency: z.string().length(3, 'Currency must be exactly 3 characters'),
-	valuationEur: z.string().refine(val => !isNaN(parseFloat(val)), {
-		message: 'Valuation EUR must be a valid number'
-	}),
-	weightPct: z.string().refine(val => !isNaN(parseFloat(val)), {
-		message: 'Weight percentage must be a valid number'
-	}),
+	valuationEur: frenchNumber('Valuation EUR'),
+	weightPct: frenchNumber('Weight percentage'),
 	isin: z.string().max(12, 'ISIN cannot exceed 12 characters').optional(),
-	bookPriceEur: z.string().refine(val => !isNaN(parseFloat(val)), {
-		message: 'Book price EUR must be a valid number'
-	}),
-	feesEur: z.string().refine(val => !isNaN(parseFloat(val)), {
-		message: 'Fees EUR must be a valid number'
-	}),
+	bookPriceEur: frenchNumber('Book price EUR'),
+	feesEur: frenchNumber('Fees EUR'),
 	assetName: z.string().min(1, 'Asset name is required'),
 	strategy: z.string().min(1, 'Strategy is required'),
 	bucket: z.string().min(1, 'Bucket is required')
@@ -43,14 +51,14 @@ export const portfolioInsertSchema = z.object({
 export const portfolioDataInsertSchema = z.object({
 	portfolio_id: z.string().uuid(),
 	extract_date: z.string().refine(val => !isNaN(Date.parse(val))),
-	balance: z.string().refine(val => !isNaN(parseFloat(val))),
+	balance: frenchNumber('Balance'),
 	label: z.string(),
 	currency: z.string().length(3),
-	valuation_eur: z.string().refine(val => !isNaN(parseFloat(val))),
-	weight_pct: z.string().refine(val => !isNaN(parseFloat(val))),
+	valuation_eur: frenchNumber('Valuation EUR'),
+	weight_pct: frenchNumber('Weight percentage'),
 	isin: z.string().max(12).optional(),
-	book_price_eur: z.string().refine(val => !isNaN(parseFloat(val))),
-	fees_eur: z.string().refine(val => !isNaN(parseFloat(val))),
+	book_price_eur: frenchNumber('Book price EUR'),
+	fees_eur: frenchNumber('Fees EUR'),
 	asset_name: z.string(),
 	strategy: z.string(),
 	bucket: z.string()
