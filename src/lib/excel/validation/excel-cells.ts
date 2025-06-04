@@ -13,7 +13,6 @@ import type { ValidationError, ValidationContext } from '@/lib/excel/types/excel
 const portfolioIdSchema = z.string()
 	.min(PORTFOLIO_ID_RULES.MIN_LENGTH, 'Portfolio ID too short')
 	.max(PORTFOLIO_ID_RULES.MAX_LENGTH, 'Portfolio ID too long')
-	.regex(PORTFOLIO_ID_RULES.PATTERN, 'Portfolio ID contains invalid characters')
 
 // Date validation schema
 const extractDateSchema = z.date({

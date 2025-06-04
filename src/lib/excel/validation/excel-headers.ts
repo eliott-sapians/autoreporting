@@ -1,11 +1,10 @@
 /**
  * Excel Header Validation
- * Validates the 11 French column headers at row 9
+ * Validates that headers exist at row 9 (soft validation)
  */
 
 import type { Worksheet } from 'exceljs'
 import { 
-	EXPECTED_HEADERS, 
 	COLUMN_LETTERS, 
 	SPECIAL_CELLS, 
 	EXPECTED_COLUMN_COUNT,
@@ -19,7 +18,7 @@ import type {
 } from '@/lib/excel/types/excel-format'
 
 /**
- * Validate Excel headers at row 9
+ * Validate Excel headers at row 9 (soft validation - just check they exist)
  */
 export function validateHeaders(worksheet: Worksheet, context: ValidationContext): HeaderValidationResult {
 	const errors: ValidationError[] = []
@@ -36,13 +35,12 @@ export function validateHeaders(worksheet: Worksheet, context: ValidationContext
 				type: 'STRUCTURE',
 				message: ERROR_MESSAGES.INVALID_COLUMN_COUNT(actualColumnCount, EXPECTED_COLUMN_COUNT),
 				rowNumber: SPECIAL_CELLS.HEADER_ROW,
-				severity: 'ERROR'
+				severity: 'WARNING' // Downgraded from ERROR to WARNING
 			})
 		}
 		
-		// Validate each header
+		// Validate each header (soft validation - just check they exist)
 		COLUMN_LETTERS.forEach((columnLetter) => {
-			const expectedHeader = EXPECTED_HEADERS[columnLetter]
 			const cellAddress = `${columnLetter}${SPECIAL_CELLS.HEADER_ROW}`
 			
 			try {
@@ -53,30 +51,17 @@ export function validateHeaders(worksheet: Worksheet, context: ValidationContext
 				if (!actualHeader) {
 					errors.push({
 						type: 'HEADER',
-						message: `Missing header in column ${columnLetter}. Expected "${expectedHeader}"`,
+						message: `Missing header in column ${columnLetter}`,
 						cellReference: cellAddress,
 						columnLetter,
-						severity: 'ERROR'
+						severity: 'WARNING' // Downgraded from ERROR to WARNING
 					})
 					return
 				}
 				
-				// Convert to string and trim
+				// Convert to string and add to mapping (no validation of content)
 				const actualHeaderStr = String(actualHeader).trim()
-				
-				// Check exact match (case-sensitive)
-				if (actualHeaderStr !== expectedHeader) {
-					errors.push({
-						type: 'HEADER',
-						message: ERROR_MESSAGES.INVALID_HEADER(columnLetter, expectedHeader, actualHeaderStr),
-						cellReference: cellAddress,
-						columnLetter,
-						severity: 'ERROR'
-					})
-				} else {
-					// Valid header - add to mapping
-					columnMapping[columnLetter] = expectedHeader
-				}
+				columnMapping[columnLetter] = actualHeaderStr
 				
 			} catch (cellError) {
 				errors.push({
@@ -84,7 +69,7 @@ export function validateHeaders(worksheet: Worksheet, context: ValidationContext
 					message: `Error reading header in column ${columnLetter}: ${cellError}`,
 					cellReference: cellAddress,
 					columnLetter,
-					severity: 'ERROR'
+					severity: 'WARNING'
 				})
 			}
 		})
@@ -96,7 +81,7 @@ export function validateHeaders(worksheet: Worksheet, context: ValidationContext
 				type: 'STRUCTURE',
 				message: `Extra columns detected. Expected exactly ${EXPECTED_COLUMN_COUNT} columns (A-K)`,
 				rowNumber: SPECIAL_CELLS.HEADER_ROW,
-				severity: 'ERROR'
+				severity: 'WARNING'
 			})
 		}
 		
@@ -110,7 +95,7 @@ export function validateHeaders(worksheet: Worksheet, context: ValidationContext
 	}
 	
 	return {
-		isValid: errors.length === 0,
+		isValid: errors.filter(e => e.severity === 'ERROR').length === 0, // Only ERROR level issues make it invalid
 		errors,
 		columnMapping
 	}
@@ -125,7 +110,7 @@ function normalizeHeader(header: any): string {
 }
 
 /**
- * Validate specific header in a column
+ * Validate specific header in a column (soft validation)
  */
 export function validateSingleHeader(
 	worksheet: Worksheet, 
@@ -133,18 +118,17 @@ export function validateSingleHeader(
 	context: ValidationContext
 ): ValidationError | null {
 	try {
-		const expectedHeader = EXPECTED_HEADERS[columnLetter]
 		const cellAddress = `${columnLetter}${SPECIAL_CELLS.HEADER_ROW}`
 		const cell = worksheet.getCell(cellAddress)
 		const actualHeader = normalizeHeader(cell.value)
 		
-		if (actualHeader !== expectedHeader) {
+		if (!actualHeader) {
 			return {
 				type: 'HEADER',
-				message: ERROR_MESSAGES.INVALID_HEADER(columnLetter, expectedHeader, actualHeader),
+				message: `Missing header in column ${columnLetter}`,
 				cellReference: cellAddress,
 				columnLetter,
-				severity: 'ERROR'
+				severity: 'WARNING'
 			}
 		}
 		
@@ -155,7 +139,7 @@ export function validateSingleHeader(
 			message: `Error validating header in column ${columnLetter}: ${error}`,
 			cellReference: `${columnLetter}${SPECIAL_CELLS.HEADER_ROW}`,
 			columnLetter,
-			severity: 'ERROR'
+			severity: 'WARNING'
 		}
 	}
 }

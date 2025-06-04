@@ -37,8 +37,7 @@ export const DATE_RULES = {
 // Portfolio ID validation
 export const PORTFOLIO_ID_RULES = {
 	MIN_LENGTH: 1,
-	MAX_LENGTH: 100,
-	PATTERN: /^[a-zA-Z0-9\-_]+$/ // Alphanumeric, hyphens, underscores
+	MAX_LENGTH: 100
 } as const
 
 // File validation rules
