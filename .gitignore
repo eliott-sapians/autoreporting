@@ -40,3 +40,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Excel files (keep directory structure, ignore files)
+data/excel/**/*.xlsx
+data/excel/**/*.xls
+data/excel/**/*.error.txt
+# Keep the directory structure
+!data/excel/
+!data/excel/*/
+!data/excel/**/.gitkeep
+!data/excel/README.md
