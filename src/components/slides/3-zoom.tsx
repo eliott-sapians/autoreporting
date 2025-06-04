@@ -1,9 +1,6 @@
 'use client'
 
-import Corner from '@/components/corners/Corner'
-import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart'
-import { PieChart, Pie, Cell, LabelList } from 'recharts'
-import PocheCard from '@/components/poche-card'
+import PocheCard from '@/components/slides/blocks/poche-card'
 
 export default function Zoom() {
 	return (

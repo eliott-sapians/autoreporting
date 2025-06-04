@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import TableDetail from '@/components/table-detail'
+import TableDetail from '@/components/slides/blocks/table-detail'
 import type { TotalData, FundData } from '@/lib/types'
 import { getTotalData, getFundsData } from '@/lib/data/provision-service'
 import Corner from '@/components/corners/Corner'

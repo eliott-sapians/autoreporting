@@ -1,8 +1,8 @@
 'use client'
 
-import Corner from './corners/Corner'
+import Corner from '../../corners/Corner'
 import CompositionPieChart from './composition-pie-chart'
-import { ChartConfig } from './ui/chart'
+import { ChartConfig } from '../../ui/chart'
 
 interface ChartDataItem {
 	name: string
