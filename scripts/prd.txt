@@ -1,0 +1,102 @@
+# Product Requirements Document (PRD)
+
+## 1. Overview
+Postly is a web application designed to help professionals and creators craft, refine, and schedule engaging LinkedIn posts using the power of AI. It addresses the time-consuming and fragmented nature of content creation and scheduling by unifying AI-assisted drafting with a seamless publishing workflow.
+
+## 2. Core Features
+1. **AI-Powered Content Generation** - [DONE]
+   - What it does: Generates LinkedIn post drafts based on a short user prompt (≤ 200 chars).  
+   - Why it's important: Drastically reduces brainstorming time and improves writing quality.  
+   - How it works: Uses GPT-4 with a system prompt tuned for LinkedIn best practices. (Note: Codebase uses DeepSeek as per section 4)
+
+2. **Rich Post Editor & Media Attachments** - [PARTIALLY DONE]
+   - What it does: Provides a rich-text editor with emoji and hashtag autocomplete, character counter (3,000 max), and image uploads (JPEG/PNG) or Unsplash integration. (Note: Currently basic textarea; autocomplete, char counter, Unsplash not evident; image upload for posts needs clarification)
+   - Why it's important: Ensures visual polish and fine-grained control over post content.  
+   - How it works: React-based editor component calling backend APIs for autocomplete and media storage.
+
+3. **Scheduling & Queue Management** - [MOSTLY DONE]
+   - What it does: Allows users to schedule posts via a date-time picker in their timezone and manage a visual queue with edit/delete actions. (Note: Viewing queue done; edit/delete from queue UI likely pending)
+   - Why it's important: Enables consistent posting cadence and easy adjustments.  
+   - How it works: Persists jobs in a durable table and triggers publishing via Vercel Cron.
+
+4. **LinkedIn Integration** - [DONE (for text posts)]
+   - What it does: Connects to the LinkedIn Marketing API to publish posts directly to user profiles or organization pages. (Note: Media publishing not yet handled by cron worker)
+   - Why it's important: Eliminates manual copy-pasting and context switching.  
+   - How it works: Implements OAuth2 flow and token management via BetterAuth.
+
+5. **Notifications & Logging** - [PARTIALLY DONE]
+   - What it does: Sends in-app toasts and email notifications upon publish success or failure with error details. (Note: Toasts for user-initiated actions done; toasts/emails for background cron events not evident; error logging to DB done)
+   - Why it's important: Keeps users informed and facilitates quick troubleshooting.  
+   - How it works: Notification service triggers after job completion and logs events for audit.
+
+## 3. User Experience
+### 3.1 Personas
+- **Solo Founder/Creator**: Needs to post regularly with minimal time investment.  
+- **Indie Marketer**: Manages multiple client profiles with predictable performance.  
+- **Talent-Brand Lead**: Oversees executive presence and scheduling at scale.
+
+### 3.2 Key User Flows
+1. **Onboarding** → Connect LinkedIn account via OAuth.  
+2. Land on **Dashboard** (empty state prompts "Create your first post").  
+3. **Idea Prompt** → Enter short text; AI draft appears (< 2s).  
+4. **Edit & Attach** → Refine draft, add images.  
+5. **Schedule** → Pick date/time; confirm.  
+6. **Queue** → View/edit/delete pending posts.  
+7. **Publish** → Worker posts content; user receives notification.  
+8. (Future) **Analytics** → View engagement metrics.
+
+### 3.3 UI/UX Considerations
+- Clear empty and loading states with actionable prompts.  
+- Autosave drafts to prevent data loss.  
+- Mobile-responsive layout and keyboard-accessible controls.  
+- Accessibility: ARIA labels, focus management, and sufficient contrast ratios.
+
+## 4. Technical Architecture
+- **Frontend**: Next.js, React, TypeScript, Tailwind CSS, Shadcn UI components.  
+- **Backend**: Node.js API routes (Edge), Express-compatible middleware.  
+- **Auth**: BetterAuth for session management; LinkedIn OAuth scopes (`w_member_social`, `rw_organization_admin`).  
+- **Database**: Supabase Postgres via Prisma (models: User, Account, Post, Schedule, Media).  
+- **AI Service**: DeepSeek with system prompts tuned for LinkedIn best practices.  
+- **Job Queue**: Vercel Cron and durable table for scheduled publish jobs with retry/backoff logic.  
+- **Hosting**: Vercel for frontend; Supabase Edge Functions for backend.
+
+## 5. Development Roadmap
+### Phase 1 (MVP)
+1. LinkedIn OAuth integration. - [DONE]
+2. AI prompt-to-draft service and UI. - [DONE]
+3. Rich-text editor with media attachments. - [PARTIALLY DONE] (Basic editor; media handling for posts unclear)
+4. Scheduling UI and visual queue. - [MOSTLY DONE] (Scheduling UI & basic queue view done; full queue management UI pending)
+5. Publishing worker and notification service. - [PARTIALLY DONE] (Worker for text done; notifications for cron events pending)
+6. Basic error logging and retry logic. - [PARTIALLY DONE] (DB logging done; explicit API call retry logic not evident)
+
+### Phase 2 (Post-MVP)
+1. Analytics dashboard (impressions, engagement metrics).  
+2. Hashtag & keyword suggestions.  
+3. Template gallery and brand voice presets.  
+4. Multi-account & team collaboration features.  
+5. A/B headline testing and performance experiments.
+
+## 6. Logical Dependency Chain
+1. Core authentication and user model.  
+2. AI generation API and prompt UI.  
+3. Editor component and media upload service.  
+4. Scheduling data model and cron setup.  
+5. Publish worker and notification pipeline.  
+6. Analytics ingestion and dashboard.
+
+## 7. Risks & Mitigations
+| Risk                            | Mitigation                                          |
+|---------------------------------|-----------------------------------------------------|
+| LinkedIn API rate limits        | Queue with backoff, token caching, and quota alerts.|
+| AI output quality               | Allow user edits; gather feedback for prompt tuning.|
+| Job scheduling reliability      | Pre-warm functions; robust retry/backoff strategy.  |
+| Data privacy and compliance     | Encrypt sensitive data; adhere to LinkedIn policies.|
+| Scalability under load          | Horizontal scaling on Vercel; Supabase auto-scaling.|
+
+## 8. Appendix
+- Research: LinkedIn API documentation, OpenAI best-practices.  
+- Technical specs: Prisma schema definitions, API endpoint contracts.
+
+---
+**Owner:** _Eliott_  
+**Last updated:** 30 May 2025
