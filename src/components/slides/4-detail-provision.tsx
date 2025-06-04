@@ -15,14 +15,14 @@ import { PieChart } from 'recharts'
 interface AllocationData {
 	name: string
 	value: number
-	key: string
+	color: string
 }
 
-// Strategy color mapping
+// Strategy color mapping with proper color values
 const strategyColors = {
-	'Cash': 'primary',
-	'Obligations': 'secondary', 
-	'Monétaire': 'accent'
+	'Cash': '#3b82f6',        // Blue
+	'Obligations': '#10b981', // Green  
+	'Monétaire': '#f59e0b'    // Amber
 } as const
 
 export default function DetailProvision() {
@@ -57,23 +57,23 @@ export default function DetailProvision() {
 		return {
 			name: fund.strategy,
 			value: numericValue,
-			key: strategyColors[fund.strategy as keyof typeof strategyColors] || 'primary'
+			color: strategyColors[fund.strategy as keyof typeof strategyColors] || '#6b7280'
 		}
 	})
 
 	// Chart configuration
 	const allocationConfig = {
-		primary: {
+		Cash: {
 			label: 'Cash',
-			color: 'hsl(var(--primary))'
+			color: '#3b82f6'
 		},
-		secondary: {
+		Obligations: {
 			label: 'Obligations', 
-			color: 'hsl(var(--secondary))'
+			color: '#10b981'
 		},
-		accent: {
+		Monétaire: {
 			label: 'Monétaire',
-			color: 'hsl(var(--accent))'
+			color: '#f59e0b'
 		}
 	}
 
@@ -113,12 +113,12 @@ export default function DetailProvision() {
 					<Corner position='top-right' offset='1rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
 					<Corner position='bottom-left' offset='1rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
 					<Corner position='bottom-right' offset='1rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
-					<div className='h-full flex flex-col' style={{ margin: 'calc(1rem + 2.5rem)', marginTop: '1rem', marginBottom: '1rem' }}>
+					<div className='h-full flex flex-col overflow-visible' style={{ margin: 'calc(1rem + 2.5rem)', marginTop: '1rem', marginBottom: '1rem' }}>
 						<h3 className='text-2xl text-center py-8 px-16 mt-4'>Allocation stratégique à date</h3>
 						{!isLoading && allocationData.length > 0 && (
-						<div className='w-full flex-1 flex items-center justify-center mb-16'>	
-							<ChartContainer id='allocation' config={allocationConfig} className='w-full h-full'>
-								<PieChart>
+						<div className='w-full flex-1 flex items-center justify-center mb-16 overflow-visible'>	
+							<ChartContainer id='allocation' config={allocationConfig} className='w-full h-full overflow-visible'>
+								<PieChart width={400} height={400}>
 									<ChartTooltip content={<ChartTooltipContent />} />
 									<Pie 
 										data={allocationData}
@@ -126,19 +126,20 @@ export default function DetailProvision() {
 										nameKey='name'
 										cx='50%' 
 										cy='50%' 
-										outerRadius='70%'
+										outerRadius='60%'
 										label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(1)}%`}
-										className='text-base'
+										className='text-base font-medium'
 										labelLine={false}
+										style={{ overflow: 'visible' }}
 									>
 										<ChartLegend 
-											content={<ChartLegendContent className='flex-col items-start justify-start' />} 
+											content={<ChartLegendContent className='flex-col items-start justify-start'/>} 
 											layout='vertical'
 											align='right'
 											verticalAlign='middle'
 										/>
-										{allocationData.map((entry: AllocationData) => (
-											<Cell key={entry.key} fill={`var(--color-${entry.key})`} />
+										{allocationData.map((entry: AllocationData, index: number) => (
+											<Cell key={`cell-${index}`} fill={entry.color} />
 										))}
 									</Pie>
 								</PieChart>
