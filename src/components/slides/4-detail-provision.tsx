@@ -116,7 +116,7 @@ export default function DetailProvision() {
 					<div className='h-full flex flex-col overflow-visible' style={{ margin: 'calc(1rem + 2.5rem)', marginTop: '1rem', marginBottom: '1rem' }}>
 						<h3 className='text-2xl text-center py-8 px-16 mt-4'>Allocation stratégique à date</h3>
 						{!isLoading && allocationData.length > 0 && (
-						<div className='w-full flex-1 flex items-center justify-center mb-16 overflow-visible'>	
+						<div className='w-full flex-1 flex items-center justify-center mb-16'>	
 							<ChartContainer id='allocation' config={allocationConfig} className='w-full h-full overflow-visible'>
 								<PieChart width={400} height={400}>
 									<ChartTooltip content={<ChartTooltipContent />} />
@@ -127,17 +127,11 @@ export default function DetailProvision() {
 										cx='50%' 
 										cy='50%' 
 										outerRadius='60%'
-										label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(1)}%`}
+										label={({ name, percent }: { name: string; percent: number }) => `${name}\n${(percent * 100).toFixed(1)}%`}
 										className='text-base font-medium'
 										labelLine={false}
 										style={{ overflow: 'visible' }}
 									>
-										<ChartLegend 
-											content={<ChartLegendContent className='flex-col items-start justify-start'/>} 
-											layout='vertical'
-											align='right'
-											verticalAlign='middle'
-										/>
 										{allocationData.map((entry: AllocationData, index: number) => (
 											<Cell key={`cell-${index}`} fill={entry.color} />
 										))}
