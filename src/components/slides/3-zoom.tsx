@@ -4,8 +4,8 @@ import PocheCard from '@/components/slides/blocks/poche-card'
 
 export default function Zoom() {
 	return (
-		<div className='w-full h-full px-16 py-16'>
-			<div className='text-justify mb-16'>
+		<div className='w-screen h-screen overflow-hidden flex flex-col px-16 py-16'>
+			<div className='text-justify mb-8 flex-shrink-0'>
 				<h1 className='text-5xl font-bold mb-6'>
 					Zoom sur vos&nbsp;
 					<span className='text-current bg-primary'>différentes poches </span>
@@ -14,7 +14,7 @@ export default function Zoom() {
 					Performance depuis l'ouverture du contrat, à date du 04.02.2025
 				</p>
 			</div>
-			<div className='grid grid-cols-1 xl:grid-cols-3 gap-8'>
+			<div className='flex-1 grid grid-cols-1 xl:grid-cols-3 gap-8 min-h-0'>
 				<PocheCard
 					chartData={[
 						{ name: 'Provision', value: 200000, key: 'provision', color: 'var(--color-blue-atlante-sapians-500)' },

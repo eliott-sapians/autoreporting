@@ -40,37 +40,46 @@ export default function PocheCard({
 	performanceTextClass,
 	performanceBgClass,
 	mainTextColorClass = '',
-    cornerColor,
+	cornerColor,
 }: PocheCardProps) {
 	return (
-		<div>
-			<div className='grid grid-cols-4'>
-				<div className={`col-span-3 grid grid-cols-4 grid-rows-4 ${mainBgClass} ${mainTextColorClass}`}>
-					<div className='col-span-4 row-span-2 flex items-center pl-4'>
-						<p className='text-lg font-bold'>{name}</p>
+		<div className='h-full flex flex-col'>
+			<div className='flex-shrink-0'>
+				<div className='grid grid-cols-4'>
+					<div className={`col-span-3 grid grid-cols-4 grid-rows-4 ${mainBgClass} ${mainTextColorClass}`}>
+						<div className='col-span-4 row-span-2 flex items-center pl-4'>
+							<p className='text-lg font-bold'>{name}</p>
+						</div>
+						<div className={`col-span-3 row-span-2 grid grid-cols-2 ${amountBgClass} flex items-center pl-4`}>
+							<p>{amount}</p>
+							{amountRatio && <p className='flex justify-end pr-4'>{amountRatio}</p>}
+						</div>
 					</div>
-					<div className={`col-span-3 row-span-2 grid grid-cols-2 ${amountBgClass} flex items-center pl-4`}>
-						<p>{amount}</p>
-						{amountRatio && <p className='flex justify-end pr-4'>{amountRatio}</p>}
-					</div>
-				</div>
-				<div className='col-span-1 grid grid-rows-4'>
-					<div className={`row-span-1 flex items-center justify-center ${performanceTextClass}`}>
-						<p className='text-sm'>{performanceLabel}</p>
-					</div>
-					<div className={`row-span-3 flex items-center justify-center ${performanceBgClass}`}>
-						<p className='text-lg'>{performanceValue}</p>
+					<div className='col-span-1 grid grid-rows-4'>
+						<div className={`row-span-1 flex items-center justify-center ${performanceTextClass}`}>
+							<p className='text-sm'>{performanceLabel}</p>
+						</div>
+						<div className={`row-span-3 flex items-center justify-center ${performanceBgClass}`}>
+							<p className='text-lg'>{performanceValue}</p>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div className='mt-16'>
-				<h3 className={`text-xl text-center mb-4`}>Composition de la poche</h3>
-                <CompositionPieChart chartConfig={chartConfig} chartData={chartData} />
+			
+			<div className='flex-1 flex flex-col justify-between min-h-0'>
+				<div className='flex-shrink-0 mt-8'>
+					<h3 className='text-xl text-center mb-4'>Composition de la poche</h3>
+				</div>
+				
+				<div className='flex-1 flex items-center justify-center min-h-0'>
+					<CompositionPieChart chartConfig={chartConfig} chartData={chartData} />
+				</div>
+				
+				<div className='relative flex-shrink-0 h-8'>
+					<Corner position='bottom-left' offset='0.5rem' length='1.5rem' thickness='0.5rem' color={cornerColor}/>
+					<Corner position='bottom-right' offset='0.5rem' length='1.5rem' thickness='0.5rem' color={cornerColor}/>
+				</div>
 			</div>
-            <div className='relative mt-24'>
-                <Corner position='bottom-left' offset='0.5rem' length='1.5rem' thickness='0.5rem' color={cornerColor}/>
-                <Corner position='bottom-right' offset='0.5rem' length='1.5rem' thickness='0.5rem' color={cornerColor}/>
-            </div>
 		</div>
 	)
 }

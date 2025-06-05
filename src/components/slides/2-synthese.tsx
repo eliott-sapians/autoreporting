@@ -38,8 +38,8 @@ export default function Synthese() {
 		return value.toLocaleString() + ' €'
 	}
 	return (
-        <div className='w-full px-16 py-16'>
-            <div className='text-justify mb-16'>
+        <div className='w-screen h-screen overflow-hidden flex flex-col px-16 py-16'>
+            <div className='text-justify mb-8 flex-shrink-0'>
                 <h1 className='text-5xl font-bold mb-8'>
                     Synthèse de votre contrat&nbsp;
                         <span className='text-current bg-primary'>d'assurance vie luxembourgeoise </span>
@@ -50,17 +50,18 @@ export default function Synthese() {
                 </h2>
                 <p className='italic text-muted-foreground'>Données du 04.02.2025</p>
             </div>
-            <div className='grid grid-cols-1 xl:grid-cols-2 gap-8 h-full'>
+            <div className='flex-1 grid grid-cols-1 xl:grid-cols-2 gap-8 min-h-0'>
                 {/* First chart block: Répartition par poche */}
-                <div className='relative'>
+                <div className='relative h-full flex flex-col'>
                     <Corner position='top-left' offset='0.5rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
                     <Corner position='top-right' offset='0.5rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
                     <Corner position='bottom-left' offset='0.5rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
                     <Corner position='bottom-right' offset='0.5rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
                     {/* Content wrapper with padding */}
-                    <div className='relative p-10'>
-                        <h2 className='text-3xl text-center mb-4'>Répartition par poche</h2>
-                            <ChartContainer id='repartition' config={repartitionConfig} className='w-full'>
+                    <div className='relative p-10 h-full flex flex-col'>
+                        <h2 className='text-3xl text-center mb-4 flex-shrink-0'>Répartition par poche</h2>
+                        <div className='flex-1 flex items-center justify-center min-h-0'>
+                            <ChartContainer id='repartition' config={repartitionConfig} className='w-full h-full'>
                                 <BarChart
                                     data={repartitionData}
                                     layout='horizontal'
@@ -114,43 +115,46 @@ export default function Synthese() {
                                 </Bar>
                             </BarChart>
                             </ChartContainer>
+                        </div>
                     </div>
                 </div>
                 {/* Second chart block: Allocation stratégique */}
-                <div className='relative'>
+                <div className='relative h-full flex flex-col'>
                     <Corner position='top-left' offset='0.5rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
                     <Corner position='top-right' offset='0.5rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
                     <Corner position='bottom-left' offset='0.5rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
                     <Corner position='bottom-right' offset='0.5rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
                     {/* Content wrapper with padding */}
-                    <div className='relative p-10'>
-                        <h3 className='text-3xl text-center mb-4'>Allocation stratégique à date</h3>
-                        <ChartContainer id='allocation' config={allocationConfig} className='w-full h-full'>
-                            <PieChart>
-                                <ChartTooltip content={<ChartTooltipContent />} />
-                                <Pie 
-                                    data={allocationData}
-                                    dataKey='value'
-                                    nameKey='name'
-                                    cx='50%' 
-                                    cy='50%' 
-                                    outerRadius={160} 
-                                    label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(1)}%`}
-                                    className='text-base'
-                                    labelLine={false}
-                                >
-                                    <ChartLegend 
-                                        content={<ChartLegendContent className='flex-col items-start justify-start' />} 
-                                        layout='vertical'
-                                        align='right'
-                                        verticalAlign='middle'
-                                    />
-                                    {allocationData.map((entry) => (
-                                        <Cell key={entry.key} fill={`var(--color-${entry.key})`} />
-                                    ))}
-                                </Pie>
-                            </PieChart>
-                        </ChartContainer>
+                    <div className='relative p-10 h-full flex flex-col'>
+                        <h3 className='text-3xl text-center mb-4 flex-shrink-0'>Allocation stratégique à date</h3>
+                        <div className='flex-1 flex items-center justify-center min-h-0'>
+                            <ChartContainer id='allocation' config={allocationConfig} className='w-full h-full'>
+                                <PieChart>
+                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <Pie 
+                                        data={allocationData}
+                                        dataKey='value'
+                                        nameKey='name'
+                                        cx='50%' 
+                                        cy='50%' 
+                                        outerRadius={160} 
+                                        label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(1)}%`}
+                                        className='text-base'
+                                        labelLine={false}
+                                    >
+                                        <ChartLegend 
+                                            content={<ChartLegendContent className='flex-col items-start justify-start' />} 
+                                            layout='vertical'
+                                            align='right'
+                                            verticalAlign='middle'
+                                        />
+                                        {allocationData.map((entry) => (
+                                            <Cell key={entry.key} fill={`var(--color-${entry.key})`} />
+                                        ))}
+                                    </Pie>
+                                </PieChart>
+                            </ChartContainer>
+                        </div>
                     </div>
                 </div>
             </div>
