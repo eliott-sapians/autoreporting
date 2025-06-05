@@ -12,9 +12,11 @@ CREATE TABLE "ingestion_log" (
 --> statement-breakpoint
 CREATE TABLE "portfolio" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"business_portfolio_id" text NOT NULL,
 	"name" text,
 	"client_email" text NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now(),
+	CONSTRAINT "portfolio_business_portfolio_id_unique" UNIQUE("business_portfolio_id"),
 	CONSTRAINT "portfolio_client_email_unique" UNIQUE("client_email")
 );
 --> statement-breakpoint

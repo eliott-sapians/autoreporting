@@ -5,9 +5,13 @@
  * Entry point for `npm run ingest` command
  */
 
+import { config } from 'dotenv'
 import { createInterface } from 'readline'
 import { ingestExcelFiles } from '../src/lib/ingestion/ingestion-service'
 import type { IngestionOptions, IngestionResult } from '../src/lib/ingestion/types'
+
+// Load environment variables first
+config({ path: '.env.local' })
 
 // ANSI color codes for console output
 const colors = {

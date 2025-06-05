@@ -1,5 +1,5 @@
 {
-  "id": "30ee2f4c-c0b1-481a-82c1-f79deb8037e7",
+  "id": "4eb6c333-f697-46cb-a095-86cff83ffb19",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -98,6 +98,12 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
+        "business_portfolio_id": {
+          "name": "business_portfolio_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "name": {
           "name": "name",
           "type": "text",
@@ -122,6 +128,13 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
+        "portfolio_business_portfolio_id_unique": {
+          "name": "portfolio_business_portfolio_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "business_portfolio_id"
+          ]
+        },
         "portfolio_client_email_unique": {
           "name": "portfolio_client_email_unique",
           "nullsNotDistinct": false,

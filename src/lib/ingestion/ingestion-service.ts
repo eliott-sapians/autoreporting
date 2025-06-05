@@ -237,8 +237,8 @@ async function determineFilesToProcess(options: IngestionOptions): Promise<strin
 		if (await fileExists(absolutePath)) {
 			return [absolutePath]
 		} else {
-			// Try relative to data/excel directory
-			const relativePath = path.join(EXCEL_DIRECTORIES.ROOT, options.filePath)
+			// Try relative to data/excel/incoming directory
+			const relativePath = path.join(EXCEL_DIRECTORIES.INCOMING, options.filePath)
 			if (await fileExists(relativePath)) {
 				return [relativePath]
 			}
@@ -247,9 +247,9 @@ async function determineFilesToProcess(options: IngestionOptions): Promise<strin
 		throw new Error(`Specified file not found: ${options.filePath}`)
 	}
 
-	// Process all files in data/excel directory
-	console.log(`[INGESTION] Scanning for Excel files in ${EXCEL_DIRECTORIES.ROOT}`)
-	const scanResult = await scanForExcelFiles()
+	// Process all files in data/excel/incoming directory
+	console.log(`[INGESTION] Scanning for Excel files in ${EXCEL_DIRECTORIES.INCOMING}`)
+	const scanResult = await scanForExcelFiles(EXCEL_DIRECTORIES.INCOMING)
 	
 	if (scanResult.errors.length > 0) {
 		console.warn(`[INGESTION] File scanning warnings:`, scanResult.errors)
