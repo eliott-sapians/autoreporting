@@ -260,14 +260,15 @@ async function determineFilesToProcess(options: IngestionOptions): Promise<strin
 
 /**
  * Transform parsed Excel data to database insertion format
+ * Note: portfolio_id will be replaced with UUID in replacePortfolioData
  */
 function transformParsedData(
-	portfolioId: string,
+	businessPortfolioId: string,
 	extractDate: Date,
 	records: ParsedRowData[]
 ): PortfolioDataInsert[] {
 	return records.map(record => ({
-		portfolio_id: portfolioId,
+		portfolio_id: businessPortfolioId, // This will be replaced with UUID in replacePortfolioData
 		extract_date: extractDate,
 		balance: record.balance,
 		label: record.label,

@@ -4,6 +4,7 @@ import { sql } from 'drizzle-orm'
 // Portfolio table for client metadata
 export const portfolio = pgTable('portfolio', {
 	id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+	business_portfolio_id: text('business_portfolio_id').unique().notNull(), // Business ID from Excel (e.g., "K00149JV/KLX")
 	name: text('name'),
 	client_email: text('client_email').unique().notNull(),
 	created_at: timestamp('created_at', { withTimezone: true }).defaultNow()

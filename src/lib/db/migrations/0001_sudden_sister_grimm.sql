@@ -1,0 +1,2 @@
+ALTER TABLE "portfolio" ADD COLUMN "business_portfolio_id" text NOT NULL;--> statement-breakpoint
+ALTER TABLE "portfolio" ADD CONSTRAINT "portfolio_business_portfolio_id_unique" UNIQUE("business_portfolio_id");

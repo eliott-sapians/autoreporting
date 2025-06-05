@@ -14,52 +14,57 @@ import type { DatabaseOperationResult, PortfolioDataInsert } from './types'
  * Ensures portfolio exists before inserting data
  */
 export async function createOrUpdatePortfolio(
-	portfolioId: string,
+	businessPortfolioId: string,
 	portfolioName?: string
-): Promise<DatabaseOperationResult> {
+): Promise<DatabaseOperationResult & { portfolioUuid?: string }> {
 	try {
-		// Check if portfolio exists
+		// Check if portfolio exists by business ID
 		const existingPortfolio = await db
 			.select()
 			.from(portfolio)
-			.where(eq(portfolio.id, portfolioId))
+			.where(eq(portfolio.business_portfolio_id, businessPortfolioId))
 			.limit(1)
 
 		if (existingPortfolio.length === 0) {
 			// Create new portfolio
 			const newPortfolio: NewPortfolio = {
-				id: portfolioId,
-				name: portfolioName || `Portfolio ${portfolioId}`,
-				client_email: `client-${portfolioId}@example.com` // Placeholder email
+				business_portfolio_id: businessPortfolioId,
+				name: portfolioName || `Portfolio ${businessPortfolioId}`,
+				client_email: `client-${businessPortfolioId.replace(/[^a-zA-Z0-9]/g, '-')}@example.com` // Placeholder email
 			}
 
-			await db.insert(portfolio).values(newPortfolio)
+			const result = await db.insert(portfolio).values(newPortfolio).returning({ id: portfolio.id })
+			const portfolioUuid = result[0].id
 			
-			console.log(`[DB] Created new portfolio: ${portfolioId}`)
+			console.log(`[DB] Created new portfolio: ${businessPortfolioId} (UUID: ${portfolioUuid})`)
 			return {
 				success: true,
 				rowsAffected: 1,
-				errors: []
+				errors: [],
+				portfolioUuid
 			}
 		} else {
 			// Portfolio exists, optionally update name
+			const portfolioUuid = existingPortfolio[0].id
+			
 			if (portfolioName && existingPortfolio[0].name !== portfolioName) {
 				await db
 					.update(portfolio)
 					.set({ name: portfolioName })
-					.where(eq(portfolio.id, portfolioId))
+					.where(eq(portfolio.id, portfolioUuid))
 				
-				console.log(`[DB] Updated portfolio name for: ${portfolioId}`)
+				console.log(`[DB] Updated portfolio name for: ${businessPortfolioId}`)
 			}
 			
 			return {
 				success: true,
 				rowsAffected: 0, // No new rows created
-				errors: []
+				errors: [],
+				portfolioUuid
 			}
 		}
 	} catch (error) {
-		console.error(`[DB] Error creating/updating portfolio ${portfolioId}:`, error)
+		console.error(`[DB] Error creating/updating portfolio ${businessPortfolioId}:`, error)
 		return {
 			success: false,
 			rowsAffected: 0,
@@ -73,7 +78,7 @@ export async function createOrUpdatePortfolio(
  * Part of the delete-and-replace strategy
  */
 export async function deletePortfolioData(
-	portfolioId: string,
+	portfolioUuid: string,
 	extractDate: Date
 ): Promise<DatabaseOperationResult> {
 	try {
@@ -81,13 +86,13 @@ export async function deletePortfolioData(
 			.delete(portfolioData)
 			.where(
 				and(
-					eq(portfolioData.portfolio_id, portfolioId),
+					eq(portfolioData.portfolio_id, portfolioUuid),
 					eq(portfolioData.extract_date, extractDate.toISOString().split('T')[0])
 				)
 			)
 
 		const rowsDeleted = result.length || 0
-		console.log(`[DB] Deleted ${rowsDeleted} existing rows for portfolio ${portfolioId} on ${extractDate.toDateString()}`)
+		console.log(`[DB] Deleted ${rowsDeleted} existing rows for portfolio UUID ${portfolioUuid} on ${extractDate.toDateString()}`)
 		
 		return {
 			success: true,
@@ -162,31 +167,39 @@ export async function insertPortfolioData(
  * Perform complete delete-and-replace operation within a transaction
  */
 export async function replacePortfolioData(
-	portfolioId: string,
+	businessPortfolioId: string,
 	extractDate: Date,
 	newData: PortfolioDataInsert[]
 ): Promise<DatabaseOperationResult> {
 	try {
 		return await db.transaction(async () => {
-			// Step 1: Ensure portfolio exists
-			const portfolioResult = await createOrUpdatePortfolio(portfolioId)
-			if (!portfolioResult.success) {
+			// Step 1: Ensure portfolio exists and get UUID
+			const portfolioResult = await createOrUpdatePortfolio(businessPortfolioId)
+			if (!portfolioResult.success || !portfolioResult.portfolioUuid) {
 				throw new Error(`Portfolio creation failed: ${portfolioResult.errors.join(', ')}`)
 			}
 
-			// Step 2: Delete existing data
-			const deleteResult = await deletePortfolioData(portfolioId, extractDate)
+			const portfolioUuid = portfolioResult.portfolioUuid
+
+			// Step 2: Update newData to use the UUID instead of business ID
+			const dataWithUuid = newData.map(row => ({
+				...row,
+				portfolio_id: portfolioUuid
+			}))
+
+			// Step 3: Delete existing data
+			const deleteResult = await deletePortfolioData(portfolioUuid, extractDate)
 			if (!deleteResult.success) {
 				throw new Error(`Data deletion failed: ${deleteResult.errors.join(', ')}`)
 			}
 
-			// Step 3: Insert new data
-			const insertResult = await insertPortfolioData(newData)
+			// Step 4: Insert new data
+			const insertResult = await insertPortfolioData(dataWithUuid)
 			if (!insertResult.success) {
 				throw new Error(`Data insertion failed: ${insertResult.errors.join(', ')}`)
 			}
 
-			console.log(`[DB] Transaction completed successfully for portfolio ${portfolioId}`)
+			console.log(`[DB] Transaction completed successfully for business portfolio ${businessPortfolioId} (UUID: ${portfolioUuid})`)
 			
 			return {
 				success: true,
@@ -195,7 +208,7 @@ export async function replacePortfolioData(
 			}
 		})
 	} catch (error) {
-		console.error(`[DB] Transaction failed for portfolio ${portfolioId}:`, error)
+		console.error(`[DB] Transaction failed for business portfolio ${businessPortfolioId}:`, error)
 		return {
 			success: false,
 			rowsAffected: 0,
@@ -208,7 +221,7 @@ export async function replacePortfolioData(
  * Create ingestion log entry for audit trail
  */
 export async function createIngestionLog(
-	portfolioId: string,
+	businessPortfolioId: string,
 	fileName: string,
 	extractDate: Date,
 	rowsProcessed: number,
@@ -216,8 +229,25 @@ export async function createIngestionLog(
 	errorMessage?: string
 ): Promise<DatabaseOperationResult> {
 	try {
+		// Get the UUID for the business portfolio ID
+		const existingPortfolio = await db
+			.select({ id: portfolio.id })
+			.from(portfolio)
+			.where(eq(portfolio.business_portfolio_id, businessPortfolioId))
+			.limit(1)
+
+		if (existingPortfolio.length === 0) {
+			return {
+				success: false,
+				rowsAffected: 0,
+				errors: [`Portfolio not found for business ID: ${businessPortfolioId}`]
+			}
+		}
+
+		const portfolioUuid = existingPortfolio[0].id
+
 		const logEntry: NewIngestionLog = {
-			portfolio_id: portfolioId,
+			portfolio_id: portfolioUuid,
 			file_name: fileName,
 			extract_date: extractDate.toISOString().split('T')[0],
 			rows_processed: rowsProcessed,
