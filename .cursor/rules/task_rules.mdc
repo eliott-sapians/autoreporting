@@ -1,0 +1,198 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+description: task management
+globs: true
+alwaysApply: true
+---
+# Linear-Integrated Task Management System
+
+**MANDATORY**: AI must ALWAYS check and manage tasks in Linear workspace before starting any work.
+
+## Required Linear Structure
+
+### 1. Linear Workspace Organization
+All projects must maintain this structure in Linear:
+
+```
+Linear Workspace (lkdin-saas team)
+├── Projects/               # Linear projects for major features
+│   ├── Project A          # Individual Linear project
+│   │   ├── Issues (LKDN-X) # Detailed task specifications
+│   │   ├── Milestones     # Project milestones and deadlines
+│   │   └── Dependencies   # Cross-project dependencies
+│   └── Project B          # Another Linear project
+├── Backlog                # Unassigned issues
+└── Cross-Project Issues   # Issues affecting multiple projects
+```
+
+### 2. Core Linear Components
+
+#### **Linear Projects** (Required)
+Project-level organization containing:
+- Multiple related issues (tasks)
+- Project description with overview and objectives
+- Cross-project dependencies documentation
+- Milestone tracking and deadlines
+
+#### **Linear Issues** (Required for each task)
+Individual task specifications containing:
+- Detailed requirements and checklists
+- Technical implementation details
+- Files to create/modify
+- Definition of done
+- Dependencies and blockers
+- Status tracking (Backlog/Todo/In Progress/In Review/Done)
+
+#### **Current Focus Tracking** (Required)
+Determined by:
+- Issues marked as "In Progress" status
+- Highest priority unblocked issues
+- Project priorities and dependencies
+- AI assignment and context
+
+## AI Workflow Requirements
+
+### BEFORE Starting Any Work
+1. **ALWAYS check** Linear workspace for current focus using `mcp_Linear_list_my_issues`
+2. **ALWAYS read** the corresponding Linear issue details using `mcp_Linear_get_issue`
+3. **ALWAYS verify** dependencies are met by checking linked issues
+4. **ALWAYS update** issue status to "In Progress" using `mcp_Linear_update_issue`
+
+### DURING Work
+1. **Regularly add** progress comments using `mcp_Linear_create_comment`
+2. **Update issue descriptions** to mark completed subtasks with `[x]`
+3. **Add discovered subtasks** to issue description or create new linked issues
+4. **Document file changes** in progress comments with actual file paths
+5. **Update blockers** immediately in issue comments or description
+
+### AFTER Completing Work
+1. **Mark issue as completed** using `mcp_Linear_update_issue` (status: "Done")
+2. **Add final summary** comment with completed work overview
+3. **Update dependent issues** that are now unblocked
+4. **Create new issues** if additional work is discovered
+5. **Link related issues** using Linear's relationship features
+
+## Linear Integration Templates
+
+### Linear Project Template
+```markdown
+# [Project Name]
+
+## Overview
+[Comprehensive project description and objectives]
+
+## Core Objectives
+- [Primary objective 1]
+- [Primary objective 2]
+- [Primary objective 3]
+
+## Technical Foundation
+- **Framework/Technology**: [Tech stack details]
+- **Dependencies**: [Key dependencies]
+- **Integration Points**: [System integrations]
+
+## Success Criteria
+- [Measurable success criteria]
+- [User experience goals]
+- [Technical achievement targets]
+```
+
+### Linear Issue Template (Use task_template.md)
+Reference the updated `task_template.md` file for detailed Linear issue structure. Key elements:
+- Comprehensive requirements checklists
+- Technical implementation details
+- Files to create/modify sections
+- Definition of done criteria
+- Cross-project considerations
+- Progress tracking instructions
+
+## AI Behavior Rules
+
+### Task Discovery
+When AI encounters work without existing Linear issues:
+1. **IMMEDIATELY check** Linear workspace using `mcp_Linear_list_issues`
+2. **Create missing project** using `mcp_Linear_create_project` if needed
+3. **Generate structured issues** using `mcp_Linear_create_issue` with detailed descriptions
+4. **Set current focus** by updating issue status to "In Progress"
+
+### Task Prioritization
+AI must prioritize based on:
+1. **Dependencies** - Never work on blocked issues (check issue relationships)
+2. **Priority level** - Urgent > High > Medium > Low > No Priority
+3. **Current focus** - Issues marked as "In Progress"
+4. **Logical sequence** - Follow issue dependency chains
+
+### Task Updates
+AI must update Linear issues when:
+- Starting work on an issue (status update)
+- Completing any subtask/requirement (comment + description update)
+- Discovering new requirements (comment or new linked issue)
+- Encountering blockers (comment with blocker details)
+- Finishing an issue completely (status update to "Done")
+
+### Cross-Issue Coordination
+When work affects multiple issues:
+1. **Update all related** issues with comments or status changes
+2. **Check dependencies** and update newly unblocked issues
+3. **Create issue relationships** using Linear's linking features
+4. **Prioritize newly unblocked** issues appropriately
+
+## Error Prevention
+
+### Common Mistakes to Avoid
+- Starting work without checking Linear workspace
+- Working on blocked issues (dependencies not met)
+- Not updating progress through comments/status
+- Forgetting to update issue status after completion
+- Creating duplicate or conflicting issues
+
+### Validation Checks
+Before any significant work, AI must verify:
+- [ ] Linear workspace access and current issues checked
+- [ ] Current issue is not blocked by dependencies
+- [ ] All required Linear API permissions are available
+- [ ] Issue requirements and next steps are clearly defined
+
+## Integration with Development
+
+### Issue References in Code
+Always reference Linear issues in:
+- Git commit messages: `feat: implement calendar page (LKDN-11)`
+- Code comments: `// Related to LKDN-11: Calendar page structure`
+- Pull request descriptions: `Closes LKDN-11`
+
+### Code Implementation
+When implementing features:
+1. **Reference issue requirements** for specification
+2. **Update issue checklists** through description updates
+3. **Document deviations** in issue comments
+4. **Track file changes** in progress comments with actual paths
+
+### Testing Integration
+Include in issue descriptions:
+- Required test types and coverage
+- Test file locations and naming
+- Acceptance criteria and definition of done
+- Cross-project testing considerations
+
+### Linear API Integration Points
+Required API calls for proper task management:
+- `mcp_Linear_list_my_issues` - Check current focus
+- `mcp_Linear_get_issue` - Read issue details
+- `mcp_Linear_update_issue` - Update status/priority
+- `mcp_Linear_create_comment` - Track progress
+- `mcp_Linear_create_issue` - Generate new tasks
+
+---
+
+
+**This rule is MANDATORY and applies to ALL development work. AI must not proceed without proper Linear-based task management in place.**
