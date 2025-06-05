@@ -63,8 +63,19 @@ export async function moveProcessedFile(
 		
 		const newPath = path.join(destinationDir, newFileName)
 		
-		// Move file
-		await fs.rename(originalPath, newPath)
+		// Move file with EXDEV error handling
+		try {
+			await fs.rename(originalPath, newPath)
+		} catch (error: any) {
+			if (error.code === 'EXDEV') {
+				// Cross-device move: copy then delete
+				console.log(`[FILE] Cross-device move detected, using copy+delete fallback for: ${originalPath}`)
+				await fs.copyFile(originalPath, newPath)
+				await fs.unlink(originalPath)
+			} else {
+				throw error
+			}
+		}
 		
 		console.log(`[FILE] Moved ${success ? 'successfully' : 'with errors'}: ${originalPath} → ${newPath}`)
 		

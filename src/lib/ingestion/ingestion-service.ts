@@ -239,8 +239,9 @@ async function determineFilesToProcess(options: IngestionOptions): Promise<strin
 		} else {
 			// Try relative to data/excel/incoming directory
 			const relativePath = path.join(EXCEL_DIRECTORIES.INCOMING, options.filePath)
-			if (await fileExists(relativePath)) {
-				return [relativePath]
+			const resolvedPath = path.resolve(relativePath)
+			if (await fileExists(resolvedPath)) {
+				return [resolvedPath]
 			}
 		}
 		
@@ -255,7 +256,22 @@ async function determineFilesToProcess(options: IngestionOptions): Promise<strin
 		console.warn(`[INGESTION] File scanning warnings:`, scanResult.errors)
 	}
 
-	return scanResult.files.map(f => f.filePath || f.filename).filter(Boolean) as string[]
+	// Ensure all paths are absolute and valid
+	const filePaths = scanResult.files
+		.map(f => {
+			// filePath should already be absolute from scanner, but ensure it
+			if (f.filePath) {
+				return path.resolve(f.filePath)
+			}
+			// Fallback: resolve filename relative to incoming directory
+			if (f.filename) {
+				return path.resolve(EXCEL_DIRECTORIES.INCOMING, f.filename)
+			}
+			return null
+		})
+		.filter(Boolean) as string[]
+
+	return filePaths
 }
 
 /**
