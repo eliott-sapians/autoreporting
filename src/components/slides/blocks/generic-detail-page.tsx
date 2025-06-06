@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import Footer from '@/components/ui/footer'
 import type { TotalData, FundData } from '@/lib/types'
-import { getTotalData, getFundsData } from '@/lib/data/provision-service'
 import Corner from '@/components/corners/Corner'
 import { ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { Pie, Cell, PieChart } from 'recharts'
@@ -39,27 +38,49 @@ const strategyColors = {
 	'Monétaire': '#f59e0b'
 } as const
 
+// Mock data (to be replaced by new architecture)
+const mockTotalData: TotalData = { 
+	total: '849 081 €',
+	performance: '+5.2%',
+	performanceEur: '+42 420 €'
+}
+const mockFundsData: FundData[] = [
+	{ 
+		name: 'Cash Fund',
+		strategy: 'Cash', 
+		valuation: '300,000',
+		performance: '+2.1%',
+		performanceEur: '+6 300 €'
+	},
+	{ 
+		name: 'Obligations Fund',
+		strategy: 'Obligations', 
+		valuation: '400,000',
+		performance: '+3.8%',
+		performanceEur: '+15 200 €'
+	},
+	{ 
+		name: 'Monétaire Fund',
+		strategy: 'Monétaire', 
+		valuation: '149,081',
+		performance: '+8.2%',
+		performanceEur: '+12 224 €'
+	}
+]
+
 export default function GenericDetailPage({ config }: GenericDetailPageProps) {
 	const [totalData, setTotalData] = useState<TotalData | null>(null)
 	const [fundsData, setFundsData] = useState<FundData[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
-		async function loadData() {
-			try {
-				const [total, funds] = await Promise.all([
-					getTotalData(),
-					getFundsData()
-				])
-				setTotalData(total)
-				setFundsData(funds)
-			} catch (error) {
-				console.error('Error loading data:', error)
-			} finally {
-				setIsLoading(false)
-			}
+		// Simulate data loading
+		const loadData = async () => {
+			await new Promise(resolve => setTimeout(resolve, 500))
+			setTotalData(mockTotalData)
+			setFundsData(mockFundsData)
+			setIsLoading(false)
 		}
-
 		loadData()
 	}, [])
 

@@ -15,4 +15,61 @@ export interface TotalData {
 export interface ProvisionData {
 	funds: FundData[]
 	total: TotalData
+}
+
+export interface PortfolioDataApiResponse {
+	success: boolean
+	data?: {
+		portfolio: {
+			id: string
+			business_portfolio_id: string
+			name: string
+			client_email: string
+			extractDate: string
+		}
+		funds: Array<{
+			id: string
+			balance: number | null
+			label: string | null
+			currency: string | null
+			valuation_eur: number | null
+			weight_pct: number | null
+			isin: string | null
+			book_price_eur: number | null
+			fees_eur: number | null
+			asset_name: string | null
+			strategy: string | null
+			bucket: string | null
+		}>
+		metadata: {
+			timestamp: string
+			fundCount: number
+			extractDate: string
+		}
+	}
+	error?: string
+}
+
+export interface RawPortfolioData {
+	portfolio: {
+		id: string
+		business_portfolio_id: string
+		name: string
+		client_email: string
+		extractDate: string
+	}
+	funds: Array<{
+		id: string
+		balance: number | null
+		label: string | null
+		currency: string | null
+		valuation_eur: number | null
+		weight_pct: number | null
+		isin: string | null
+		book_price_eur: number | null
+		fees_eur: number | null
+		asset_name: string | null
+		strategy: string | null
+		bucket: string | null
+	}>
 } 

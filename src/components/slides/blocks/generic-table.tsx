@@ -11,7 +11,6 @@ import {
 	TableFooter 
 } from '@/components/ui/table'
 import type { FundData, TotalData } from '@/lib/types'
-import { getProvisionData } from '@/lib/data/provision-service'
 
 interface ColumnConfig {
 	key: string
@@ -28,6 +27,16 @@ interface GenericTableProps {
 	footerNote?: string
 }
 
+// Mock data (to be replaced by new architecture)
+const mockProvisionData = {
+	funds: [
+		{ name: 'Fund A', strategy: 'Cash', valuation: '300,000 €', performance: '2.5%', performanceEur: '1,250 €' },
+		{ name: 'Fund B', strategy: 'Obligations', valuation: '400,000 €', performance: '3.2%', performanceEur: '1,680 €' },
+		{ name: 'Fund C', strategy: 'Monétaire', valuation: '149,081 €', performance: '1.8%', performanceEur: '536 €' }
+	] as FundData[],
+	total: { total: '849,081 €', performance: '2.4%', performanceEur: '3,466 €' } as TotalData
+}
+
 export default function GenericTable({ columns, footerNote }: GenericTableProps) {
 	const [fundData, setFundData] = useState<FundData[]>([])
 	const [totalData, setTotalData] = useState<TotalData | null>(null)
@@ -36,16 +45,12 @@ export default function GenericTable({ columns, footerNote }: GenericTableProps)
 	const tableContainerRef = useRef<HTMLDivElement>(null)
 
 	useEffect(() => {
-		async function loadData() {
-			try {
-				const data = await getProvisionData()
-				setFundData(data.funds)
-				setTotalData(data.total)
-			} catch (error) {
-				console.error('Error loading provision data:', error)
-			} finally {
-				setIsLoading(false)
-			}
+		// Simulate data loading
+		const loadData = async () => {
+			await new Promise(resolve => setTimeout(resolve, 500))
+			setFundData(mockProvisionData.funds)
+			setTotalData(mockProvisionData.total)
+			setIsLoading(false)
 		}
 		loadData()
 	}, [])
