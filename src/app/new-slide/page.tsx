@@ -5,12 +5,18 @@ import Garde from '@/components/slides/1-garde'
 import Synthese from '@/components/slides/2-synthese' // Assuming Synthese is the other component
 import Zoom from '@/components/slides/3-zoom'
 import DetailProvision from '@/components/slides/4-detail-provision'
+import DetailLiquid from '@/components/slides/5-detail-liquid'
+import DetailIlliquid from '@/components/slides/6-detail-illiquid'
+import Methodology from '@/components/slides/8-methodology'
 // Define the sequence of slide components
 const slideComponents = [
 	Garde,
 	Synthese,
 	Zoom,
 	DetailProvision,
+	DetailLiquid,
+	DetailIlliquid,
+	Methodology,
 	// Add more slide components here in the desired order
 ]
 
