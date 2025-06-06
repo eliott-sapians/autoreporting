@@ -10,50 +10,27 @@ import {
 	TableCell, 
 	TableFooter 
 } from '@/components/ui/table'
-import type { FundData, TotalData } from '@/lib/types'
+import type { BucketDetailData } from '@/lib/data/slide-interfaces'
 
 interface ColumnConfig {
 	key: string
 	header: string
 	align: 'left' | 'center'
-	dataKey: keyof FundData
-	formatter?: (value: string, fund: FundData) => React.ReactNode
-	footerValue?: (totalData: TotalData) => string
-	footerFormatter?: (value: string, totalData: TotalData) => React.ReactNode
+	dataKey: keyof BucketDetailData['fundsTable'][0]
+	formatter?: (value: any, fund: BucketDetailData['fundsTable'][0]) => React.ReactNode
+	footerValue?: (data: BucketDetailData) => string
+	footerFormatter?: (value: string, data: BucketDetailData) => React.ReactNode
 }
 
 interface GenericTableProps {
 	columns: ColumnConfig[]
 	footerNote?: string
+	data: BucketDetailData
 }
 
-// Mock data (to be replaced by new architecture)
-const mockProvisionData = {
-	funds: [
-		{ name: 'Fund A', strategy: 'Cash', valuation: '300,000 €', performance: '2.5%', performanceEur: '1,250 €' },
-		{ name: 'Fund B', strategy: 'Obligations', valuation: '400,000 €', performance: '3.2%', performanceEur: '1,680 €' },
-		{ name: 'Fund C', strategy: 'Monétaire', valuation: '149,081 €', performance: '1.8%', performanceEur: '536 €' }
-	] as FundData[],
-	total: { total: '849,081 €', performance: '2.4%', performanceEur: '3,466 €' } as TotalData
-}
-
-export default function GenericTable({ columns, footerNote }: GenericTableProps) {
-	const [fundData, setFundData] = useState<FundData[]>([])
-	const [totalData, setTotalData] = useState<TotalData | null>(null)
-	const [isLoading, setIsLoading] = useState(true)
+export default function GenericTable({ columns, footerNote, data }: GenericTableProps) {
 	const [tableHeight, setTableHeight] = useState<number>(0)
 	const tableContainerRef = useRef<HTMLDivElement>(null)
-
-	useEffect(() => {
-		// Simulate data loading
-		const loadData = async () => {
-			await new Promise(resolve => setTimeout(resolve, 500))
-			setFundData(mockProvisionData.funds)
-			setTotalData(mockProvisionData.total)
-			setIsLoading(false)
-		}
-		loadData()
-	}, [])
 
 	useEffect(() => {
 		const updateTableHeight = () => {
@@ -68,25 +45,7 @@ export default function GenericTable({ columns, footerNote }: GenericTableProps)
 		return () => window.removeEventListener('resize', updateTableHeight)
 	}, [])
 
-	if (isLoading) {
-		return (
-			<div ref={tableContainerRef} className="w-full h-full overflow-hidden">
-				<div className="p-6 text-center text-muted-foreground">
-					Chargement des données...
-				</div>
-			</div>
-		)
-	}
-
-	if (!totalData) {
-		return (
-			<div ref={tableContainerRef} className="w-full h-full overflow-hidden">
-				<div className="p-6 text-center text-destructive">
-					Erreur lors du chargement des données
-				</div>
-			</div>
-		)
-	}
+	const fundData = data.fundsTable
 
 	// Fixed heights
 	const headerHeight = 96 // h-24 = 6rem = 96px
@@ -109,15 +68,18 @@ export default function GenericTable({ columns, footerNote }: GenericTableProps)
 		return 'text-[var(--color-green-sapians-500)]'
 	}
 
-	const defaultFormatter = (value: string, fund: FundData, column: ColumnConfig) => {
-		if (column.dataKey === 'performance' || column.dataKey === 'performanceEur') {
+	const defaultFormatter = (value: any, fund: BucketDetailData['fundsTable'][0], column: ColumnConfig) => {
+		// Handle different data types
+		const displayValue = typeof value === 'number' ? value.toLocaleString() : String(value || '')
+		
+		if (column.dataKey === 'performancePercent' || column.dataKey === 'performanceEur') {
 			return (
-				<span className={`font-medium ${getPerformanceColor(value)}`}>
-					{value}
+				<span className={`font-medium ${getPerformanceColor(displayValue)}`}>
+					{displayValue}
 				</span>
 			)
 		}
-		return value
+		return displayValue
 	}
 
 	return (
@@ -140,7 +102,7 @@ export default function GenericTable({ columns, footerNote }: GenericTableProps)
 				<TableBody className="text-base">
 					{fundData.map((fund, index) => (
 						<TableRow 
-							key={fund.name}
+							key={fund.libelle}
 							className={`
 								transition-colors hover:bg-[var(--color-grey-sapians-300)]/50
 								${index % 2 === 0 ? 'bg-[var(--color-grey-sapians-100)]' : 'bg-[var(--color-grey-sapians-200)]'}
@@ -149,7 +111,7 @@ export default function GenericTable({ columns, footerNote }: GenericTableProps)
 							style={{ height: `${bodyRowHeight}px` }}
 						>
 							{columns.map((column, columnIndex) => {
-								const value = fund[column.dataKey] as string
+								const value = fund[column.dataKey] as any
 								const content = column.formatter 
 									? column.formatter(value, fund) 
 									: defaultFormatter(value, fund, column)
@@ -185,16 +147,16 @@ export default function GenericTable({ columns, footerNote }: GenericTableProps)
 								)
 							}
 							
-							if (column.footerValue && totalData) {
-								const value = column.footerValue(totalData)
+							if (column.footerValue) {
+								const value = column.footerValue(data)
 								const content = column.footerFormatter 
-									? column.footerFormatter(value, totalData)
+									? column.footerFormatter(value, data)
 									: value
 								
 								return (
 									<TableCell key={column.key} className="px-6 py-6 text-center">
 										<span className={`font-bold text-lg ${
-											column.dataKey === 'performance' || column.dataKey === 'performanceEur' 
+											column.dataKey === 'performancePercent' || column.dataKey === 'performanceEur' 
 												? getPerformanceColor(value)
 												: 'text-card-foreground'
 										}`}>
@@ -202,15 +164,18 @@ export default function GenericTable({ columns, footerNote }: GenericTableProps)
 										</span>
 									</TableCell>
 								)
+							} else {
+								return (
+									<TableCell key={column.key} className="px-6 py-6">
+									</TableCell>
+								)
 							}
-							
-							return <TableCell key={column.key} className="px-6 py-6"></TableCell>
 						})}
 					</TableRow>
 				</TableFooter>
 			</Table>
 			{footerNote && (
-				<p className='italic text-muted-foreground text-left text-sm mt-2'>
+				<p className="mt-2 text-xs text-muted-foreground italic">
 					{footerNote}
 				</p>
 			)}

@@ -1,89 +1,121 @@
-import type { FundData, TotalData } from '@/lib/types'
+import type { BucketDetailData } from '@/lib/data/slide-interfaces'
 
 interface ColumnConfig {
 	key: string
 	header: string
 	align: 'left' | 'center'
-	dataKey: keyof FundData
-	footerValue?: (totalData: TotalData) => string
+	dataKey: keyof BucketDetailData['fundsTable'][0]
+	footerValue?: (data: BucketDetailData) => string
 }
 
 export const liquidTableConfig: ColumnConfig[] = [
 	{
-		key: 'name',
+		key: 'libelle',
 		header: 'LIBELLÉ DU FONDS',
 		align: 'left',
-		dataKey: 'name'
+		dataKey: 'libelle'
 	},
 	{
-		key: 'strategy',
+		key: 'strategie',
 		header: 'STRATÉGIE',
 		align: 'center',
-		dataKey: 'strategy'
+		dataKey: 'strategie'
 	},
 	{
-		key: 'valuation',
+		key: 'valorisation',
 		header: 'VALORISATION',
 		align: 'center',
-		dataKey: 'valuation',
-		footerValue: (total) => total.total
+		dataKey: 'valorisation',
+		footerValue: (data) => data.bucketInfo.totalFormatted
 	},
 	{
-		key: 'performance',
+		key: 'performancePercent',
 		header: 'PERFORMANCE (%)',
 		align: 'center',
-		dataKey: 'performance',
-		footerValue: (total) => total.performance
+		dataKey: 'performancePercent',
+		footerValue: (data) => {
+			// Calculate average performance for the bucket
+			const totalPerformance = data.fundsTable.reduce((sum, fund) => {
+				const perf = parseFloat(fund.performancePercent?.replace('%', '') || '0')
+				return sum + perf
+			}, 0)
+			return `${(totalPerformance / data.fundsTable.length).toFixed(1)}%`
+		}
 	},
 	{
 		key: 'performanceEur',
 		header: 'PERFORMANCE (EUR)',
 		align: 'center',
 		dataKey: 'performanceEur',
-		footerValue: (total) => total.performanceEur
+		footerValue: (data) => {
+			// Calculate total performance EUR for the bucket
+			const totalPerformance = data.fundsTable.reduce((sum, fund) => {
+				const perfEur = parseFloat(fund.performanceEur?.replace(/[€\s,]/g, '') || '0')
+				return sum + perfEur
+			}, 0)
+			return `${totalPerformance.toLocaleString()} €`
+		}
 	}
 ]
 
 export const illiquidTableConfig: ColumnConfig[] = [
 	{
-		key: 'name',
+		key: 'libelle',
 		header: 'LIBELLÉ DU FONDS',
 		align: 'left',
-		dataKey: 'name'
+		dataKey: 'libelle'
 	},
 	{
-		key: 'strategy',
+		key: 'strategie',
 		header: 'STRATÉGIE',
 		align: 'center',
-		dataKey: 'strategy'
+		dataKey: 'strategie'
 	},
 	{
 		key: 'engagement',
 		header: 'ENGAGEMENT',
 		align: 'center',
-		dataKey: 'valuation',
-		footerValue: (total) => total.total
+		dataKey: 'engagement',
+		footerValue: (data) => {
+			// Calculate total engagement for LTI bucket
+			const totalEngagement = data.fundsTable.reduce((sum, fund) => {
+				return sum + (fund.engagement || 0)
+			}, 0)
+			return `${totalEngagement.toLocaleString()} €`
+		}
 	},
 	{
-		key: 'called',
-		header: 'APPELÉ',
+		key: 'appele',
+		header: 'APPELÉ (%)',
 		align: 'center',
-		dataKey: 'performance',
-		footerValue: (total) => total.performance
+		dataKey: 'appele',
+		footerValue: (data) => {
+			// Calculate average appelé percentage
+			const totalAppele = data.fundsTable.reduce((sum, fund) => {
+				return sum + (fund.appele || 0)
+			}, 0)
+			return `${(totalAppele / data.fundsTable.length).toFixed(1)}%`
+		}
 	},
 	{
 		key: 'tvpi',
 		header: 'TVPI',
 		align: 'center',
-		dataKey: 'performanceEur',
-		footerValue: (total) => total.performanceEur
+		dataKey: 'tvpi',
+		footerValue: (data) => {
+			// Calculate average TVPI
+			const totalTVPI = data.fundsTable.reduce((sum, fund) => {
+				return sum + (fund.tvpi || 0)
+			}, 0)
+			return `${(totalTVPI / data.fundsTable.length).toFixed(2)}`
+		}
 	},
 	{
-		key: 'valuation',
+		key: 'valorisation',
 		header: 'VALORISATION',
 		align: 'center',
-		dataKey: 'valuation',
-		footerValue: (total) => total.total
+		dataKey: 'valorisation',
+		footerValue: (data) => data.bucketInfo.totalFormatted
 	}
 ]
 

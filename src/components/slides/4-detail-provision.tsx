@@ -1,6 +1,11 @@
 import GenericDetailPage from './blocks/generic-detail-page'
 import { provisionPageConfig } from './detail-page-configs'
+import type { Slide4Data } from '@/lib/data/slide-interfaces'
 
-export default function DetailProvision() {
-	return <GenericDetailPage config={provisionPageConfig} />
+interface DetailProvisionProps {
+	data: Slide4Data | null
+}
+
+export default function DetailProvision({ data }: DetailProvisionProps) {
+	return <GenericDetailPage config={provisionPageConfig} data={data} />
 }

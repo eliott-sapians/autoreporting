@@ -4,40 +4,61 @@ import Corner from '@/components/corners/Corner'
 import Footer from '@/components/ui/footer'
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart'
 import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell, LabelList } from 'recharts'
+import type { SyntheseData } from '@/lib/data/slide-interfaces'
 
-export default function Synthese() {
+interface SyntheseProps {
+	data: SyntheseData | null
+}
+
+export default function Synthese({ data }: SyntheseProps) {
+	// Show loading state if no data
+	if (!data) {
+		return (
+			<div className='w-screen h-screen overflow-hidden flex flex-col'>
+				<div className='flex-1 flex items-center justify-center'>
+					<div className='text-xl text-muted-foreground'>Chargement des données de synthèse...</div>
+				</div>
+				<Footer />
+			</div>
+		)
+	}
+
+	// Transform bucket data for the bar chart (matching original structure)
 	const repartitionData = [
-		{ name: 'Répartition', illiquide: 404000, liquide: 500000, provision: 200000 }
+		{ 
+			name: 'Répartition', 
+			// Map bucket data to expected keys
+			provision: data.repartitionParPoche.find(item => item.name.includes('CT') || item.name.includes('provision'))?.value || 0,
+			liquide: data.repartitionParPoche.find(item => item.name.includes('LTL') || item.name.includes('liquide'))?.value || 0,
+			illiquide: data.repartitionParPoche.find(item => item.name.includes('LTI') || item.name.includes('illiquide'))?.value || 0
+		}
 	]
+
 	const repartitionConfig = {
 		illiquide: { label: 'Long-terme illiquide', color: '#F4F3EE' },
 		liquide: { label: 'Long-terme liquide', color: '#D8D8D8' },
 		provision: { label: 'Long-terme provision', color: '#A1DFF0' },
 	}
 
-	const allocationData = [
-		{ key: 'dettesPrivees', name: 'Dette privée', value: 44 },
-		{ key: 'monetaire', name: 'Monétaire', value: 22.6 },
-		{ key: 'etfActions', name: 'ETF Actions', value: 6.2 },
-		{ key: 'produitsStructures', name: 'Produits structurés', value: 7.1 },
-		{ key: 'privateEquity', name: 'Private equity', value: 3.5 },
-		{ key: 'obligations', name: 'Obligations', value: 13.0 },
-		{ key: 'cash', name: 'Cash', value: 3.4 },
-	]
-	const allocationConfig = {
-		dettesPrivees: { label: 'Dette privée', color: '#D64900' },
-		monetaire: { label: 'Monétaire', color: '#005C8A' },
-		etfActions: { label: 'ETF Actions', color: '#63B99C' },
-		produitsStructures: { label: 'Produits structurés', color: '#2F8F79' },
-		privateEquity: { label: 'Private equity', color: '#F37733' },
-		obligations: { label: 'Obligations', color: '#C896DD' },
-		cash: { label: 'Cash', color: '#BCB299' },
-	}
+	// Use the allocation data directly from props
+	const allocationData = data.allocationStrategique.map(item => ({
+		key: item.name.toLowerCase().replace(/\s+/g, ''),
+		name: item.name,
+		value: item.percentage || 0
+	}))
+
+	// Create dynamic config from the data colors
+	const allocationConfig = data.allocationStrategique.reduce((config, item) => {
+		const key = item.name.toLowerCase().replace(/\s+/g, '')
+		config[key] = { label: item.name, color: item.color }
+		return config
+	}, {} as Record<string, { label: string; color: string }>)
 
 	// Helper to format numeric values with correct typing
 	function formatNumber(value: number): string {
 		return value.toLocaleString() + ' €'
 	}
+
 	return (
         <div className='w-screen h-screen overflow-hidden flex flex-col'>
 			<div className='flex-1 flex flex-col px-16 py-16 min-h-0'>
@@ -48,7 +69,7 @@ export default function Synthese() {
 					</h1>
 					<h2 className='text-3xl font-semibold mb-4'>
 						Estimation du portefeuille :&nbsp;
-						<span className='text-current bg-primary'> 849 081 € </span>
+						<span className='text-current bg-primary'> {data.estimationFormatted} </span>
 					</h2>
 					<p className='italic text-muted-foreground'>Données du 04.02.2025</p>
 				</div>
@@ -151,7 +172,7 @@ export default function Synthese() {
 												verticalAlign='middle'
 											/>
 											{allocationData.map((entry) => (
-												<Cell key={entry.key} fill={`var(--color-${entry.key})`} />
+												<Cell key={entry.key} fill={entry.key in allocationConfig ? `var(--color-${entry.key})` : '#6b7280'} />
 											))}
 										</Pie>
 									</PieChart>

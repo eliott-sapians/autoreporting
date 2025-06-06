@@ -1,6 +1,28 @@
-import Corner from '@/components/corners/Corner' // Adjusted import path
+import Corner from '@/components/corners/Corner'
+import type { GardeData } from '@/lib/data/slide-interfaces'
 
-export default function Garde() {
+interface GardeProps {
+	data: GardeData | null
+}
+
+export default function Garde({ data }: GardeProps) {
+	// Show loading state if no data
+	if (!data) {
+		return (
+			<section className='relative min-h-screen bg-dark text-center text-foreground-dark flex flex-col items-center justify-center p-8'>
+				<div className='relative w-full max-w-6xl mx-auto'>
+					<Corner position='top-left' offset='1rem' />
+					<Corner position='top-right' offset='1rem' />
+					<Corner position='bottom-left' offset='1rem' />
+					<Corner position='bottom-right' offset='1rem' />
+					<div className='flex flex-col items-center px-16 py-16'>
+						<div className='text-xl text-muted-foreground'>Chargement...</div>
+					</div>
+				</div>
+			</section>
+		)
+	}
+
 	return (
 		<section className='relative min-h-screen bg-dark text-center text-foreground-dark flex flex-col items-center justify-center p-8'>
 			{/* Container for corners and content */}
@@ -20,14 +42,14 @@ export default function Garde() {
 					</h3>
 
 					<div className='text-left text-background text-lg space-y-1 mt-16'> {/* Details section */}
-						<p><span >Conseiller :</span></p>
-						<p><span >Teneur de compte :</span> Quintet</p>
-						<p><span >Assureur :</span> Wealins</p>
-						<p><span >Numéro de compte :</span></p>
+						<p><span>Conseiller :</span> {data.conseiller}</p>
+						<p><span>Teneur de compte :</span> {data.teneurDeCompte}</p>
+						<p><span>Assureur :</span> {data.assureur}</p>
+						<p><span>Numéro de compte :</span> {data.numeroDeCompte}</p>
 					</div>
 
 					<div className='text-primary text-4xl mt-24'>
-                        Février 2025
+						{data.dateExtraction}
 					</div>
 				</div>
 			</div>
