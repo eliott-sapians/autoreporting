@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import TableDetail from '@/components/slides/blocks/table-detail'
+import Footer from '@/components/ui/footer'
 import type { TotalData, FundData } from '@/lib/types'
 import { getTotalData, getFundsData } from '@/lib/data/provision-service'
 import Corner from '@/components/corners/Corner'
@@ -78,76 +79,78 @@ export default function DetailProvision() {
 	}
 
 	return (
-		<div className='w-full h-screen px-16 py-16 grid grid-cols-3 gap-16'>
-			<div className='col-span-2 h-full flex flex-col'>
-				<div className='text-justify mb-16'>
-					<h1 className='text-5xl font-bold mb-6'>
-						Détail de la poche&nbsp;
-						<span className='text-current bg-primary'>long-terme provision</span>
-					</h1>
-					<p className='italic text-muted-foreground'>
-						Performance depuis l'ouverture du contrat, à date du 04.02.2025
-					</p>
+		<div className='w-screen h-screen overflow-hidden flex flex-col'>
+			<div className='flex-1 px-16 py-16 grid grid-cols-3 gap-16 min-h-0'>
+				<div className='col-span-2 h-full flex flex-col min-h-0'>
+					<div className='text-justify mb-8 flex-shrink-0'>
+						<h1 className='text-5xl font-bold mb-6'>
+							Détail de la poche&nbsp;
+							<span className='text-current bg-primary'>long-terme provision</span>
+						</h1>
+						<p className='italic text-muted-foreground'>
+							Performance depuis l'ouverture du contrat, à date du 04.02.2025
+						</p>
+					</div>
+					<h3 className='text-2xl font-bold mb-8 flex-shrink-0'>
+						Synthèse des positions
+					</h3>
+					<div className='flex-1 min-h-0'>
+						<TableDetail />
+					</div>
 				</div>
-				<h3 className='text-2xl font-bold mb-8'>
-					Synthèse des positions
-				</h3>
-				<div className='flex-1'>
-					<TableDetail />
-				</div>
-			</div>
-			<div className='col-span-1 h-full flex flex-col'>
-				<div className='text-justify mb-8 bg-[var(--color-grey-sapians-100)] p-8 rounded-lg'>
-					<h2 className='text-5xl font-bold text-center text-primary-foreground'>
-						{isLoading ? (
-							<span className='text-2xl'>Chargement...</span>
-						) : totalData ? (
-							totalData.total
-						) : (
-							<span className='text-2xl text-destructive'>Erreur</span>
-						)}
-					</h2>
-				</div>
-				<div className='relative w-full flex-1'>
-					<Corner position='top-left' offset='1rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
-					<Corner position='top-right' offset='1rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
-					<Corner position='bottom-left' offset='1rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
-					<Corner position='bottom-right' offset='1rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
-					<div className='h-full flex flex-col overflow-visible' style={{ margin: 'calc(1rem + 2.5rem)', marginTop: '1rem', marginBottom: '1rem' }}>
-						<h3 className='text-2xl text-center py-8 px-16 mt-4'>Allocation stratégique à date</h3>
-						{!isLoading && allocationData.length > 0 && (
-						<div className='w-full flex-1 flex items-center justify-center mb-16'>	
-							<ChartContainer id='allocation' config={allocationConfig} className='w-full h-full overflow-visible'>
-								<PieChart width={400} height={400}>
-									<ChartTooltip content={<ChartTooltipContent />} />
-									<Pie 
-										data={allocationData}
-										dataKey='value'
-										nameKey='name'
-										cx='50%' 
-										cy='50%' 
-										outerRadius='60%'
-										label={({ name, percent }: { name: string; percent: number }) => `${name}\n${(percent * 100).toFixed(1)}%`}
-										className='text-base font-medium'
-										labelLine={false}
-										style={{ overflow: 'visible' }}
-									>
-										{allocationData.map((entry: AllocationData, index: number) => (
-											<Cell key={`cell-${index}`} fill={entry.color} />
-										))}
-									</Pie>
-								</PieChart>
-							</ChartContainer>
+				<div className='col-span-1 h-full flex flex-col min-h-0'>
+					<div className='text-justify mb-8 bg-[var(--color-grey-sapians-100)] p-8 rounded-lg flex-shrink-0'>
+						<h2 className='text-5xl font-bold text-center text-primary-foreground'>
+							{isLoading ? (
+								<span className='text-2xl'>Chargement...</span>
+							) : totalData ? (
+								totalData.total
+							) : (
+								<span className='text-2xl text-destructive'>Erreur</span>
+							)}
+						</h2>
+					</div>
+					<div className='relative w-full flex-1 min-h-0'>
+						<Corner position='top-left' offset='0rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
+						<Corner position='top-right' offset='0rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
+						<Corner position='bottom-left' offset='0rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
+						<Corner position='bottom-right' offset='0rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
+						<div className='h-full flex flex-col' style={{ marginTop: '1rem', marginBottom: '1rem', marginLeft: '0rem', marginRight: '0rem' }}>
+							<h3 className='text-2xl text-center py-8 px-4 flex-shrink-0'>Allocation stratégique à date</h3>
+							{!isLoading && allocationData.length > 0 && (
+								<div className='flex-1 flex items-center justify-center min-h-0'>	
+									<ChartContainer id='allocation' config={allocationConfig} className='w-full h-full'>
+										<PieChart width={400} height={400}>
+											<ChartTooltip content={<ChartTooltipContent />} />
+											<Pie 
+												data={allocationData}
+												dataKey='value'
+												nameKey='name'
+												cx='50%' 
+												cy='50%' 
+												outerRadius='60%'
+												label={({ name, percent }: { name: string; percent: number }) => `${name}\n${(percent * 100).toFixed(1)}%`}
+												className='text-base font-medium'
+												labelLine={false}
+											>
+												{allocationData.map((entry: AllocationData, index: number) => (
+													<Cell key={`cell-${index}`} fill={entry.color} />
+												))}
+											</Pie>
+										</PieChart>
+									</ChartContainer>
+								</div>
+							)}
+							{isLoading && (
+								<div className='flex-1 flex items-center justify-center min-h-0'>
+									<span className='text-lg text-muted-foreground'>Chargement du graphique...</span>
+								</div>
+							)}
 						</div>
-						)}
-						{isLoading && (
-							<div className='flex items-center justify-center h-64'>
-								<span className='text-lg text-muted-foreground'>Chargement du graphique...</span>
-							</div>
-						)}
 					</div>
 				</div>
 			</div>
+			<Footer />
 		</div>
 	)
 }
