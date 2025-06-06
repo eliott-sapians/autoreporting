@@ -39,30 +39,76 @@ export interface ChartDataPoint {
 }
 
 /**
- * Simple slide data interfaces (will be implemented by transformers)
- * These are placeholders for the new architecture
+ * Slide 1: Garde/Cover Page Data
+ * Fixed values and portfolio metadata
  */
 export interface GardeData {
-	clientName: string
-	businessPortfolioId: string
-	extractDateFormatted: string
+	conseiller: string // Leave blank for now
+	teneurDeCompte: string // Fixed to "Quintet"
+	assureur: string // Fixed to "Wealins"
+	numeroDeCompte: string // portfolio_id 
+	dateExtraction: string // French month + year (e.g., "Janvier 2025")
 }
 
+/**
+ * Slide 2: Synthesis/Overview Data
+ * Portfolio estimation and allocation charts
+ */
 export interface SyntheseData {
-	totalValuation: number
-	totalFormatted: string
-	bucketChart: ChartDataPoint[]
-	strategyChart: ChartDataPoint[]
+	estimationPortefeuille: number // Sum of all valuations
+	estimationFormatted: string // Formatted currency
+	repartitionParPoche: ChartDataPoint[] // Bucket allocation chart
+	allocationStrategique: ChartDataPoint[] // Strategy allocation chart
 }
 
+/**
+ * Slide 3: Zoom/Bucket Comparison Data
+ * 3-column bucket analysis
+ */
 export interface ZoomData {
-	strategies: Array<{
-		name: string
-		value: number
-		fundCount: number
+	buckets: Array<{
+		bucketCode: string // CT, LTL, LTI
+		bucketName: string // Display name
+		totalValuation: number
+		totalFormatted: string
+		percentageOfPortfolio: number
+		performancePercentage: number
 	}>
 }
 
+/**
+ * Bucket Detail Data (used for slides 4, 5, 6)
+ * Common structure for all bucket detail pages
+ */
+export interface BucketDetailData {
+	bucketInfo: {
+		code: string // CT, LTL, LTI
+		name: string // Display name
+		totalValuation: number
+		totalFormatted: string
+	}
+	fundsTable: Array<{
+		libelle: string // Fund name
+		strategie: string // Strategy
+		valorisation: string | number // Valuation (formatted or number)
+		performancePercent?: string // Performance %
+		performanceEur?: string // Performance EUR
+		engagement?: number // For LTI: balance
+		appele?: number // For LTI: (valuation-performance)/engagement %
+		tvpi?: number // For LTI: TVPI
+	}>
+	fundsChart: ChartDataPoint[] // % of each fund within bucket
+	restantADeployer?: number // For LTI only: engagement - appelé
+}
+
+// Type aliases for specific slides
+export type Slide4Data = BucketDetailData // CT bucket detail
+export type Slide5Data = BucketDetailData // LTL bucket detail  
+export type Slide6Data = BucketDetailData // LTI bucket detail
+
+/**
+ * Legacy interfaces (keeping for backward compatibility)
+ */
 export interface DetailData {
 	funds: Array<{
 		name: string

@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
 /**
- * Test script for portfolio data transformers
+ * DEVELOPMENT TOOL: Test script for portfolio data transformers
  * Verifies that all transformation functions work correctly with sample data
+ * 
+ * Usage: npx tsx scripts/test-transformers.ts
  */
 
 import type { PortfolioDataApiResponse } from '../src/lib/types'
@@ -16,11 +18,15 @@ import {
 	transformToZoomData,
 	transformToDetailData,
 	transformToPerformanceData,
+	computeEngagementTVPI,
+	transformToCTBucketData,
+	transformToLTLBucketData,
+	transformToLTIBucketData,
 	getStrategyAllocation,
 	getBucketAllocation,
 	getFundsByStrategy,
 	getFundsByBucket
-} from '../src/lib/data/transformers'
+} from '../src/lib/data/transformers/index'
 
 // Sample test data
 const mockApiResponse: PortfolioDataApiResponse = {
@@ -46,7 +52,7 @@ const mockApiResponse: PortfolioDataApiResponse = {
 				fees_eur: 100,
 				asset_name: 'Money Market Fund A',
 				strategy: 'Cash',
-				bucket: 'Core'
+				bucket: 'CT'
 			},
 			{
 				id: 'fund-2',
@@ -60,7 +66,7 @@ const mockApiResponse: PortfolioDataApiResponse = {
 				fees_eur: 150,
 				asset_name: 'Government Bond Fund B',
 				strategy: 'Obligations',
-				bucket: 'Core'
+				bucket: 'LTL'
 			},
 			{
 				id: 'fund-3',
@@ -74,7 +80,7 @@ const mockApiResponse: PortfolioDataApiResponse = {
 				fees_eur: 75,
 				asset_name: 'Short Term Fund C',
 				strategy: 'Monétaire',
-				bucket: 'Satellite'
+				bucket: 'LTI'
 			}
 		],
 		metadata: {
@@ -109,17 +115,33 @@ function runTests() {
 		console.log('✅ GardeData:', gardeData)
 		
 		const syntheseData = transformToSyntheseData(mockApiResponse)
-		console.log('✅ SyntheseData bucket chart items:', syntheseData?.bucketChart.length)
-		console.log('✅ SyntheseData strategy chart items:', syntheseData?.strategyChart.length)
+		console.log('✅ SyntheseData repartition par poche items:', syntheseData?.repartitionParPoche.length)
+		console.log('✅ SyntheseData allocation strategique items:', syntheseData?.allocationStrategique.length)
 		
 		const zoomData = transformToZoomData(mockApiResponse)
-		console.log('✅ ZoomData strategies:', zoomData?.strategies.length)
+		console.log('✅ ZoomData buckets:', zoomData?.buckets.length)
 		
 		const detailData = transformToDetailData(mockApiResponse)
 		console.log('✅ DetailData funds:', detailData?.funds.length)
 		
 		const performanceData = transformToPerformanceData(mockApiResponse)
 		console.log('✅ PerformanceData:', performanceData)
+		
+		const tvpiData = computeEngagementTVPI(mockApiResponse)
+		console.log('✅ TVPI Data funds:', tvpiData.length)
+		console.log('✅ TVPI Sample:', tvpiData[0] || 'No funds')
+		
+		// Test new bucket detail transformers
+		console.log('\n🏗️ Testing bucket detail transformers...')
+		const ctBucketData = transformToCTBucketData(mockApiResponse)
+		console.log('✅ CT Bucket Data funds:', ctBucketData?.fundsTable.length)
+		
+		const ltlBucketData = transformToLTLBucketData(mockApiResponse)
+		console.log('✅ LTL Bucket Data funds:', ltlBucketData?.fundsTable.length)
+		
+		const ltiBucketData = transformToLTIBucketData(mockApiResponse)
+		console.log('✅ LTI Bucket Data funds:', ltiBucketData?.fundsTable.length)
+		console.log('✅ LTI Bucket restant a deployer:', ltiBucketData?.restantADeployer)
 		
 		// Test allocation functions
 		console.log('\n📈 Testing allocation functions...')
@@ -134,8 +156,8 @@ function runTests() {
 		const cashFunds = getFundsByStrategy(mockApiResponse, 'Cash')
 		console.log('✅ Cash funds:', cashFunds.length)
 		
-		const coreFunds = getFundsByBucket(mockApiResponse, 'Core')
-		console.log('✅ Core bucket funds:', coreFunds.length)
+		const ctFunds = getFundsByBucket(mockApiResponse, 'CT')
+		console.log('✅ CT bucket funds:', ctFunds.length)
 		
 		const detailCash = transformToDetailData(mockApiResponse, 'Cash')
 		console.log('✅ Detail data for Cash strategy:', detailCash?.funds.length)

@@ -9,32 +9,38 @@
 export { PortfolioDataService } from './portfolio-service'
 
 // Custom hooks
-export { usePortfolioData, useRawPortfolioData } from './hooks/use-portfolio-data'
+export { usePortfolioData, useRawPortfolioData, type UsePortfolioDataReturn } from './hooks/use-portfolio-data'
 
-// Data transformers - Basic
+// Data transformers - All transformers
 export {
+	// Basic transformers
 	transformToTotalData,
 	transformToFundData,
 	transformToProvisionData,
-	transformToExtendedFundData
-} from './transformers'
-
-// Data transformers - Slide-specific
-export {
+	transformToExtendedFundData,
+	
+	// Slide-specific transformers
 	transformToGardeData,
 	transformToSyntheseData,
 	transformToZoomData,
 	transformToDetailData,
-	transformToPerformanceData
-} from './transformers'
-
-// Data transformers - Allocation and filtering
-export {
+	transformToPerformanceData,
+	computeEngagementTVPI,
+	transformToCTBucketData,
+	transformToLTLBucketData,
+	transformToLTIBucketData,
+	
+	// Allocation and filtering
 	getStrategyAllocation,
 	getBucketAllocation,
 	getFundsByStrategy,
-	getFundsByBucket
-} from './transformers'
+	getFundsByBucket,
+	
+	// Constants and utilities
+	BUCKET_MAPPING,
+	mapToBucketCode,
+	COLOR_SCHEMES
+} from './transformers/index'
 
 // Type definitions
 export * from './slide-interfaces'
