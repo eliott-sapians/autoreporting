@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 import {
 	Table,
 	TableBody,
@@ -11,7 +12,9 @@ import type { Portfolio } from "./api/portfolios/route"
 
 async function getPortfolios(): Promise<Portfolio[]> {
 	try {
-		const response = await fetch('/api/portfolios', {
+		// Use absolute URL for server-side fetch
+		const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001'
+		const response = await fetch(`${baseUrl}/api/portfolios`, {
 			cache: 'no-store'
 		})
 		if (!response.ok) {
@@ -55,9 +58,11 @@ export default async function Home() {
 									<TableCell>{portfolio.clientName}</TableCell>
 									<TableCell>{portfolio.lastExtractionDate}</TableCell>
 									<TableCell className="text-right">
-										<Button variant="outline" size="sm">
-											Accéder au suivi
-										</Button>
+										<Link href={`/portfolio/${encodeURIComponent(portfolio.id)}`}>
+											<Button variant="outline" size="sm">
+												Accéder au suivi
+											</Button>
+										</Link>
 									</TableCell>
 								</TableRow>
 							))

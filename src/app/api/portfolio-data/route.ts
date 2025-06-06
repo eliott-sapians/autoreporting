@@ -3,9 +3,9 @@ import { portfolioService } from '@/lib/data/portfolio-service'
 import { z } from 'zod'
 import type { PortfolioDataApiResponse } from '@/lib/types'
 
-// Request validation schema
+// Request validation schema - Allow any string ID (business or internal UUID)
 const portfolioDataRequestSchema = z.object({
-	portfolioId: z.string().uuid('portfolioId must be a valid UUID')
+	portfolioId: z.string().min(1, 'portfolioId is required')
 })
 
 
@@ -14,7 +14,7 @@ const portfolioDataRequestSchema = z.object({
  * GET /api/portfolio-data
  * Returns complete raw portfolio data for a given portfolioId
  * Query Parameters:
- * - portfolioId: UUID of the portfolio to retrieve
+ * - portfolioId: Business portfolio ID or internal UUID of the portfolio to retrieve
  */
 export async function GET(request: NextRequest): Promise<NextResponse<PortfolioDataApiResponse>> {
 	try {
@@ -42,8 +42,13 @@ export async function GET(request: NextRequest): Promise<NextResponse<PortfolioD
 		// Log request for monitoring
 		console.log(`[API] Fetching portfolio data for portfolioId: ${portfolioId}`)
 		
-		// Retrieve raw portfolio data using the service
-		const rawData = await portfolioService.getRawPortfolioData(validation.data.portfolioId)
+		// First try to find by business portfolio ID, then by internal ID
+		let rawData = await portfolioService.getRawPortfolioDataByBusinessId(validation.data.portfolioId)
+		
+		// If not found by business ID, try by internal UUID
+		if (!rawData) {
+			rawData = await portfolioService.getRawPortfolioData(validation.data.portfolioId)
+		}
 		
 		// Handle portfolio not found
 		if (!rawData) {

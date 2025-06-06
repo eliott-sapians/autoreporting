@@ -107,6 +107,22 @@ export class PortfolioDataService {
 			}))
 		}
 	}
+
+	/**
+	 * Get complete raw portfolio data by business portfolio ID
+	 * This method first looks up the internal portfolio by business ID, then fetches all data
+	 */
+	async getRawPortfolioDataByBusinessId(businessPortfolioId: string) {
+		// First find the portfolio by business ID
+		const portfolioMeta = await this.getPortfolioByBusinessId(businessPortfolioId)
+		
+		if (!portfolioMeta) {
+			return null
+		}
+
+		// Then use the internal ID to get all the data
+		return this.getRawPortfolioData(portfolioMeta.id)
+	}
 }
 
 // Export singleton instance
