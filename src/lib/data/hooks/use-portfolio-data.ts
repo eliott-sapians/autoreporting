@@ -1,6 +1,25 @@
 import { useState, useEffect, useCallback } from 'react'
 import type { PortfolioDataApiResponse, FundData, TotalData, ProvisionData } from '@/lib/types'
-import { transformToProvisionData, transformToTotalData, transformToFundData, getStrategyAllocation } from '../transformers'
+import type { 
+	GardeData, 
+	SyntheseData, 
+	ZoomData, 
+	DetailData, 
+	PerformanceData 
+} from '../slide-interfaces'
+import { 
+	transformToProvisionData, 
+	transformToTotalData, 
+	transformToFundData, 
+	getStrategyAllocation,
+	getBucketAllocation,
+	getFundsByBucket as transformGetFundsByBucket,
+	transformToGardeData,
+	transformToSyntheseData,
+	transformToZoomData,
+	transformToDetailData,
+	transformToPerformanceData
+} from '../transformers'
 
 export interface UsePortfolioDataResult {
 	// Raw API data
@@ -15,6 +34,18 @@ export interface UsePortfolioDataResult {
 		value: number
 		color: string
 	}>
+	bucketAllocationData: Array<{
+		name: string
+		value: number
+		color: string
+	}>
+	
+	// Slide-specific transformed data
+	gardeData: GardeData | null
+	syntheseData: SyntheseData | null
+	zoomData: ZoomData | null
+	detailData: DetailData | null
+	performanceData: PerformanceData | null
 	
 	// Loading and error states
 	isLoading: boolean
@@ -22,6 +53,8 @@ export interface UsePortfolioDataResult {
 	
 	// Utility functions
 	refetch: () => Promise<void>
+	getDetailDataByStrategy: (strategy?: string) => DetailData | null
+	getFundsByBucket: (bucket?: string) => FundData[]
 }
 
 /**
@@ -45,6 +78,11 @@ export function usePortfolioData(portfolioId: string | null): UsePortfolioDataRe
 
 		try {
 			const response = await fetch(`/api/portfolio-data?portfolioId=${encodeURIComponent(portfolioId)}`)
+			
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`)
+			}
+			
 			const data: PortfolioDataApiResponse = await response.json()
 
 			if (!data.success) {
@@ -76,6 +114,26 @@ export function usePortfolioData(portfolioId: string | null): UsePortfolioDataRe
 	const fundsData = rawData ? transformToFundData(rawData) : []
 	const provisionData = rawData ? transformToProvisionData(rawData) : null
 	const allocationData = rawData ? getStrategyAllocation(rawData) : []
+	const bucketAllocationData = rawData ? getBucketAllocation(rawData) : []
+	
+	// Slide-specific transformations
+	const gardeData = rawData ? transformToGardeData(rawData) : null
+	const syntheseData = rawData ? transformToSyntheseData(rawData) : null
+	const zoomData = rawData ? transformToZoomData(rawData) : null
+	const detailData = rawData ? transformToDetailData(rawData) : null
+	const performanceData = rawData ? transformToPerformanceData(rawData) : null
+
+	// Utility function to get detail data filtered by strategy
+	const getDetailDataByStrategy = useCallback((strategy?: string): DetailData | null => {
+		if (!rawData) return null
+		return transformToDetailData(rawData, strategy)
+	}, [rawData])
+
+	// Utility function to get funds by bucket
+	const getFundsByBucket = useCallback((bucket?: string): FundData[] => {
+		if (!rawData) return []
+		return transformGetFundsByBucket(rawData, bucket)
+	}, [rawData])
 
 	return {
 		rawData,
@@ -83,9 +141,17 @@ export function usePortfolioData(portfolioId: string | null): UsePortfolioDataRe
 		fundsData,
 		provisionData,
 		allocationData,
+		bucketAllocationData,
+		gardeData,
+		syntheseData,
+		zoomData,
+		detailData,
+		performanceData,
 		isLoading,
 		error,
-		refetch: fetchPortfolioData
+		refetch: fetchPortfolioData,
+		getDetailDataByStrategy,
+		getFundsByBucket
 	}
 }
 

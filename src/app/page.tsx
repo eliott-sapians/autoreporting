@@ -7,16 +7,11 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table"
-
-interface Portfolio {
-	id: string
-	clientName: string
-	lastExtractionDate: string
-}
+import type { Portfolio } from "./api/portfolios/route"
 
 async function getPortfolios(): Promise<Portfolio[]> {
 	try {
-		const response = await fetch('http://localhost:3000/api/portfolios', {
+		const response = await fetch('/api/portfolios', {
 			cache: 'no-store'
 		})
 		if (!response.ok) {

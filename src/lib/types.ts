@@ -6,6 +6,14 @@ export interface FundData {
 	performanceEur: string
 }
 
+export interface ExtendedFundData extends FundData {
+	bucket?: string
+	isin?: string
+	currency?: string
+	balance?: string
+	fees?: string
+}
+
 export interface TotalData {
 	total: string
 	performance: string

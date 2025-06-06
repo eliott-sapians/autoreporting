@@ -48,21 +48,21 @@ const mockFundsData: FundData[] = [
 	{ 
 		name: 'Cash Fund',
 		strategy: 'Cash', 
-		valuation: '300,000',
+		valuation: '300 000 €',
 		performance: '+2.1%',
 		performanceEur: '+6 300 €'
 	},
 	{ 
 		name: 'Obligations Fund',
 		strategy: 'Obligations', 
-		valuation: '400,000',
+		valuation: '400 000 €',
 		performance: '+3.8%',
 		performanceEur: '+15 200 €'
 	},
 	{ 
 		name: 'Monétaire Fund',
 		strategy: 'Monétaire', 
-		valuation: '149,081',
+		valuation: '149 081 €',
 		performance: '+8.2%',
 		performanceEur: '+12 224 €'
 	}

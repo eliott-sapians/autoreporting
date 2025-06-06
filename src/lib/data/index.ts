@@ -3,14 +3,41 @@
  * Central export point for all data-related functionality
  */
 
-// Core database service
-export { portfolioService, PortfolioDataService } from './portfolio-service'
+// Main data access layer exports
 
-// Data transformation utilities
-export * from './transformers'
+// Core data services
+export { PortfolioDataService } from './portfolio-service'
 
-// React hooks for API data fetching
-export * from './hooks/use-portfolio-data'
+// Custom hooks
+export { usePortfolioData, useRawPortfolioData } from './hooks/use-portfolio-data'
+
+// Data transformers - Basic
+export {
+	transformToTotalData,
+	transformToFundData,
+	transformToProvisionData,
+	transformToExtendedFundData
+} from './transformers'
+
+// Data transformers - Slide-specific
+export {
+	transformToGardeData,
+	transformToSyntheseData,
+	transformToZoomData,
+	transformToDetailData,
+	transformToPerformanceData
+} from './transformers'
+
+// Data transformers - Allocation and filtering
+export {
+	getStrategyAllocation,
+	getBucketAllocation,
+	getFundsByStrategy,
+	getFundsByBucket
+} from './transformers'
+
+// Type definitions
+export * from './slide-interfaces'
 
 // Legacy interfaces (maintained for backward compatibility)
 export * from './slide-interfaces' 
