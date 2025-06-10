@@ -1,96 +1,116 @@
-import { ReactElement } from 'react'
-
-interface CustomPieLabelProps {
-    cx: number
-    cy: number
-    midAngle: number
-    innerRadius: number
-    outerRadius: number
-    name: string
-    percent: number
-    fill?: string  // This comes from the pie chart data
-    color?: string // Alternative color prop
+interface LabelFormatterProps {
+    value: any
+    name?: string
+    percent?: number
+    index?: number
+    // Recharts might pass additional props
+    [key: string]: any
 }
 
-export default function CustomPieLabel({ 
-    cx, 
-    cy, 
-    midAngle, 
-    innerRadius, 
-    outerRadius, 
-    name, 
-    percent,
-    fill,
-    color
-}: CustomPieLabelProps): ReactElement {
-    const RADIAN = Math.PI / 180
-    const radius = innerRadius + (outerRadius - innerRadius) * 1.4
-    const x = cx + radius * Math.cos(-midAngle * RADIAN)
-    const y = cy + radius * Math.sin(-midAngle * RADIAN)
+/**
+ * Custom formatter for LabelList that shows full fund names with line breaking
+ */
+export function customPieLabelFormatter(props: any): string {
+    console.log('customPieLabelFormatter received props:', props)
     
-    // Use the actual color from the data entry
-    const textColor = fill || color || 'currentColor'
-    
-    // Break long names intelligently
-    const breakName = (text: string): string[] => {
-        if (text.length <= 15) return [text]
+    try {
+        // Try different ways to extract the name
+        let name = ''
         
-        // Try to break at spaces first
-        const words = text.split(' ')
-        if (words.length > 1 && words[0].length <= 15) {
-            const lines: string[] = []
-            let currentLine = words[0]
+        // Method 1: Direct value (this is often what LabelList passes as first param)
+        if (props.value && typeof props.value === 'string') {
+            name = props.value
+        }
+        
+        // Method 2: Direct props
+        if (!name && props.name) {
+            name = String(props.name)
+        }
+        
+        // Method 3: From payload
+        if (!name && props.payload) {
+            name = String(props.payload.name || props.payload.label || props.payload.key || '')
+        }
+        
+        // Method 4: Check if first argument is the actual value
+        if (!name && arguments.length > 0 && typeof arguments[0] === 'string') {
+            name = arguments[0]
+        }
+        
+        console.log('Extracted name:', name)
+        
+        if (!name || typeof name !== 'string' || name.trim() === '') {
+            console.log('No valid name found, returning empty')
+            return ''
+        }
+
+        // Break long names into lines with proper SVG formatting
+        const breakNameIntoLines = (text: string): string => {
+            if (!text || text.length <= 15) return text
             
-            for (let i = 1; i < words.length; i++) {
-                if ((currentLine + ' ' + words[i]).length <= 15) {
-                    currentLine += ' ' + words[i]
-                } else {
-                    lines.push(currentLine)
-                    currentLine = words[i]
+            // Try to break at spaces first for natural word boundaries
+            const words = text.split(' ')
+            if (words.length > 1) {
+                const lines = []
+                let currentLine = words[0]
+                
+                for (let i = 1; i < words.length; i++) {
+                    if ((currentLine + ' ' + words[i]).length <= 15) {
+                        currentLine += ' ' + words[i]
+                    } else {
+                        lines.push(currentLine)
+                        currentLine = words[i]
+                    }
                 }
+                lines.push(currentLine)
+                return lines.join('\n')
             }
-            lines.push(currentLine)
-            return lines
+            
+            // For very long single words, break at character boundaries
+            const lines = []
+            for (let i = 0; i < text.length; i += 15) {
+                lines.push(text.slice(i, i + 15))
+            }
+            return lines.join('\n')
         }
         
-        // Fallback: break at character limit
-        const lines: string[] = []
-        for (let i = 0; i < text.length; i += 15) {
-            lines.push(text.slice(i, i + 15))
-        }
-        return lines
+        const result = breakNameIntoLines(name)
+        console.log('Final result:', result)
+        return result
+        
+    } catch (error) {
+        console.error('Error in customPieLabelFormatter:', error, props)
+        return ''
     }
-    
-    const nameLines = breakName(name)
-    const percentage = `${(percent * 100).toFixed(1)}%`
-    
-    return (
-        <text 
-            x={x} 
-            y={y} 
-            fill={textColor}
-            textAnchor={x > cx ? 'start' : 'end'} 
-            dominantBaseline="central"
-            className="text-md font-medium"
-        >
-            {nameLines.map((line, index) => (
-                <tspan 
-                    key={index} 
-                    x={x} 
-                    dy={index === 0 ? -8 * nameLines.length : 16}
-                    fill={textColor}
-                >
-                    {line}
-                </tspan>
-            ))}
-            <tspan 
-                x={x} 
-                dy={16} 
-                fill={textColor}
-                className="font-bold"
-            >
-                {percentage}
-            </tspan>
-        </text>
-    )
+}
+
+/**
+ * Alternative formatter that shows just the first word for very compact spaces
+ */
+export function compactPieLabelFormatter(props: any): string {
+    try {
+        let name = ''
+        
+        if (props.value && typeof props.value === 'string') {
+            name = props.value
+        } else if (props.name) {
+            name = String(props.name)
+        } else if (props.payload) {
+            name = String(props.payload.name || props.payload.label || props.payload.key || '')
+        } else if (arguments.length > 0 && typeof arguments[0] === 'string') {
+            name = arguments[0]
+        }
+        
+        if (!name || typeof name !== 'string' || name.trim() === '') {
+            return ''
+        }
+        
+        // For compact version, just show first word
+        const firstWord = name.split(' ')[0]
+        return firstWord
+        
+    } catch (error) {
+        console.error('Error in compactPieLabelFormatter:', error, props)
+        return ''
+    }
 } 

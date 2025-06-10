@@ -4,9 +4,9 @@ import Footer from '@/components/ui/footer'
 import type { BucketDetailData } from '@/lib/data/slide-interfaces'
 import Corner from '@/components/corners/Corner'
 import { ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
-import { Pie, Cell, PieChart } from 'recharts'
+import { Pie, Cell, PieChart, LabelList } from 'recharts'
 import { ChartContainer } from '@/components/ui/chart'
-import CustomPieLabel from '@/components/ui/custom-pie-label'
+import { customPieLabelFormatter } from '@/components/ui/custom-pie-label'
 
 export interface PageSection {
 	type: 'subtitle' | 'remaining-deploy'
@@ -118,12 +118,18 @@ export default function GenericDetailPage({ config, data }: GenericDetailPagePro
 												cx='50%' 
 												cy='50%' 
 												outerRadius='60%'
-												label={CustomPieLabel}
 												labelLine={false}
 											>
 												{data.fundsChart.map((entry, index: number) => (
 													<Cell key={`cell-${index}`} fill={entry.color} />
 												))}
+												<LabelList
+													dataKey="name"
+													className="fill-white font-medium"
+													stroke="none"
+													fontSize={10}
+													formatter={customPieLabelFormatter}
+												/>
 											</Pie>
 										</PieChart>
 									</ChartContainer>

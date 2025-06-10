@@ -4,7 +4,7 @@ import Corner from '@/components/corners/Corner'
 import Footer from '@/components/ui/footer'
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart'
 import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell, LabelList } from 'recharts'
-import CustomPieLabel from '@/components/ui/custom-pie-label'
+import { customPieLabelFormatter } from '@/components/ui/custom-pie-label'
 import type { SyntheseData } from '@/lib/data/slide-interfaces'
 
 interface SyntheseProps {
@@ -163,7 +163,6 @@ export default function Synthese({ data }: SyntheseProps) {
 											cx='50%' 
 											cy='50%' 
 											outerRadius={160} 
-											label={CustomPieLabel}
 											labelLine={false}
 										>
 											<ChartLegend 
@@ -175,6 +174,13 @@ export default function Synthese({ data }: SyntheseProps) {
 											{allocationData.map((entry) => (
 												<Cell key={entry.key} fill={entry.color} />
 											))}
+											<LabelList
+												dataKey="name"
+												className="fill-white font-medium"
+												stroke="none"
+												fontSize={11}
+												formatter={customPieLabelFormatter}
+											/>
 										</Pie>
 									</PieChart>
 								</ChartContainer>
