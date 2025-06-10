@@ -21,7 +21,7 @@ export default function CompositionPieChart({ chartConfig, chartData }: Composit
                 nameKey='name'
                 cx='50%'
                 cy='50%'
-                outerRadius={120}
+                outerRadius={130}
                 labelLine={false}
             >
                 {chartData.map((entry) => (

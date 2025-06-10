@@ -53,7 +53,7 @@ export default function GenericDetailPage({ config, data }: GenericDetailPagePro
 	)
 
 	const renderRemainingDeploy = () => (
-		<div className='bg-[var(--color-grey-sapians-100)] p-4 mx-8 mb-8 rounded-lg flex-shrink-0'>
+		<div className='bg-[var(--color-grey-sapians-100)] p-4 mx-8 mb-8'>
 			<h4 className='text-lg font-semibold text-center text-primary-foreground mb-2'>
 				Restant à déployer
 			</h4>
@@ -97,12 +97,6 @@ export default function GenericDetailPage({ config, data }: GenericDetailPagePro
 					<div className={`relative w-full flex-1 min-h-0 ${hasRemainingDeploy ? 'flex flex-col' : ''}`}>
 						<Corner position='top-left' offset='0rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
 						<Corner position='top-right' offset='0rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
-						{!hasRemainingDeploy && (
-							<>
-								<Corner position='bottom-left' offset='0rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
-								<Corner position='bottom-right' offset='0rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
-							</>
-						)}
 						<div className={`${hasRemainingDeploy ? 'flex-1 flex flex-col' : 'h-full flex flex-col'}`} 
 							 style={{ marginTop: '1rem', marginBottom: hasRemainingDeploy ? '0rem' : '1rem', marginLeft: '0rem', marginRight: '0rem' }}>
 							<h3 className='text-2xl text-center py-8 px-4 flex-shrink-0'>Allocation stratégique à date</h3>
@@ -125,9 +119,8 @@ export default function GenericDetailPage({ config, data }: GenericDetailPagePro
 												))}
 												<LabelList
 													dataKey="name"
-													className="fill-white font-medium"
+													className="fill-white font-medium text-base"
 													stroke="none"
-													fontSize={10}
 													formatter={customPieLabelFormatter}
 												/>
 											</Pie>
@@ -136,14 +129,14 @@ export default function GenericDetailPage({ config, data }: GenericDetailPagePro
 								</div>
 							)}
 						</div>
+						{hasRemainingDeploy && (
+							<>
+								{renderRemainingDeploy()}
+							</>
+						)}
+						<Corner position='bottom-left' offset='0rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
+						<Corner position='bottom-right' offset='0rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
 					</div>
-					{hasRemainingDeploy && (
-						<>
-							<Corner position='bottom-left' offset='0rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
-							<Corner position='bottom-right' offset='0rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
-							{renderRemainingDeploy()}
-						</>
-					)}
 				</div>
 			</div>
 			<Footer />
