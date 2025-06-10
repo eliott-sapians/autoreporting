@@ -34,12 +34,27 @@ export const liquidTableConfig: ColumnConfig[] = [
 		align: 'center',
 		dataKey: 'performancePercent',
 		footerValue: (data) => {
-			// Calculate average performance for the bucket
-			const totalPerformance = data.fundsTable.reduce((sum, fund) => {
-				const perf = parseFloat(fund.performancePercent?.replace('%', '') || '0')
-				return sum + perf
-			}, 0)
-			return `${(totalPerformance / data.fundsTable.length).toFixed(1)}%`
+			// Calculate bucket-level performance using total valuation and total PnL
+			// This matches the calculation used in the zoom page poche cards
+			let totalValuation = 0
+			let totalPnl = 0
+			
+			data.fundsTable.forEach(fund => {
+				// Parse valuation (handle both string and number types)
+				const valuation = typeof fund.valorisation === 'string' 
+					? parseFloat(fund.valorisation.replace(/[€\s,]/g, '')) || 0
+					: fund.valorisation || 0
+				const pnlEur = parseFloat(fund.performanceEur?.replace(/[€\s,]/g, '') || '0')
+				
+				totalValuation += valuation
+				totalPnl += pnlEur
+			})
+			
+			// Use same formula as zoom page: (valuation / (valuation - pnl)) - 1
+			const costBasis = totalValuation - totalPnl
+			const bucketPerformance = costBasis > 0 ? ((totalValuation / costBasis) - 1) * 100 : 0
+			
+			return `${bucketPerformance.toFixed(1)}%`
 		}
 	},
 	{
