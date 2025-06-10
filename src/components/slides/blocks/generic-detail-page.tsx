@@ -6,6 +6,7 @@ import Corner from '@/components/corners/Corner'
 import { ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { Pie, Cell, PieChart } from 'recharts'
 import { ChartContainer } from '@/components/ui/chart'
+import CustomPieLabel from '@/components/ui/custom-pie-label'
 
 export interface PageSection {
 	type: 'subtitle' | 'remaining-deploy'
@@ -117,8 +118,7 @@ export default function GenericDetailPage({ config, data }: GenericDetailPagePro
 												cx='50%' 
 												cy='50%' 
 												outerRadius='60%'
-												label={({ name, percent }: { name: string; percent: number }) => `${name}\n${(percent * 100).toFixed(1)}%`}
-												className='text-base font-medium'
+												label={CustomPieLabel}
 												labelLine={false}
 											>
 												{data.fundsChart.map((entry, index: number) => (

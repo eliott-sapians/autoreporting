@@ -74,8 +74,8 @@ export function validateHeaders(worksheet: Worksheet, context: ValidationContext
 			}
 		})
 		
-		// Check for extra columns beyond K
-		const maxColumn = headerRow.cellCount
+		// Check for extra columns beyond K (only check actualCellCount - cells with data)
+		const maxColumn = headerRow.actualCellCount
 		if (maxColumn > EXPECTED_COLUMN_COUNT) {
 			errors.push({
 				type: 'STRUCTURE',

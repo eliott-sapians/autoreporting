@@ -124,14 +124,14 @@ function validateBasicStructure(worksheet: ExcelJS.Worksheet, context: Validatio
 			})
 		}
 		
-		// Check column count
+		// Check column count (only check actualCellCount - cells with data)
 		const actualColumnCount = headerRow?.actualCellCount || 0
 		if (actualColumnCount !== EXPECTED_COLUMN_COUNT) {
 			errors.push({
 				type: 'STRUCTURE',
 				message: ERROR_MESSAGES.INVALID_COLUMN_COUNT(actualColumnCount, EXPECTED_COLUMN_COUNT),
 				rowNumber: SPECIAL_CELLS.HEADER_ROW,
-				severity: 'ERROR'
+				severity: 'WARNING' // Downgraded from ERROR to WARNING to match header validation
 			})
 		}
 		

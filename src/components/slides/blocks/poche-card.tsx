@@ -68,11 +68,7 @@ export default function PocheCard({
 				<div className='flex-shrink-0 mt-8'>
 					<h3 className='text-xl text-center mb-4'>Composition de la poche</h3>
 				</div>
-				
-				<div className='flex-1 flex items-center justify-center min-h-0'>
-					<CompositionPieChart chartConfig={chartConfig} chartData={chartData} />
-				</div>
-				
+				<CompositionPieChart chartConfig={chartConfig} chartData={chartData} />
 				<div className='relative flex-shrink-0 h-8'>
 					<Corner position='bottom-left' offset='0.5rem' length='1.5rem' thickness='0.5rem' color={cornerColor}/>
 					<Corner position='bottom-right' offset='0.5rem' length='1.5rem' thickness='0.5rem' color={cornerColor}/>

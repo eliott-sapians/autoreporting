@@ -4,6 +4,7 @@ import Corner from '@/components/corners/Corner'
 import Footer from '@/components/ui/footer'
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart'
 import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell, LabelList } from 'recharts'
+import CustomPieLabel from '@/components/ui/custom-pie-label'
 import type { SyntheseData } from '@/lib/data/slide-interfaces'
 
 interface SyntheseProps {
@@ -40,11 +41,12 @@ export default function Synthese({ data }: SyntheseProps) {
 		provision: { label: 'Long-terme provision', color: '#A1DFF0' },
 	}
 
-	// Use the allocation data directly from props
+	// Use the allocation data directly from props with colors included
 	const allocationData = data.allocationStrategique.map(item => ({
 		key: item.name.toLowerCase().replace(/\s+/g, ''),
 		name: item.name,
-		value: item.percentage || 0
+		value: item.percentage || 0,
+		color: item.color  // Include the color in the data
 	}))
 
 	// Create dynamic config from the data colors
@@ -161,8 +163,7 @@ export default function Synthese({ data }: SyntheseProps) {
 											cx='50%' 
 											cy='50%' 
 											outerRadius={160} 
-											label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(1)}%`}
-											className='text-base'
+											label={CustomPieLabel}
 											labelLine={false}
 										>
 											<ChartLegend 
@@ -172,7 +173,7 @@ export default function Synthese({ data }: SyntheseProps) {
 												verticalAlign='middle'
 											/>
 											{allocationData.map((entry) => (
-												<Cell key={entry.key} fill={entry.key in allocationConfig ? `var(--color-${entry.key})` : '#6b7280'} />
+												<Cell key={entry.key} fill={entry.color} />
 											))}
 										</Pie>
 									</PieChart>
