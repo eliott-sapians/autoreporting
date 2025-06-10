@@ -24,31 +24,38 @@ export default function Zoom({ data }: ZoomProps) {
 	// Color mappings for each bucket type
 	const bucketColors = {
 		CT: {
-			main: 'var(--color-blue-atlante-sapians-500)',
-			secondary: 'var(--color-blue-atlante-sapians-300)',
-			light: 'var(--color-blue-atlante-sapians-100)',
+			main: 'var(--color-blue-atlante-sapians-500)', // blue-500
+			secondary: 'var(--color-blue-atlante-sapians-300)', // blue-300
+			light: 'var(--color-blue-atlante-sapians-100)', // blue-100
 		},
 		LTL: {
-			main: 'var(--color-green-sapians-500)',
-			secondary: 'var(--color-green-sapians-300)',
-			light: 'var(--color-green-sapiens-100)',
+			main: 'var(--color-green-sapians-500)', // emerald-500
+			secondary: 'var(--color-green-sapians-300)', // emerald-300
+			light: 'var(--color-green-sapians-100)', // emerald-100
 		},
 		LTI: {
-			main: 'var(--color-grey-sapians-900)',
-			secondary: 'var(--color-grey-sapians-700)',
-			light: 'var(--color-grey-sapians-500)',
+			main: 'var(--color-grey-sapians-900)', // gray-700
+			secondary: 'var(--color-grey-sapians-700)', // gray-400
+			light: 'var(--color-grey-sapians-500)', // gray-100
 		}
 	}
 
-	// Create chart data for each bucket (simplified for this view)
-	const createBucketChartData = (bucket: any) => [
-		{ 
-			name: bucket.bucketName, 
-			value: bucket.totalValuation, 
-			key: bucket.bucketCode.toLowerCase(), 
-			color: bucketColors[bucket.bucketCode as keyof typeof bucketColors]?.main || '#6b7280'
-		}
-	]
+	// Ensure buckets are ordered: CT, LTL, LTI
+	const orderedBuckets = [...data.buckets].sort((a, b) => {
+		const order = { CT: 1, LTL: 2, LTI: 3 }
+		return (order[a.bucketCode as keyof typeof order] || 4) - (order[b.bucketCode as keyof typeof order] || 4)
+	})
+
+	// Create chart data for individual funds within each bucket
+	const createBucketChartData = (bucket: any) => {
+		const colors = ['var(--color-blue-atlante-sapians-500)', 'var(--color-green-sapians-500)', 'var(--color-grey-sapians-900)'] // Various colors for funds
+		return bucket.funds.map((fund: any, index: number) => ({
+			name: fund.name,
+			value: fund.valuation,
+			key: fund.name.toLowerCase().replace(/\s+/g, '-'),
+			color: colors[index % colors.length]
+		}))
+	}
 
 	return (
 		<div className='w-screen h-screen overflow-hidden flex flex-col'>
@@ -63,7 +70,7 @@ export default function Zoom({ data }: ZoomProps) {
 					</p>
 				</div>
 				<div className='flex-1 grid grid-cols-1 xl:grid-cols-3 gap-8 min-h-0'>
-					{data.buckets.map((bucket) => {
+					{orderedBuckets.map((bucket) => {
 						const colors = bucketColors[bucket.bucketCode as keyof typeof bucketColors] || bucketColors.CT
 						
 						return (
@@ -76,10 +83,10 @@ export default function Zoom({ data }: ZoomProps) {
 								amountRatio={`(${bucket.percentageOfPortfolio.toFixed(1)}%)`}
 								performanceLabel='PERFORMANCE'
 								performanceValue={`${bucket.performancePercentage.toFixed(1)}%`}
-								mainBgClass={`bg-[${colors.main}] font-bold text-white`}
-								amountBgClass={`bg-[${colors.secondary}]`}
-								performanceTextClass={`text-[${colors.main}]`}
-								performanceBgClass={`bg-[${colors.light}]`}
+								mainBgColor={colors.main}
+								amountBgColor={colors.secondary}
+								performanceTextColor={colors.main}
+								performanceBgColor={colors.light}
 								cornerColor={colors.main}
 							/>
 						)

@@ -73,10 +73,9 @@ function transformToBucketDetailData(
 	// Create funds table data
 	const fundsTable = bucketFunds.map(fund => {
 		const valuation = fund.valuation_eur || 0
-		const bookPrice = fund.book_price_eur || 0
+		const pnl_eur = fund.pnl_eur || 0
 		const balance = fund.balance || 0
-		const performance = valuation - bookPrice
-		const performancePercent = bookPrice > 0 ? (performance / bookPrice) * 100 : 0
+		const performancePercent = valuation > 0 && pnl_eur !== 0 ? (valuation / (valuation - pnl_eur)) - 1 : 0
 
 		const baseFund = {
 			libelle: fund.asset_name || fund.label || 'Unknown Fund',
@@ -86,8 +85,8 @@ function transformToBucketDetailData(
 
 		// Different data for LTI bucket vs others
 		if (targetBucketCode === 'LTI') {
-			const appele = balance > 0 ? ((valuation - performance) / balance) * 100 : 0
-			const tvpi = bookPrice > 0 ? valuation / bookPrice : 0
+			const appele = balance > 0 ? ((valuation - pnl_eur) / balance) * 100 : 0
+			const tvpi = (valuation - pnl_eur) > 0 ? valuation / (valuation - pnl_eur) : 0
 			
 			return {
 				...baseFund,
@@ -100,7 +99,7 @@ function transformToBucketDetailData(
 			return {
 				...baseFund,
 				performancePercent: formatPercentage(performancePercent),
-				performanceEur: formatCurrency(performance)
+				performanceEur: formatCurrency(pnl_eur)
 			}
 		}
 	})
@@ -135,8 +134,8 @@ function transformToBucketDetailData(
 		const totalEngagement = bucketFunds.reduce((sum, fund) => sum + (fund.balance || 0), 0)
 		const totalAppele = bucketFunds.reduce((sum, fund) => {
 			const valuation = fund.valuation_eur || 0
-			const performance = valuation - (fund.book_price_eur || 0)
-			return sum + (valuation - performance)
+			const pnl_eur = fund.pnl_eur || 0
+			return sum + (valuation - pnl_eur)
 		}, 0)
 		result.restantADeployer = totalEngagement - totalAppele
 	}
@@ -190,14 +189,13 @@ export function transformToPerformanceData(apiResponse: PortfolioDataApiResponse
 	const funds = apiResponse.data.funds
 	const { performanceEur } = calculatePortfolioPerformance(funds)
 	
-	// Calculate total book price for percentage calculation
-	const totalBookPrice = funds.reduce((sum, fund) => {
-		return sum + (fund.book_price_eur || 0)
-	}, 0)
+	// Calculate total valuation and PnL
+	const totalValuation = funds.reduce((sum, fund) => sum + (fund.valuation_eur || 0), 0)
+	const totalPnl = funds.reduce((sum, fund) => sum + (fund.pnl_eur || 0), 0)
 	
 	// Parse performance EUR value (remove € and format)
 	const performanceAmount = parseFloat(performanceEur.replace(/[€\s,]/g, '').replace(',', '.')) || 0
-	const performancePercentage = totalBookPrice > 0 ? (performanceAmount / totalBookPrice) * 100 : 0
+	const performancePercentage = totalValuation > 0 && totalPnl !== 0 ? (totalValuation / (totalValuation - totalPnl)) - 1 : 0
 
 	return {
 		totalPerformance: performanceAmount,
@@ -208,8 +206,8 @@ export function transformToPerformanceData(apiResponse: PortfolioDataApiResponse
 /**
  * Compute engagement and TVPI metrics for Slide 6 analysis
  * 
- * Engagement = (valuation - performance) / balance
- * TVPI = valuation / (valuation - performance)
+ * Engagement = (valuation - pnl) / balance
+ * TVPI = valuation / (valuation - pnl)
  */
 export function computeEngagementTVPI(apiResponse: PortfolioDataApiResponse): FundWithMetrics[] {
 	if (!apiResponse.success || !apiResponse.data) {
@@ -220,19 +218,14 @@ export function computeEngagementTVPI(apiResponse: PortfolioDataApiResponse): Fu
 
 	return funds.map(fund => {
 		const valuation = fund.valuation_eur || 0
-		const bookPrice = fund.book_price_eur || 0
+		const pnl_eur = fund.pnl_eur || 0
 		const balance = fund.balance || 0
 		
-		// Calculate performance (valuation - book price)
-		const performance = valuation - bookPrice
+		// Calculate engagement: (valuation - pnl) / balance
+		const engagement = balance > 0 ? (valuation - pnl_eur) / balance : 0
 		
-		// Calculate engagement: (valuation - performance) / balance
-		// This simplifies to: bookPrice / balance
-		const engagement = balance > 0 ? bookPrice / balance : 0
-		
-		// Calculate TVPI: valuation / (valuation - performance)
-		// This simplifies to: valuation / bookPrice
-		const tvpi = bookPrice > 0 ? valuation / bookPrice : 0
+		// Calculate TVPI: valuation / (valuation - pnl)
+		const tvpi = (valuation - pnl_eur) > 0 ? valuation / (valuation - pnl_eur) : 0
 
 		return {
 			name: fund.asset_name || fund.label || 'Unknown Fund',

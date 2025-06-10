@@ -13,7 +13,7 @@ import type { Portfolio } from "./api/portfolios/route"
 async function getPortfolios(): Promise<Portfolio[]> {
 	try {
 		// Use absolute URL for server-side fetch
-		const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001'
+		const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 		const response = await fetch(`${baseUrl}/api/portfolios`, {
 			cache: 'no-store'
 		})

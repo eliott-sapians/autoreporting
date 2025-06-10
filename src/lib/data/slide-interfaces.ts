@@ -73,6 +73,11 @@ export interface ZoomData {
 		totalFormatted: string
 		percentageOfPortfolio: number
 		performancePercentage: number
+		funds: Array<{
+			name: string
+			valuation: number
+			percentage: number // percentage within this bucket
+		}>
 	}>
 }
 

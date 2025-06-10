@@ -19,11 +19,10 @@ interface PocheCardProps {
 	performanceValue: string
 	chartData: ChartDataItem[]
 	chartConfig: ChartConfig
-	mainBgClass: string
-	amountBgClass: string
-	performanceTextClass: string
-	performanceBgClass: string
-	mainTextColorClass?: string
+	mainBgColor: string
+	amountBgColor: string
+	performanceTextColor: string
+	performanceBgColor: string
 	cornerColor?: string
 }
 
@@ -35,31 +34,30 @@ export default function PocheCard({
 	performanceValue,
 	chartData,
 	chartConfig,
-	mainBgClass,
-	amountBgClass,
-	performanceTextClass,
-	performanceBgClass,
-	mainTextColorClass = '',
+	mainBgColor,
+	amountBgColor,
+	performanceTextColor,
+	performanceBgColor,
 	cornerColor,
 }: PocheCardProps) {
 	return (
 		<div className='h-full flex flex-col'>
 			<div className='flex-shrink-0'>
 				<div className='grid grid-cols-4'>
-					<div className={`col-span-3 grid grid-cols-4 grid-rows-4 ${mainBgClass} ${mainTextColorClass}`}>
+					<div className='col-span-3 grid grid-cols-4 grid-rows-4 font-bold text-white' style={{ backgroundColor: mainBgColor }}>
 						<div className='col-span-4 row-span-2 flex items-center pl-4'>
 							<p className='text-lg font-bold'>{name}</p>
 						</div>
-						<div className={`col-span-3 row-span-2 grid grid-cols-2 ${amountBgClass} flex items-center pl-4`}>
+						<div className='col-span-3 row-span-2 grid grid-cols-2 flex items-center pl-4' style={{ backgroundColor: amountBgColor }}>
 							<p>{amount}</p>
 							{amountRatio && <p className='flex justify-end pr-4'>{amountRatio}</p>}
 						</div>
 					</div>
 					<div className='col-span-1 grid grid-rows-4'>
-						<div className={`row-span-1 flex items-center justify-center ${performanceTextClass}`}>
+						<div className='row-span-1 flex items-center justify-center' style={{ color: performanceTextColor }}>
 							<p className='text-sm'>{performanceLabel}</p>
 						</div>
-						<div className={`row-span-3 flex items-center justify-center ${performanceBgClass}`}>
+						<div className='row-span-3 flex items-center justify-center' style={{ backgroundColor: performanceBgColor }}>
 							<p className='text-lg'>{performanceValue}</p>
 						</div>
 					</div>

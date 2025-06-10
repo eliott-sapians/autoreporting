@@ -111,28 +111,48 @@ export function transformToZoomData(apiResponse: PortfolioDataApiResponse): Zoom
 		if (!bucketCode) return acc
 		
 		const valuation = fund.valuation_eur || 0
-		const bookPrice = fund.book_price_eur || 0
-		const performance = valuation - bookPrice
+		const pnl_eur = fund.pnl_eur || 0
+		const performance = (valuation/(valuation-pnl_eur)) -1
 		
 		if (!acc[bucketCode]) {
 			acc[bucketCode] = {
 				totalValuation: 0,
-				totalBookPrice: 0,
-				totalPerformance: 0
+				totalPnl: 0,
+				totalPerformance: 0,
+				funds: []
 			}
 		}
 		
 		acc[bucketCode].totalValuation += valuation
-		acc[bucketCode].totalBookPrice += bookPrice
+		acc[bucketCode].totalPnl += pnl_eur
 		acc[bucketCode].totalPerformance += performance
+		acc[bucketCode].funds.push({
+			name: fund.asset_name || fund.label || 'Unknown Fund',
+			valuation,
+			pnl_eur
+		})
 		
 		return acc
-	}, {} as Record<string, { totalValuation: number; totalBookPrice: number; totalPerformance: number }>)
+	}, {} as Record<string, { 
+		totalValuation: number; 
+		totalPnl: number; 
+		totalPerformance: number;
+		funds: Array<{ name: string; valuation: number; pnl_eur: number }>
+	}>)
 
 	const buckets = Object.entries(bucketData).map(([bucketCode, data]) => {
 		const config = BUCKET_MAPPING[bucketCode as keyof typeof BUCKET_MAPPING]
 		const percentageOfPortfolio = portfolioTotal > 0 ? (data.totalValuation / portfolioTotal) * 100 : 0
-		const performancePercentage = data.totalBookPrice > 0 ? (data.totalPerformance / data.totalBookPrice) * 100 : 0
+		
+		// Fix performance calculation: avoid division by very small numbers
+		const performancePercentage = (data.totalValuation / (data.totalValuation - data.totalPnl)) - 1
+		
+		// Calculate individual fund percentages within bucket
+		const fundsWithPercentage = data.funds.map(fund => ({
+			name: fund.name,
+			valuation: fund.valuation,
+			percentage: data.totalValuation > 0 ? (fund.valuation / data.totalValuation) * 100 : 0
+		}))
 		
 		return {
 			bucketCode,
@@ -140,7 +160,8 @@ export function transformToZoomData(apiResponse: PortfolioDataApiResponse): Zoom
 			totalValuation: data.totalValuation,
 			totalFormatted: formatCurrency(data.totalValuation),
 			percentageOfPortfolio,
-			performancePercentage
+			performancePercentage,
+			funds: fundsWithPercentage
 		}
 	})
 

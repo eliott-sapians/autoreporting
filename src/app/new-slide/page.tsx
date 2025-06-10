@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { usePortfolioData } from '@/lib/data/hooks/use-portfolio-data'
 import Garde from '@/components/slides/1-garde'
 import Synthese from '@/components/slides/2-synthese'
@@ -10,14 +11,37 @@ import DetailLiquid from '@/components/slides/5-detail-liquid'
 import DetailIlliquid from '@/components/slides/6-detail-illiquid'
 import Methodology from '@/components/slides/8-methodology'
 
-// For now, we'll use a hardcoded portfolio ID. In a real app, this would come from URL params or user selection
-const DEMO_PORTFOLIO_ID = "demo-portfolio-id" // TODO: Replace with actual portfolio ID from route params
-
 export default function NewSlidePage() {
+	const router = useRouter()
 	const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
 	
+	// Get the first available portfolio ID
+	const [portfolioId, setPortfolioId] = useState<string | null>(null)
+	
+	// Fetch available portfolios and use the first one
+	useEffect(() => {
+		async function getFirstPortfolio() {
+			try {
+				const response = await fetch('/api/portfolios')
+				if (response.ok) {
+					const portfolios = await response.json()
+					if (portfolios.length > 0) {
+						setPortfolioId(portfolios[0].id)
+					} else {
+						// No portfolios available, redirect to home
+						router.push('/')
+					}
+				}
+			} catch (error) {
+				console.error('Failed to fetch portfolios:', error)
+				router.push('/')
+			}
+		}
+		getFirstPortfolio()
+	}, [router])
+	
 	// Fetch portfolio data using the hook
-	const { loading, error, slide1, slide2, slide3, slide4, slide5, slide6 } = usePortfolioData(DEMO_PORTFOLIO_ID)
+	const { loading, error, slide1, slide2, slide3, slide4, slide5, slide6 } = usePortfolioData(portfolioId)
 
 	// Memoized keydown handler for navigation
 	const handleKeyDown = useCallback((event: KeyboardEvent) => {
