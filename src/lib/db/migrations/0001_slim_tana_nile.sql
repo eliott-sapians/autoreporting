@@ -1,0 +1,1 @@
+ALTER TABLE "portfolio_data" RENAME COLUMN "book_price_eur" TO "pnl_eur";

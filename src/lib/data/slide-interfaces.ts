@@ -17,7 +17,7 @@ export interface RawPortfolioData {
 		valuation_eur: number | null
 		weight_pct: number | null
 		isin: string | null
-		book_price_eur: number | null
+		pnl_eur: number | null
 		fees_eur: number | null
 		asset_name: string | null
 		strategy: string | null

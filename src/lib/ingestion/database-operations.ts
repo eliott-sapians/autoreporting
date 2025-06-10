@@ -135,7 +135,7 @@ export async function insertPortfolioData(
 			valuation_eur: row.valuation_eur?.toString(),
 			weight_pct: row.weight_pct?.toString(),
 			isin: row.isin,
-			book_price_eur: row.book_price_eur?.toString(),
+			pnl_eur: row.pnl_eur?.toString(),
 			fees_eur: row.fees_eur?.toString(),
 			asset_name: row.asset_name,
 			strategy: row.strategy,

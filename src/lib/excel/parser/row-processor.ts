@@ -60,7 +60,7 @@ export function processDataRow(
 			valuation_eur: null,
 			weight_pct: null,
 			isin: null,
-			book_price_eur: null,
+			pnl_eur: null,
 			fees_eur: null,
 			asset_name: null,
 			strategy: null,
@@ -169,7 +169,7 @@ function transformColumnValue(
 		case 'isin':
 			return transformISIN(value, options)
 		
-		case 'book_price_eur':
+		case 'pnl_eur':
 			return transformBookPriceEur(value, options)
 		
 		case 'fees_eur':

@@ -292,7 +292,7 @@ function transformParsedData(
 		valuation_eur: record.valuation_eur,
 		weight_pct: record.weight_pct,
 		isin: record.isin,
-		book_price_eur: record.book_price_eur,
+		pnl_eur: record.pnl_eur,
 		fees_eur: record.fees_eur,
 		asset_name: record.asset_name,
 		strategy: record.strategy,

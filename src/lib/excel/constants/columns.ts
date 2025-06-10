@@ -29,7 +29,7 @@ export const COLUMN_TO_FIELD_MAP = {
 	D: 'valuation_eur',
 	E: 'weight_pct',
 	F: 'isin',
-	G: 'book_price_eur',
+	G: 'pnl_eur',
 	H: 'fees_eur',
 	I: 'asset_name',
 	J: 'strategy',

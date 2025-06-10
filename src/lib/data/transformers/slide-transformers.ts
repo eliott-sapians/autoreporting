@@ -112,20 +112,17 @@ export function transformToZoomData(apiResponse: PortfolioDataApiResponse): Zoom
 		
 		const valuation = fund.valuation_eur || 0
 		const pnl_eur = fund.pnl_eur || 0
-		const performance = (valuation/(valuation-pnl_eur)) -1
 		
 		if (!acc[bucketCode]) {
 			acc[bucketCode] = {
 				totalValuation: 0,
 				totalPnl: 0,
-				totalPerformance: 0,
 				funds: []
 			}
 		}
 		
 		acc[bucketCode].totalValuation += valuation
 		acc[bucketCode].totalPnl += pnl_eur
-		acc[bucketCode].totalPerformance += performance
 		acc[bucketCode].funds.push({
 			name: fund.asset_name || fund.label || 'Unknown Fund',
 			valuation,
@@ -136,7 +133,6 @@ export function transformToZoomData(apiResponse: PortfolioDataApiResponse): Zoom
 	}, {} as Record<string, { 
 		totalValuation: number; 
 		totalPnl: number; 
-		totalPerformance: number;
 		funds: Array<{ name: string; valuation: number; pnl_eur: number }>
 	}>)
 
@@ -144,8 +140,9 @@ export function transformToZoomData(apiResponse: PortfolioDataApiResponse): Zoom
 		const config = BUCKET_MAPPING[bucketCode as keyof typeof BUCKET_MAPPING]
 		const percentageOfPortfolio = portfolioTotal > 0 ? (data.totalValuation / portfolioTotal) * 100 : 0
 		
-		// Fix performance calculation: avoid division by very small numbers
-		const performancePercentage = (data.totalValuation / (data.totalValuation - data.totalPnl)) - 1
+		// Calculate performance percentage using correct formula: (valuation / (valuation - pnl)) - 1
+		const costBasis = data.totalValuation - data.totalPnl
+		const performancePercentage = costBasis > 0 ? ((data.totalValuation / costBasis) - 1) * 100 : 0
 		
 		// Calculate individual fund percentages within bucket
 		const fundsWithPercentage = data.funds.map(fund => ({

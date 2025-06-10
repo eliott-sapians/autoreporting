@@ -23,7 +23,7 @@ export const portfolioData = pgTable('portfolio_data', {
 	valuation_eur: numeric('valuation_eur', { precision: 18, scale: 2 }), // D: Estimation + int. courus (EUR)
 	weight_pct: numeric('weight_pct', { precision: 6, scale: 3 }),     // E: Poids (%)
 	isin: varchar('isin', { length: 12 }),                            // F: Code ISIN
-	book_price_eur: numeric('book_price_eur', { precision: 18, scale: 2 }), // G: B / P - Total (EUR)
+	pnl_eur: numeric('pnl_eur', { precision: 18, scale: 2 }), // G: B / P - Total (EUR)
 	fees_eur: numeric('fees_eur', { precision: 18, scale: 2 }),       // H: Frais (EUR)
 	asset_name: text('asset_name'),                                    // I: Nom
 	strategy: text('strategy'),                                        // J: Stratégie

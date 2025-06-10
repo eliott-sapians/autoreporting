@@ -57,7 +57,7 @@ export const portfolioDataInsertSchema = z.object({
 	valuation_eur: frenchNumber('Valuation EUR'),
 	weight_pct: frenchNumber('Weight percentage'),
 	isin: z.string().max(12).optional(),
-	book_price_eur: frenchNumber('Book price EUR'),
+	pnl_eur: frenchNumber('PnL EUR'),
 	fees_eur: frenchNumber('Fees EUR'),
 	asset_name: z.string(),
 	strategy: z.string(),

@@ -27,7 +27,7 @@ export function formatPercentage(value: number | null): string {
 
 /**
  * Calculate portfolio performance based on fund data
- * This is a simplified calculation - may need refinement based on business logic
+ * Formula: (valuation / (valuation - pnl)) - 1
  */
 export function calculatePortfolioPerformance(funds: NonNullable<PortfolioDataApiResponse['data']>['funds']): {
 	performance: string
@@ -37,40 +37,45 @@ export function calculatePortfolioPerformance(funds: NonNullable<PortfolioDataAp
 		return { performance: '0%', performanceEur: '0 €' }
 	}
 
-	// Simple calculation: difference between valuation and book price
 	let totalValuation = 0
-	let totalBookPrice = 0
+	let totalPnl = 0
 	
 	funds.forEach((fund) => {
 		if (fund.valuation_eur) totalValuation += fund.valuation_eur
-		if (fund.book_price_eur) totalBookPrice += fund.book_price_eur
+		if (fund.pnl_eur) totalPnl += fund.pnl_eur
 	})
 
-	const performanceEur = totalValuation - totalBookPrice
-	const performancePercent = totalBookPrice > 0 ? (performanceEur / totalBookPrice) * 100 : 0
-
+	// Performance calculation: (valuation / (valuation - pnl)) - 1
+	const costBasis = totalValuation - totalPnl
+	const performancePercent = costBasis > 0 ? ((totalValuation / costBasis) - 1) * 100 : 0
+	
 	return {
 		performance: formatPercentage(performancePercent),
-		performanceEur: formatCurrency(performanceEur)
+		performanceEur: formatCurrency(totalPnl) // PnL in EUR is the absolute performance
 	}
 }
 
 /**
  * Calculate individual fund performance
+ * Formula: (valuation / (valuation - pnl)) - 1
  */
 export function calculateFundPerformance(fund: NonNullable<PortfolioDataApiResponse['data']>['funds'][0]): {
 	performance: string
 	performanceEur: string
 } {
-	if (!fund.valuation_eur || !fund.book_price_eur) {
+	if (!fund.valuation_eur) {
 		return { performance: '0%', performanceEur: '0 €' }
 	}
 
-	const performanceEur = fund.valuation_eur - fund.book_price_eur
-	const performancePercent = fund.book_price_eur > 0 ? (performanceEur / fund.book_price_eur) * 100 : 0
+	// If no PnL data, assume no performance
+	const pnl = fund.pnl_eur || 0
+	const costBasis = fund.valuation_eur - pnl
+	
+	// Performance calculation: (valuation / (valuation - pnl)) - 1
+	const performancePercent = costBasis > 0 ? ((fund.valuation_eur / costBasis) - 1) * 100 : 0
 
 	return {
 		performance: formatPercentage(performancePercent),
-		performanceEur: formatCurrency(performanceEur)
+		performanceEur: formatCurrency(pnl) // PnL in EUR is the absolute performance
 	}
 } 

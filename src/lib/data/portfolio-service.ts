@@ -99,7 +99,7 @@ export class PortfolioDataService {
 				valuation_eur: parseDecimal(fund.valuation_eur),
 				weight_pct: parseDecimal(fund.weight_pct),
 				isin: fund.isin,
-				book_price_eur: parseDecimal(fund.book_price_eur),
+				pnl_eur: parseDecimal(fund.pnl_eur),
 				fees_eur: parseDecimal(fund.fees_eur),
 				asset_name: fund.asset_name,
 				strategy: fund.strategy,

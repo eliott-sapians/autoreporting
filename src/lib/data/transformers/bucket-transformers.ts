@@ -75,7 +75,8 @@ function transformToBucketDetailData(
 		const valuation = fund.valuation_eur || 0
 		const pnl_eur = fund.pnl_eur || 0
 		const balance = fund.balance || 0
-		const performancePercent = valuation > 0 && pnl_eur !== 0 ? (valuation / (valuation - pnl_eur)) - 1 : 0
+		const costBasis = valuation - pnl_eur
+		const performancePercent = costBasis > 0 ? ((valuation / costBasis) - 1) * 100 : 0
 
 		const baseFund = {
 			libelle: fund.asset_name || fund.label || 'Unknown Fund',
@@ -195,7 +196,8 @@ export function transformToPerformanceData(apiResponse: PortfolioDataApiResponse
 	
 	// Parse performance EUR value (remove € and format)
 	const performanceAmount = parseFloat(performanceEur.replace(/[€\s,]/g, '').replace(',', '.')) || 0
-	const performancePercentage = totalValuation > 0 && totalPnl !== 0 ? (totalValuation / (totalValuation - totalPnl)) - 1 : 0
+	const costBasis = totalValuation - totalPnl
+	const performancePercentage = costBasis > 0 ? ((totalValuation / costBasis) - 1) * 100 : 0
 
 	return {
 		totalPerformance: performanceAmount,
