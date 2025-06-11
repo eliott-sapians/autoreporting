@@ -86,15 +86,17 @@ export default function GenericTable({ columns, footerNote, data }: GenericTable
 		<div ref={tableContainerRef} className="w-full h-full">
 			<Table className="table-fixed w-full h-full border border-border bg-card shadow-md">
 				<TableHeader className="bg-dark text-base">
-					<TableRow className="border-b border-border hover:bg-transparent" style={{ height: `${headerHeight}px` }}>
+					<TableRow className="border-b border-border hover:bg-transparent" style={{ minHeight: `${headerHeight}px` }}>
 						{columns.map((column) => (
 							<TableHead 
 								key={column.key}
-								className={`font-semibold text-foreground-dark px-6 py-6 ${
+								className={`font-semibold text-foreground-dark px-6 py-6 whitespace-normal break-words leading-tight ${
 									column.align === 'center' ? 'text-center' : 'text-left'
 								}`}
 							>
-								{column.header}
+								<div className="hyphens-auto">
+									{column.header}
+								</div>
 							</TableHead>
 						))}
 					</TableRow>

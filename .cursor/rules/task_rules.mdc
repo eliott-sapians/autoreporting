@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 ---
 description: 
@@ -26,7 +26,7 @@ All projects must maintain this structure in Linear:
 Linear Workspace (lkdin-saas team)
 ├── Projects/               # Linear projects for major features
 │   ├── Project A          # Individual Linear project
-│   │   ├── Issues (LKDN-X) # Detailed task specifications
+│   │   ├── Issues (SDP-X) # Detailed task specifications
 │   │   ├── Milestones     # Project milestones and deadlines
 │   │   └── Dependencies   # Cross-project dependencies
 │   └── Project B          # Another Linear project
@@ -166,9 +166,9 @@ Before any significant work, AI must verify:
 
 ### Issue References in Code
 Always reference Linear issues in:
-- Git commit messages: `feat: implement calendar page (LKDN-11)`
-- Code comments: `// Related to LKDN-11: Calendar page structure`
-- Pull request descriptions: `Closes LKDN-11`
+- Git commit messages: `feat: implement calendar page (SDP-11)`
+- Code comments: `// Related to SDP-11: Calendar page structure`
+- Pull request descriptions: `Closes SDP-11`
 
 ### Code Implementation
 When implementing features:
