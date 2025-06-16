@@ -24,7 +24,7 @@ interface ColumnConfig {
 
 interface GenericTableProps {
 	columns: ColumnConfig[]
-	footerNote?: string
+	footerNote?: string | ((data: BucketDetailData) => string)
 	data: BucketDetailData
 }
 
@@ -52,13 +52,16 @@ export default function GenericTable({ columns, footerNote, data }: GenericTable
 	const footerHeight = 96 // h-24 = 6rem = 96px
 	const naturalBodyRowHeight = 72 // Natural row height (equivalent to py-6 with content)
 	
+	// Include an estimated footer note height if it exists
+	const resolvedFooterNote = typeof footerNote === 'function' ? footerNote(data) : footerNote
+	const footerNoteHeight = resolvedFooterNote ? 32 : 0 // Roughly 2rem
 	// Calculate if we need to compress rows
-	const naturalTableHeight = headerHeight + (fundData.length * naturalBodyRowHeight) + footerHeight
+	const naturalTableHeight = headerHeight + (fundData.length * naturalBodyRowHeight) + footerHeight + footerNoteHeight
 	const needsCompression = naturalTableHeight > tableHeight
 	
 	// Calculate actual row height
 	const bodyRowHeight = needsCompression 
-		? Math.max(48, (tableHeight - headerHeight - footerHeight) / fundData.length) // Minimum 48px per row
+		? Math.max(48, (tableHeight - headerHeight - footerHeight - footerNoteHeight) / fundData.length) // Minimum 48px per row
 		: naturalBodyRowHeight
 
 	const getPerformanceColor = (value: string): string => {
@@ -176,9 +179,9 @@ export default function GenericTable({ columns, footerNote, data }: GenericTable
 					</TableRow>
 				</TableFooter>
 			</Table>
-			{footerNote && (
+			{resolvedFooterNote && (
 				<p className="mt-2 text-xs text-muted-foreground italic">
-					{footerNote}
+					{resolvedFooterNote}
 				</p>
 			)}
 		</div>

@@ -78,7 +78,7 @@ export default function GenericDetailPage({ config, data }: GenericDetailPagePro
 					<h3 className='text-2xl font-bold mb-8 flex-shrink-0'>
 						Synthèse des positions
 					</h3>
-					<div className='flex-1 min-h-0 overflow-auto'>
+					<div className='flex-1 min-h-0'>
 						<config.tableComponent data={data} />
 					</div>
 				</div>

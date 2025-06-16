@@ -104,6 +104,7 @@ export interface BucketDetailData {
 	}>
 	fundsChart: ChartDataPoint[] // % of each fund within bucket
 	restantADeployer?: number // For LTI only: engagement - appelé
+	extractDate: string
 }
 
 // Type aliases for specific slides

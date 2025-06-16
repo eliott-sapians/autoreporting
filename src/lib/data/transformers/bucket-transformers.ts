@@ -8,6 +8,7 @@ import type {
 } from '../slide-interfaces'
 import { BUCKET_MAPPING, mapToBucketCode } from './constants'
 import { formatCurrency, formatPercentage, calculateFundPerformance, calculatePortfolioPerformance } from './utils'
+import { formatDDMMYYYY } from '../french-localization'
 
 /**
  * Bucket-specific transformers for detail slides and legacy support
@@ -47,6 +48,7 @@ function transformToBucketDetailData(
 
 	const bucketConfig = BUCKET_MAPPING[targetBucketCode]
 	const funds = apiResponse.data.funds
+	const { portfolio } = apiResponse.data
 
 	// Filter funds for this bucket
 	const bucketFunds = funds.filter(fund => {
@@ -63,7 +65,8 @@ function transformToBucketDetailData(
 				totalFormatted: formatCurrency(0)
 			},
 			fundsTable: [],
-			fundsChart: []
+			fundsChart: [],
+			extractDate: formatDDMMYYYY(portfolio.extractDate)
 		}
 	}
 
@@ -127,7 +130,8 @@ function transformToBucketDetailData(
 			totalFormatted: formatCurrency(bucketTotalValuation)
 		},
 		fundsTable,
-		fundsChart
+		fundsChart,
+		extractDate: formatDDMMYYYY(portfolio.extractDate)
 	}
 
 	// Add restantADeployer for LTI bucket

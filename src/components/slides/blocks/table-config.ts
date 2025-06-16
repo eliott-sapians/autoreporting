@@ -134,5 +134,6 @@ export const illiquidTableConfig: ColumnConfig[] = [
 	}
 ]
 
-export const liquidTableFooterNote = 'Performance depuis l\'ouverture du contrat, à date du /insert date here/'
-export const illiquidTableFooterNote = 'Performance depuis l\'ouverture du contrat, à date du /insert date here/' 
+export const liquidTableFooterNote = (data: BucketDetailData) => `Performance depuis l'ouverture du contrat, à date du ${data.extractDate}`
+
+export const illiquidTableFooterNote = (data: BucketDetailData) => `Performance depuis l'ouverture du contrat, à date du ${data.extractDate}` 
