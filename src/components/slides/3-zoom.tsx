@@ -48,7 +48,11 @@ export default function Zoom({ data }: ZoomProps) {
 
 	// Create chart data for individual funds within each bucket
 	const createBucketChartData = (bucket: any) => {
-		const colors = ['var(--color-blue-atlante-sapians-500)', 'var(--color-green-sapians-500)', 'var(--color-grey-sapians-900)'] // Various colors for funds
+		const colors = [
+			'var(--color-blue-atlante-sapians-500)',
+			'var(--color-green-sapians-500)',
+			'var(--color-grey-sapians-900)'
+		]
 		return bucket.funds.map((fund: any, index: number) => ({
 			name: fund.name,
 			value: fund.valuation,

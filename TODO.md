@@ -1,2 +1,10 @@
-[ ] Refactor the table component, such that the bottom row and top ro are fixed, and that if many rows in between it's  not a problem of height.
-[ ] Understand how exports would work if all the slides are only in one page /new-slide/page.tsx
+TODO
+- Changer slide zoom de fonds par fonds à stratégie. 
+- Updater les couleurs des fonds
+- faire sur slide 4 5 6 la div  qui a la date en dessous de la div avec les 3 colonnes, pour pas de scroll
+- ajouter phrase : "des fonds provisionnés pourront être déployés en cas de chute brutale des marchés (antichambre)"
+- rajouter DPI sur slide 6
+
+moyen terme
+- ajouter antichambre sur slide 5
+- ajouter antichambre sur ingest command

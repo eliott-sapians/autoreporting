@@ -112,28 +112,33 @@ export function transformToZoomData(apiResponse: PortfolioDataApiResponse): Zoom
 		
 		const valuation = fund.valuation_eur || 0
 		const pnl_eur = fund.pnl_eur || 0
+
+		// Determine strategy name (fallback to "Unknown")
+		const strategy = fund.strategy || 'Unknown'
 		
+		// Initialise bucket entry if it does not exist
 		if (!acc[bucketCode]) {
 			acc[bucketCode] = {
 				totalValuation: 0,
 				totalPnl: 0,
-				funds: []
+				// Track aggregated valuations per strategy
+				strategies: {} as Record<string, number>
 			}
 		}
 		
+		// Update bucket-level totals
 		acc[bucketCode].totalValuation += valuation
 		acc[bucketCode].totalPnl += pnl_eur
-		acc[bucketCode].funds.push({
-			name: fund.asset_name || fund.label || 'Unknown Fund',
-			valuation,
-			pnl_eur
-		})
+
+		// Aggregate valuation by strategy within the bucket
+		acc[bucketCode].strategies[strategy] =
+			(acc[bucketCode].strategies[strategy] || 0) + valuation
 		
 		return acc
 	}, {} as Record<string, { 
 		totalValuation: number; 
 		totalPnl: number; 
-		funds: Array<{ name: string; valuation: number; pnl_eur: number }>
+		strategies: Record<string, number>
 	}>)
 
 	const buckets = Object.entries(bucketData).map(([bucketCode, data]) => {
@@ -144,11 +149,11 @@ export function transformToZoomData(apiResponse: PortfolioDataApiResponse): Zoom
 		const costBasis = data.totalValuation - data.totalPnl
 		const performancePercentage = costBasis > 0 ? ((data.totalValuation / costBasis) - 1) * 100 : 0
 		
-		// Calculate individual fund percentages within bucket
-		const fundsWithPercentage = data.funds.map(fund => ({
-			name: fund.name,
-			valuation: fund.valuation,
-			percentage: data.totalValuation > 0 ? (fund.valuation / data.totalValuation) * 100 : 0
+		// Build array with strategy-level aggregation and percentage within bucket
+		const fundsWithPercentage = Object.entries(data.strategies).map(([strategyName, strategyValuation]) => ({
+			name: strategyName,
+			valuation: strategyValuation,
+			percentage: data.totalValuation > 0 ? (strategyValuation / data.totalValuation) * 100 : 0
 		}))
 		
 		return {
