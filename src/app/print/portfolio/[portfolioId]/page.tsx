@@ -16,6 +16,7 @@ import {
 	transformToLTIBucketData 
 } from '@/lib/data/transformers'
 import PrintReadyScript from './print-ready-script'
+import Merci from '@/components/slides/9-merci'
 
 interface PrintPortfolioPageProps {
 	params: {
@@ -128,7 +129,14 @@ export default async function PrintPortfolioPage({ params }: PrintPortfolioPageP
 				</div>
 			</section>
 
-			{/* Client-side script to add pdf-ready class */}
+			{/* Slide 8: Merci */}
+			<section className="pdf-page">
+				<div className="pdf-root">
+					<Merci />
+				</div>
+			</section>
+
+			    {/* Client-side script to add pdf-ready class */}
 			<PrintReadyScript />
 		</div>
 	)

@@ -40,12 +40,15 @@ export default function Garde({ data }: GardeProps) {
 					<h3 className='text-5xl mb-4 text-primary font-[600]'>
 						Reporting Assurance Vie Wealins
 					</h3>
-
-					<div className='text-left text-background text-lg space-y-1 mt-16'> {/* Details section */}
-						<p><span>Conseiller :</span> {data.conseiller}</p>
-						<p><span>Teneur de compte :</span> {data.teneurDeCompte}</p>
-						<p><span>Assureur :</span> {data.assureur}</p>
-						<p><span>Numéro de compte :</span> {data.numeroDeCompte}</p>
+					<h3 className='text-2xl mb-4 text-primary font-[600]'>
+					</h3>
+					<div className='flex justify-center mt-16'>
+						<div className='text-left text-background text-lg space-y-1'>
+							<p><span>Conseiller :</span> {data.conseiller || 'Pierre Moreau'}</p>
+							<p><span>Teneur de compte :</span> {data.teneurDeCompte}</p>
+							<p><span>Assureur :</span> {data.assureur}</p>
+							<p><span>Numéro de compte :</span> {data.numeroDeCompte}</p>
+						</div>
 					</div>
 
 					<div className='text-primary text-4xl mt-24'>
