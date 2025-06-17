@@ -7,6 +7,8 @@ import { ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { Pie, Cell, PieChart, LabelList } from 'recharts'
 import { ChartContainer } from '@/components/ui/chart'
 import { customPieLabelFormatter } from '@/components/ui/custom-pie-label'
+import TableDetail from './table-detail'
+import TableIlliquid from './table-illiquid'
 
 export interface PageSection {
 	type: 'subtitle' | 'remaining-deploy'
@@ -17,7 +19,7 @@ export interface DetailPageConfig {
 	title: string
 	titleHighlight: string
 	sections?: PageSection[]
-	tableComponent: React.ComponentType<{ data: BucketDetailData }>
+	tableComponent: string
 	chartId: string
 }
 
@@ -38,6 +40,20 @@ export default function GenericDetailPage({ config, data }: GenericDetailPagePro
 			</div>
 		)
 	}
+
+	// Resolve table component from string identifier
+	const getTableComponent = (componentName: string) => {
+		switch (componentName) {
+			case 'TableDetail':
+				return TableDetail
+			case 'TableIlliquid':
+				return TableIlliquid
+			default:
+				return TableDetail
+		}
+	}
+
+	const TableComponent = getTableComponent(config.tableComponent)
 
 	// Chart configuration based on fund colors
 	const allocationConfig = data.fundsChart.reduce((config, item) => {
@@ -79,7 +95,7 @@ export default function GenericDetailPage({ config, data }: GenericDetailPagePro
 						Synthèse des positions
 					</h3>
 					<div className='flex-1 min-h-0'>
-						<config.tableComponent data={data} />
+						<TableComponent data={data} />
 					</div>
 				</div>
 				<div className='col-span-1 h-full flex flex-col min-h-0'>

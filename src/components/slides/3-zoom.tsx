@@ -73,7 +73,7 @@ export default function Zoom({ data }: ZoomProps) {
 						Performance depuis l'ouverture du contrat, à date du 04.02.2025
 					</p>
 				</div>
-				<div className='flex-1 grid grid-cols-1 xl:grid-cols-3 gap-8 min-h-0'>
+				<div className='flex-1 grid grid-cols-1 print:grid-cols-3 xl:grid-cols-3 gap-8 min-h-0'>
 					{orderedBuckets.map((bucket) => {
 						const colors = bucketColors[bucket.bucketCode as keyof typeof bucketColors] || bucketColors.CT
 						

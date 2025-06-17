@@ -75,7 +75,7 @@ export default function Synthese({ data }: SyntheseProps) {
 					</h2>
 					<p className='italic text-muted-foreground'>Données du 04.02.2025</p>
 				</div>
-				<div className='flex-1 grid grid-cols-1 xl:grid-cols-2 gap-8 min-h-0'>
+				<div className='flex-1 grid grid-cols-1 print:grid-cols-2 xl:grid-cols-2 gap-8 min-h-0'>
 					{/* First chart block: Répartition par poche */}
 					<div className='relative h-full flex flex-col'>
 						<Corner position='top-left' offset='0.5rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>

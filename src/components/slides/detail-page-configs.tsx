@@ -1,11 +1,9 @@
-import TableDetail from './blocks/table-detail'
-import TableIlliquid from './blocks/table-illiquid'
 import type { DetailPageConfig } from './blocks/generic-detail-page'
 
 export const liquidPageConfig: DetailPageConfig = {
 	title: 'Détail de la poche',
 	titleHighlight: 'long-terme liquide',
-	tableComponent: TableDetail,
+	tableComponent: 'TableDetail',
 	chartId: 'allocation-liquid'
 }
 
@@ -18,7 +16,7 @@ export const provisionPageConfig: DetailPageConfig = {
 			content: 'Performance depuis l\'ouverture du contrat, à date du 04.02.2025'
 		}
 	],
-	tableComponent: TableDetail,
+	tableComponent: 'TableDetail',
 	chartId: 'allocation-provision'
 }
 
@@ -30,6 +28,6 @@ export const illiquidPageConfig: DetailPageConfig = {
 			type: 'remaining-deploy'
 		}
 	],
-	tableComponent: TableIlliquid,
+	tableComponent: 'TableIlliquid',
 	chartId: 'allocation-illiquid'
 } 

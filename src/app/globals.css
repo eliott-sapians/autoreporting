@@ -139,3 +139,35 @@
     color: var(--foreground-dark) !important;
   }
 }
+
+/* Print styles for PDF export */
+@media print {
+  @page {
+    size: A3 landscape;
+    margin: 12.7mm;
+  }
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .pdf-page {
+    width: 1920px;
+    height: 1080px;
+    break-after: page;
+    page-break-after: always; /* Fallback for older browsers */
+  }
+  
+  .pdf-root {
+    transform: scale(0.827);
+    transform-origin: top left;
+    width: 1920px;
+    height: 1080px;
+  }
+  
+  /* Hide loading spinners and interactive elements in print mode */
+  .loading-spinner {
+    display: none !important;
+  }
+}
