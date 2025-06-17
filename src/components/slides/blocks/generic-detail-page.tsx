@@ -121,7 +121,7 @@ export default function GenericDetailPage({ config, data }: GenericDetailPagePro
 												nameKey='name'
 												cx='50%' 
 												cy='50%' 
-												outerRadius='60%'
+												outerRadius={200}
 												labelLine={false}
 											>
 												{data.fundsChart.map((entry, index: number) => (
