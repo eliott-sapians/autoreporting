@@ -41,16 +41,16 @@ export default function PocheCard({
 	cornerColor,
 }: PocheCardProps) {
 	return (
-		<div className='h-full flex flex-col'>
+		<div className='h-full flex flex-col py-4 print:py-4'>
 			<div className='flex-shrink-0'>
 				<div className='grid grid-cols-4'>
 					<div className='col-span-3 grid grid-cols-4 grid-rows-4 font-bold text-white' style={{ backgroundColor: mainBgColor }}>
 						<div className='col-span-4 row-span-2 flex items-center pl-4'>
-							<p className='text-lg font-bold'>{name}</p>
+							<p className='text-xl font-bold'>{name}</p>
 						</div>
 						<div className='col-span-3 row-span-2 grid grid-cols-2 flex items-center pl-4' style={{ backgroundColor: amountBgColor }}>
-							<p>{amount}</p>
-							{amountRatio && <p className='flex justify-end pr-4'>{amountRatio}</p>}
+							<p className="py-1 text-mid">{amount}</p>
+							{amountRatio && <p className='flex justify-end py-1 pr-4'>{amountRatio}</p>}
 						</div>
 					</div>
 					<div className='col-span-1 grid grid-rows-4'>
@@ -58,7 +58,7 @@ export default function PocheCard({
 							<p className='text-sm'>{performanceLabel}</p>
 						</div>
 						<div className='row-span-3 flex items-center justify-center' style={{ backgroundColor: performanceBgColor }}>
-							<p className='text-lg'>{performanceValue}</p>
+							<p className='text-lg py-4'>{performanceValue}</p>
 						</div>
 					</div>
 				</div>

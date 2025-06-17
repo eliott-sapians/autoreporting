@@ -138,13 +138,17 @@
   .text-foreground-dark {
     color: var(--foreground-dark) !important;
   }
+  /* Stretch any flex box using `items-center` so its children (charts) can grow */
+  .items-center {
+    align-items: stretch !important;
+  }
 }
 
 /* Print styles for PDF export */
 @media print {
   @page {
     size: A3 landscape;
-    margin: 12.7mm;
+    margin: 0;
   }
   
   html, body {
@@ -153,15 +157,15 @@
   }
   
   .pdf-page {
-    width: 1920px;
-    height: 1080px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     break-after: page;
-    page-break-after: always; /* Fallback for older browsers */
   }
   
   .pdf-root {
-    transform: scale(0.827);
-    transform-origin: top left;
+    transform: scale(1);    /* 1492 / 1920 = 0.777…  */
+    transform-origin: center;
     width: 1920px;
     height: 1080px;
   }
@@ -169,5 +173,48 @@
   /* Hide loading spinners and interactive elements in print mode */
   .loading-spinner {
     display: none !important;
+  }
+
+  /* ---
+   * Chart sizing overrides (print)
+   * --------------------------------
+   * Recharts containers inside ChartContainer elements use the Tailwind
+   * `aspect-video` utility which enforces a 16/9 ratio. While perfect for
+   * on-screen display, it leaves too much empty space when exporting the
+   * slides to PDF. In print context we drop this constraint and force the
+   * charts to fully occupy the space offered by their surrounding divs.
+   * We only touch layout properties – no DOM changes required.
+   * --------------------------------
+   */
+  [data-slot='chart'] {
+    /* Remove the 16/9 ratio so height expands naturally */
+    aspect-ratio: auto !important;
+
+    /* Ensure the chart wrapper stretches across its cell */
+    width:  100% !important;
+    height: 100% !important;
+  }
+
+  /* Make sure the internal Recharts ResponsiveContainer also fills the space */
+  [data-slot='chart'] .recharts-responsive-container {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* Override widths/heights that Recharts sets inline so charts render at full size
+     when the page is laid out for print (the library may compute 0 px before the
+     print renderer measures). */
+  [data-slot='chart'] .recharts-wrapper,
+  [data-slot='chart'] .recharts-surface {
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
+  }
+
+  /* Ensure the ChartContainer itself is allowed to stretch in flex layouts */
+  [data-slot='chart'] {
+    flex: 1 1 auto !important;
+    align-self: stretch !important;
   }
 }

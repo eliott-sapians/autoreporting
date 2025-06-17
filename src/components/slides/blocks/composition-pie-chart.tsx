@@ -12,7 +12,7 @@ export default function CompositionPieChart({ chartConfig, chartData }: Composit
     console.log('CompositionPieChart chartData:', chartData)
     
     return (
-        <ChartContainer config={chartConfig} className='mt-8 w-full h-full'>
+        <ChartContainer config={chartConfig} className='mt-8 w-full h-full '>
         <PieChart>
             <ChartTooltip content={<ChartTooltipContent />} />
             <Pie
@@ -21,17 +21,17 @@ export default function CompositionPieChart({ chartConfig, chartData }: Composit
                 nameKey='name'
                 cx='50%'
                 cy='50%'
-                outerRadius={110}
-                labelLine={false}
+                outerRadius={180}
+                labelLine={true}
             >
                 {chartData.map((entry) => (
                     <Cell key={entry.key} fill={entry.color} />
                 ))}
                 <LabelList
                     dataKey="name"
-                    className="fill-white font-medium"
+                    className="fill-white font-medium text-base"
                     stroke="none"
-                    fontSize={11}
+                    fontSize={14}
                     formatter={(value: any, name: any, props: any) => {
                         console.log('LabelList formatter - value:', value, 'name:', name, 'props:', props)
                         const result = customPieLabelFormatter({ value, name, ...props })

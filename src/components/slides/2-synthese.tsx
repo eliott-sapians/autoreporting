@@ -77,27 +77,28 @@ export default function Synthese({ data }: SyntheseProps) {
 				</div>
 				<div className='flex-1 grid grid-cols-1 print:grid-cols-2 xl:grid-cols-2 gap-8 min-h-0'>
 					{/* First chart block: Répartition par poche */}
-					<div className='relative h-full flex flex-col'>
+					<div className='relative h-full print:h-full flex flex-col'>
 						<Corner position='top-left' offset='0.5rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
 						<Corner position='top-right' offset='0.5rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
 						<Corner position='bottom-left' offset='0.5rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
 						<Corner position='bottom-right' offset='0.5rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
 						{/* Content wrapper with padding */}
-						<div className='relative p-10 h-full flex flex-col'>
+						<div className='relative py-10 px-2 h-full print:justify-center flex flex-col'>
 							<h2 className='text-3xl text-center mb-4 flex-shrink-0'>Répartition par poche</h2>
-							<div className='flex-1 flex items-center justify-center min-h-0'>
-								<ChartContainer id='repartition' config={repartitionConfig} className='w-full h-full'>
+							<div className='flex-1 flex print:flex-1 print:flex print:items-center print:justify-center items-bottom justify-center min-h-0'>
+								<ChartContainer id='repartition' config={repartitionConfig} className='w-full h-full print:h-full print:w-full'>
 									<BarChart
 										data={repartitionData}
 										layout='horizontal'
-										margin={{ top: 40, right: 100, bottom: 25, left: 100 }}
+										margin={{ top: 40, right: 50, bottom: 25, left: 50 }}
 										className='text-primary-foreground text-base'
+
 									>
 									<XAxis type='category' dataKey='name' hide />
 									<YAxis type='number' hide domain={[0, 100]} />
 									<ChartTooltip content={<ChartTooltipContent />} />
 									<ChartLegend
-									  content={<ChartLegendContent className='flex-col items-start justify-start' />} 
+									  content={<ChartLegendContent className='flex-col space-y-2 space-x-8 items-start justify-start' />} 
 									  layout='vertical'
 									  align='right'
 									  verticalAlign='middle'
@@ -162,7 +163,7 @@ export default function Synthese({ data }: SyntheseProps) {
 											nameKey='name'
 											cx='50%' 
 											cy='50%' 
-											outerRadius={160} 
+											outerRadius={200} 
 											labelLine={false}
 										>
 											<ChartLegend 
@@ -176,9 +177,8 @@ export default function Synthese({ data }: SyntheseProps) {
 											))}
 											<LabelList
 												dataKey="name"
-												className="fill-white font-medium"
+												className="fill-white font-medium text-base"
 												stroke="none"
-												fontSize={11}
 												formatter={customPieLabelFormatter}
 											/>
 										</Pie>
