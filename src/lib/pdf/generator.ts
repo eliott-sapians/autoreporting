@@ -57,10 +57,15 @@ export async function generatePdfFromUrl(
 		const page = await browser.newPage()
 
 		// Navigate to URL and wait for content
-		await page.goto(url, { 
+		await page.goto(url, {
 			waitUntil: 'networkidle',
-			timeout: opts.timeout 
+			timeout: opts.timeout
 		})
+
+		// Force print CSS media rules to apply
+		await page.emulateMedia({ media: 'print' })
+		// Set viewport to approximate A3 landscape size at 96 DPI to avoid extra scaling
+		await page.setViewportSize({ width: 1587, height: 1123 })
 
 		// Extra delay to allow any client-side hydration / charts to finish
 		await page.waitForTimeout(2000)
