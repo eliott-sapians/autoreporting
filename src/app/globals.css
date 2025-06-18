@@ -55,6 +55,7 @@
   --color-green-sapians-100: rgb(181, 235, 217);
   --color-green-sapians-300: rgb(125, 220, 188);
   --color-green-sapians-500: rgb(70, 205, 169);
+  --color-green-sapians-700: rgb(0, 150, 120);
   --color-grey-sapians-100: rgb(243, 243, 230);
   --color-grey-sapians-200: rgb(232, 232, 225);
   --color-grey-sapians-300: rgb(214, 214, 202);
@@ -65,6 +66,10 @@
   --color-blue-atlante-sapians-100: rgb(155, 185, 199);
   --color-blue-atlante-sapians-300: rgb(76, 132, 167);
   --color-blue-atlante-sapians-500: rgb(0, 80, 130);
+  --color-blue-dark-sapians-100: rgb(103, 197, 255);
+  --color-blue-dark-sapians-300: rgb(27, 167, 255);
+  --color-blue-dark-sapians-700: rgb(0, 60, 98);
+  --color-blue-dark-sapians-900: rgb(0, 30, 70);
   --color-blue-royal-sapians-100: rgb(171, 167, 219);
   --color-blue-royal-sapians-300: rgb(108, 101, 192);
   --color-blue-royal-sapians-500: rgb(45, 35, 165);
@@ -74,6 +79,8 @@
   --color-orange-sapians-100: rgb(255, 197, 165);
   --color-orange-sapians-300: rgb(255, 153, 97);
   --color-orange-sapians-500: rgb(255, 110, 30);
+  --color-orange-sapians-700: rgb(213, 75, 0);
+  --color-orange-sapians-900: rgb(142, 50, 0);
   --color-primary-foreground: rgb(0, 0, 0);
   --color-primary-background: rgb(255, 255, 255);
 

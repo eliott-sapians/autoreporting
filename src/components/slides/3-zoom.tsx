@@ -3,6 +3,7 @@
 import PocheCard from '@/components/slides/blocks/poche-card'
 import Footer from '@/components/ui/footer'
 import type { ZoomData } from '@/lib/data/slide-interfaces'
+import { getStrategyColor } from '@/lib/data/transformers/constants'
 
 interface ZoomProps {
 	data: ZoomData | null
@@ -48,16 +49,11 @@ export default function Zoom({ data }: ZoomProps) {
 
 	// Create chart data for individual funds within each bucket
 	const createBucketChartData = (bucket: any) => {
-		const colors = [
-			'var(--color-blue-atlante-sapians-500)',
-			'var(--color-green-sapians-500)',
-			'var(--color-grey-sapians-900)'
-		]
-		return bucket.funds.map((fund: any, index: number) => ({
+		return bucket.funds.map((fund: any) => ({
 			name: fund.name,
 			value: fund.valuation,
 			key: fund.name.toLowerCase().replace(/\s+/g, '-'),
-			color: colors[index % colors.length]
+			color: getStrategyColor(fund.name)
 		}))
 	}
 

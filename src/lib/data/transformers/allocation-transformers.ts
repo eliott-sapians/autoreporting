@@ -1,5 +1,5 @@
 import type { PortfolioDataApiResponse, FundData } from '@/lib/types'
-import { COLOR_SCHEMES } from './constants'
+import { COLOR_SCHEMES, getStrategyColor } from './constants'
 import { formatCurrency, calculateFundPerformance } from './utils'
 
 /**
@@ -65,7 +65,7 @@ export function getStrategyAllocation(apiResponse: PortfolioDataApiResponse): Ar
 	return Object.entries(strategyTotals).map(([strategy, value]) => ({
 		name: strategy,
 		value,
-		color: COLOR_SCHEMES.strategies[strategy as keyof typeof COLOR_SCHEMES.strategies] || '#6b7280'
+		color: getStrategyColor(strategy)
 	}))
 }
 

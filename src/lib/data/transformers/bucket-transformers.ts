@@ -6,7 +6,7 @@ import type {
 	BucketDetailData,
 	ChartDataPoint
 } from '../slide-interfaces'
-import { BUCKET_MAPPING, mapToBucketCode } from './constants'
+import { BUCKET_MAPPING, mapToBucketCode, getStrategyColor } from './constants'
 import { formatCurrency, formatPercentage, calculateFundPerformance, calculatePortfolioPerformance } from './utils'
 import { formatDDMMYYYY } from '../french-localization'
 
@@ -116,7 +116,7 @@ function transformToBucketDetailData(
 		return {
 			name: fund.asset_name || fund.label || 'Unknown Fund',
 			value: valuation,
-			color: '#3b82f6', // Default color, can be customized
+			color: getStrategyColor(fund.strategy),
 			percentage,
 			formatted: formatCurrency(valuation)
 		}

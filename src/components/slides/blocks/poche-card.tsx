@@ -48,7 +48,7 @@ export default function PocheCard({
 						<div className='col-span-4 row-span-2 flex items-center pl-4'>
 							<p className='text-xl font-bold'>{name}</p>
 						</div>
-						<div className='col-span-3 row-span-2 grid grid-cols-2 flex items-center pl-4' style={{ backgroundColor: amountBgColor }}>
+						<div className='col-span-3 row-span-2 grid grid-cols-2  items-center pl-4' style={{ backgroundColor: amountBgColor }}>
 							<p className="py-1 text-mid">{amount}</p>
 							{amountRatio && <p className='flex justify-end py-1 pr-4'>{amountRatio}</p>}
 						</div>

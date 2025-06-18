@@ -67,7 +67,7 @@ export default function GenericTable({ columns, footerNote, data }: GenericTable
 	const getPerformanceColor = (value: string): string => {
 		const numericValue = parseFloat(value.replace(',', '.'))
 		if (numericValue < 0) return 'text-[var(--color-orange-sapians-500)]'
-		if (value === '0,0%' || value === '- €') return 'text-muted-foreground'
+		if (value === '0.0%' || value === '0€') return 'text-muted-foreground'
 		return 'text-[var(--color-green-sapians-500)]'
 	}
 
@@ -141,8 +141,8 @@ export default function GenericTable({ columns, footerNote, data }: GenericTable
 						</TableRow>
 					))}
 				</TableBody>
-				<TableFooter className="bg-[var(--color-gray-sapians-700)]">
-					<TableRow className="bg-[var(--color-gray-sapians-700)] hover:bg-[var(--color-grey-sapians-300)]/50" style={{ height: `${footerHeight}px` }}>
+				<TableFooter className="bg-[var(--color-grey-sapians-300)]">
+					<TableRow className="bg-[var(--color-grey-sapians-300)] hover:bg-[var(--color-grey-sapians-300)]/50" style={{ height: `${footerHeight}px` }}>
 						{columns.map((column, index) => {
 							if (index === 0) {
 								return (

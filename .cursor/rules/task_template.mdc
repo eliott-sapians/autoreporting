@@ -3,6 +3,10 @@ description:
 globs: 
 alwaysApply: false
 ---
+---
+description: task template for linear tasks and projects.
+---
+
 # Linear Task Template - Issue Description Format
 
 *Use this template when creating new Linear issues for structured task management*
