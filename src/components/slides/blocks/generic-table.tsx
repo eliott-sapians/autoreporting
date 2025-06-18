@@ -65,15 +65,28 @@ export default function GenericTable({ columns, footerNote, data }: GenericTable
 		: naturalBodyRowHeight
 
 	const getPerformanceColor = (value: string): string => {
-		const numericValue = parseFloat(value.replace(',', '.'))
+		const numericValue = parseFloat(value.replace(/[€%\s,]/g, '').replace(',', '.'))
 		if (numericValue < 0) return 'text-[var(--color-orange-sapians-500)]'
-		if (value === '0.0%' || value === '0€') return 'text-muted-foreground'
+		if (numericValue === 0) return 'text-muted-foreground'
 		return 'text-[var(--color-green-sapians-500)]'
 	}
 
 	const defaultFormatter = (value: any, fund: BucketDetailData['fundsTable'][0], column: ColumnConfig) => {
 		// Handle different data types
-		const displayValue = typeof value === 'number' ? value.toLocaleString() : String(value || '')
+		let displayValue: string
+		
+		// Special formatting for illiquid table fields
+		if (column.dataKey === 'engagement') {
+			displayValue = typeof value === 'number' ? `${value.toLocaleString()} €` : String(value || '0 €')
+		} else if (column.dataKey === 'appele') {
+			displayValue = typeof value === 'number' ? `${value.toFixed(1)}%` : String(value || '0.0%')
+		} else if (column.dataKey === 'tvpi') {
+			displayValue = typeof value === 'number' ? value.toFixed(2) : String(value || '0.00')
+		} else if (column.dataKey === 'valorisation') {
+			displayValue = typeof value === 'number' ? `${value.toLocaleString()} €` : String(value || '')
+		} else {
+			displayValue = typeof value === 'number' ? value.toLocaleString() : String(value || '')
+		}
 		
 		if (column.dataKey === 'performancePercent' || column.dataKey === 'performanceEur') {
 			return (
