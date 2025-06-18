@@ -35,12 +35,10 @@ export default function Garde({ data }: GardeProps) {
 
 				{/* Slide content */}
 				<div className='flex flex-col items-center px-16 py-16'> {/* Centering content with inner padding */}
-					<h1 className='text-6xl mb-12 tracking-widest text-primary font-[700]'>sapians</h1>
-					<h2 className='text-4xl mb-4 uppercase font-[600] text-background'>Relevé de portefeuille</h2>
+					<h1 className='text-6xl mb-8 tracking-widest text-primary font-[700]'>sapians</h1>
+					<h2 className='text-3xl mb-16 uppercase font-[600] text-background'>Relevé de portefeuille</h2>
 					<h3 className='text-5xl mb-4 text-primary font-[600]'>
-						Reporting Assurance Vie Wealins
-					</h3>
-					<h3 className='text-2xl mb-4 text-primary font-[600]'>
+						Reporting  - {data.portfolioName}
 					</h3>
 					<div className='flex justify-center mt-16'>
 						<div className='text-left text-background text-lg space-y-1'>
@@ -51,7 +49,7 @@ export default function Garde({ data }: GardeProps) {
 						</div>
 					</div>
 
-					<div className='text-primary text-4xl mt-24'>
+					<div className='text-primary text-4xl mt-16'>
 						{data.dateExtraction}
 					</div>
 				</div>

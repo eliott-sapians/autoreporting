@@ -43,6 +43,7 @@ export interface ChartDataPoint {
  * Fixed values and portfolio metadata
  */
 export interface GardeData {
+	portfolioName: string // Client/Portfolio name
 	conseiller: string // Leave blank for now
 	teneurDeCompte: string // Fixed to "Quintet"
 	assureur: string // Fixed to "Wealins"

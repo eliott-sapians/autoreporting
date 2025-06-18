@@ -11,7 +11,7 @@ import TableDetail from './table-detail'
 import TableIlliquid from './table-illiquid'
 
 export interface PageSection {
-	type: 'subtitle' | 'remaining-deploy'
+	type: 'remaining-deploy'
 	content?: string
 }
 
@@ -62,19 +62,10 @@ export default function GenericDetailPage({ config, data }: GenericDetailPagePro
 		return config
 	}, {} as Record<string, { label: string; color: string }>)
 
-	const renderSubtitle = (section: PageSection) => (
-		<p className='italic text-muted-foreground'>
-			{section.content}
-		</p>
-	)
-
 	const renderRemainingDeploy = () => (
-		<div className='bg-[var(--color-grey-sapians-100)] p-4 mx-8 mb-8'>
-			<h4 className='text-lg font-semibold text-center text-primary-foreground mb-2'>
-				Restant à déployer
-			</h4>
-			<p className='text-2xl font-bold text-center text-primary-foreground'>
-				{data.restantADeployer ? `€ ${data.restantADeployer.toLocaleString()}` : 'N/A'}
+		<div>
+			<p className='text-sm font-semibold text-center text-primary-foreground mt-2'>
+				Restant à déployer : {data.restantADeployer ? `${data.restantADeployer.toLocaleString()} €` : 'N/A'}
 			</p>
 		</div>
 	)
@@ -85,7 +76,7 @@ export default function GenericDetailPage({ config, data }: GenericDetailPagePro
 		<div className='w-screen h-screen overflow-hidden flex flex-col'>
 			<div className='flex-1 px-16 py-16 grid grid-cols-3 gap-16 min-h-0'>
 				<div className='col-span-2 h-full flex flex-col min-h-0'>
-					<div className={`text-justify flex-shrink-0 ${config.sections?.some(s => s.type === 'subtitle') ? 'mb-8' : 'mb-24'}`}>
+					<div className='text-justify flex-shrink-0 mb-24'>
 						<h1 className='text-5xl font-bold mb-6'>
 							{config.title}&nbsp;
 							<span className='text-current bg-primary'>{config.titleHighlight}</span>
@@ -103,6 +94,11 @@ export default function GenericDetailPage({ config, data }: GenericDetailPagePro
 						<h2 className='text-3xl font-bold text-center text-primary-foreground'>
 							{data.bucketInfo.totalFormatted}
 						</h2>
+						{hasRemainingDeploy && (
+							<>
+								{renderRemainingDeploy()}
+							</>
+						)}
 					</div>
 					<div className={`relative w-full flex-1 min-h-0 ${hasRemainingDeploy ? 'flex flex-col' : ''}`}>
 						<Corner position='top-left' offset='0rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
@@ -139,11 +135,7 @@ export default function GenericDetailPage({ config, data }: GenericDetailPagePro
 								</div>
 							)}
 						</div>
-						{hasRemainingDeploy && (
-							<>
-								{renderRemainingDeploy()}
-							</>
-						)}
+
 						<Corner position='bottom-left' offset='0rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
 						<Corner position='bottom-right' offset='0rem' length='2.5rem' thickness='0.8rem' color='var(--color-grey-sapians-300)'/>
 					</div>

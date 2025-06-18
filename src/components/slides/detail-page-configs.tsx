@@ -10,12 +10,6 @@ export const liquidPageConfig: DetailPageConfig = {
 export const provisionPageConfig: DetailPageConfig = {
 	title: 'Détail de la poche',
 	titleHighlight: 'long-terme provision',
-	sections: [
-		{
-			type: 'subtitle',
-			content: 'Performance depuis l\'ouverture du contrat, à date du 04.02.2025'
-		}
-	],
 	tableComponent: 'TableDetail',
 	chartId: 'allocation-provision'
 }

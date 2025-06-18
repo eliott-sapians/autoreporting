@@ -25,6 +25,7 @@ export function transformToGardeData(apiResponse: PortfolioDataApiResponse): Gar
 	const portfolio = apiResponse.data.portfolio
 
 	return {
+		portfolioName: portfolio.name,
 		conseiller: '', // Leave blank for now
 		teneurDeCompte: 'Quintet', // Fixed value
 		assureur: 'Wealins', // Fixed value
