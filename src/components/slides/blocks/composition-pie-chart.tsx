@@ -23,6 +23,7 @@ export default function CompositionPieChart({ chartConfig, chartData }: Composit
                 cy='50%'
                 outerRadius={180}
                 labelLine={true}
+                isAnimationActive={false}
             >
                 {chartData.map((entry) => (
                     <Cell key={entry.key} fill={entry.color} />

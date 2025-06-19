@@ -102,6 +102,7 @@ export default function Synthese({ data }: SyntheseProps) {
 												dataKey='illiquide' 
 												stackId='repartition' 
 												fill='var(--color-illiquide)'
+												isAnimationActive={false}
 											>
 												<LabelList 
 													dataKey='illiquide' 
@@ -114,6 +115,7 @@ export default function Synthese({ data }: SyntheseProps) {
 												dataKey='liquide'
 												stackId='repartition' 
 												fill='var(--color-liquide)'
+												isAnimationActive={false}
 											>
 												<LabelList 
 													dataKey='liquide' 
@@ -126,6 +128,7 @@ export default function Synthese({ data }: SyntheseProps) {
 												dataKey='provision' 
 												stackId='repartition' 
 												fill='var(--color-provision)'
+												isAnimationActive={false}
 											>
 												<LabelList 
 													dataKey='provision' 
@@ -177,6 +180,7 @@ export default function Synthese({ data }: SyntheseProps) {
 											cy='50%' 
 											outerRadius={200} 
 											labelLine={false}
+											isAnimationActive={false}
 										>
 											<ChartLegend 
 												content={<ChartLegendContent className='flex-col items-start justify-start' />} 

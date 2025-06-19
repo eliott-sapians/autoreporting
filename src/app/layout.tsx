@@ -28,7 +28,7 @@ export default function RootLayout({
         className={outfit.className}
       >
         <ToastProvider>
-          {children}
+        {children}
         </ToastProvider>
       </body>
     </html>

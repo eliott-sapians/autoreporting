@@ -68,7 +68,7 @@ export async function generatePdfFromUrl(
 		await page.setViewportSize({ width: 1587, height: 1123 })
 
 		// Extra delay to allow any client-side hydration / charts to finish
-		await page.waitForTimeout(2000)
+		await page.waitForTimeout(500)
 
 		// Attempt to log any console errors from the page (helpful during debugging)
 		page.on('console', msg => {

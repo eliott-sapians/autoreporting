@@ -89,15 +89,15 @@ function PortfolioTable({ portfolios }: { portfolios: Portfolio[] }) {
 										onClick={() => handleExportPdf(portfolio.id)}
 										disabled={loadingId === portfolio.id}
 										aria-label={`Exporter le PDF du portefeuille ${portfolio.id}`}
-										className="w-[120px]"
+										className="w-[120px] justify-center"
 									>
 										{loadingId === portfolio.id ? (
 											<>
-												<span className="animate-spin mr-2">⌛</span>
+												<span className="animate-spin mr-2">S</span>
 												Export...
 											</>
 										) : (
-											'Exporter PDF'
+											<span className="justify-center">Exporter PDF</span>
 										)}
 									</Button>
 								</TableCell>
