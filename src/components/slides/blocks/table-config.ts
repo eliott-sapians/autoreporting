@@ -6,6 +6,7 @@ interface ColumnConfig {
 	align: 'left' | 'center'
 	dataKey: keyof BucketDetailData['fundsTable'][0]
 	footerValue?: (data: BucketDetailData) => string
+	width?: string
 }
 
 export const liquidTableConfig: ColumnConfig[] = [
@@ -117,6 +118,7 @@ export const illiquidTableConfig: ColumnConfig[] = [
 		header: 'TVPI',
 		align: 'center',
 		dataKey: 'tvpi',
+		width: 'w-32',
 		footerValue: (data) => {
 			// Calculate average TVPI
 			const totalTVPI = data.fundsTable.reduce((sum, fund) => {

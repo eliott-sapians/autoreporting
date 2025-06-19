@@ -76,7 +76,7 @@ function PortfolioTable({ portfolios }: { portfolios: Portfolio[] }) {
 								<TableCell>{portfolio.clientName}</TableCell>
 								<TableCell>{portfolio.lastExtractionDate}</TableCell>
 								<TableCell className="text-right">
-									<Link href={`/portfolio/${encodeURIComponent(portfolio.id)}`}>
+									<Link href={`/print/portfolio/${encodeURIComponent(portfolio.id)}`}>
 										<Button variant="outline" size="sm">
 											Accéder au suivi
 										</Button>

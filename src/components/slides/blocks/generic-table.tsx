@@ -20,6 +20,7 @@ interface ColumnConfig {
 	formatter?: (value: any, fund: BucketDetailData['fundsTable'][0]) => React.ReactNode
 	footerValue?: (data: BucketDetailData) => string
 	footerFormatter?: (value: string, data: BucketDetailData) => React.ReactNode
+	width?: string
 }
 
 interface GenericTableProps {
@@ -108,7 +109,7 @@ export default function GenericTable({ columns, footerNote, data }: GenericTable
 								key={column.key}
 								className={`font-semibold text-foreground-dark px-6 py-6 whitespace-normal break-words leading-tight ${
 									column.align === 'center' ? 'text-center' : 'text-left'
-								}`}
+								} ${column.width || ''}`}
 							>
 								<div className="hyphens-auto">
 									{column.header}
@@ -143,6 +144,7 @@ export default function GenericTable({ columns, footerNote, data }: GenericTable
 											${columnIndex === 0 ? 'font-medium text-card-foreground' : 
 											  columnIndex === 1 ? 'text-muted-foreground' : 
 											  'font-medium text-card-foreground'}
+											${column.width || ''}
 										`}
 									>
 										<div className="truncate">
@@ -172,7 +174,7 @@ export default function GenericTable({ columns, footerNote, data }: GenericTable
 									: value
 								
 								return (
-									<TableCell key={column.key} className="px-6 py-6 text-center">
+									<TableCell key={column.key} className={`px-6 py-6 text-center ${column.width || ''}`}>
 										<span className={`font-bold text-lg ${
 											column.dataKey === 'performancePercent' || column.dataKey === 'performanceEur' 
 												? getPerformanceColor(value)
@@ -184,7 +186,7 @@ export default function GenericTable({ columns, footerNote, data }: GenericTable
 								)
 							} else {
 								return (
-									<TableCell key={column.key} className="px-6 py-6">
+									<TableCell key={column.key} className={`px-6 py-6 ${column.width || ''}`}>
 									</TableCell>
 								)
 							}

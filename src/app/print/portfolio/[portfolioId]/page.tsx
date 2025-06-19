@@ -87,6 +87,14 @@ export default async function PrintPortfolioPage({ params }: PrintPortfolioPageP
 				</div>
 			</section>
 
+			
+			{/* Slide 7: Methodology */}
+			<section className="pdf-page">
+				<div className="pdf-root">
+					<Methodology />
+				</div>
+			</section>
+
 			{/* Slide 2: Synthese */}
 			<section className="pdf-page">
 				<div className="pdf-root">
@@ -122,12 +130,6 @@ export default async function PrintPortfolioPage({ params }: PrintPortfolioPageP
 				</div>
 			</section>
 
-			{/* Slide 7: Methodology */}
-			<section className="pdf-page">
-				<div className="pdf-root">
-					<Methodology />
-				</div>
-			</section>
 
 			{/* Slide 8: Merci */}
 			<section className="pdf-page">
