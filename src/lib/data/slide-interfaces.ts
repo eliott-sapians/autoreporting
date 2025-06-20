@@ -58,6 +58,8 @@ export interface GardeData {
 export interface SyntheseData {
 	estimationPortefeuille: number // Sum of all valuations
 	estimationFormatted: string // Formatted currency
+	portfolioPerformancePercentage: number // Overall portfolio performance percentage
+	portfolioPerformanceFormatted: string // Formatted performance (e.g., "+12.5%")
 	repartitionParPoche: ChartDataPoint[] // Bucket allocation chart
 	allocationStrategique: ChartDataPoint[] // Strategy allocation chart
 }

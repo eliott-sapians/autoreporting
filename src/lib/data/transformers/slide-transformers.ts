@@ -44,10 +44,22 @@ export function transformToSyntheseData(apiResponse: PortfolioDataApiResponse): 
 
 	const funds = apiResponse.data.funds
 	
-	// Calculate total valuation
+	// Calculate total valuation and total PnL
 	const totalValuation = funds.reduce((sum, fund) => {
 		return sum + (fund.valuation_eur || 0)
 	}, 0)
+
+	const totalPnL = funds.reduce((sum, fund) => {
+		return sum + (fund.pnl_eur || 0)
+	}, 0)
+
+	// Calculate portfolio performance percentage
+	const costBasis = totalValuation - totalPnL
+	const portfolioPerformancePercentage = costBasis > 0 ? ((totalValuation / costBasis) - 1) * 100 : 0
+	
+	// Format performance for display
+	const performanceSign = portfolioPerformancePercentage >= 0 ? '+' : ''
+	const portfolioPerformanceFormatted = `${performanceSign}${portfolioPerformancePercentage.toFixed(2)}%`
 
 	// Get bucket allocation data
 	const bucketTotals = funds.reduce((acc, fund) => {
@@ -89,6 +101,8 @@ export function transformToSyntheseData(apiResponse: PortfolioDataApiResponse): 
 	return {
 		estimationPortefeuille: totalValuation,
 		estimationFormatted: formatCurrency(totalValuation),
+		portfolioPerformancePercentage,
+		portfolioPerformanceFormatted,
 		repartitionParPoche: bucketChart,
 		allocationStrategique: strategyChart
 	}
