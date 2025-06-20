@@ -72,11 +72,36 @@ export default function GenericTable({ columns, footerNote, data }: GenericTable
 		return 'text-[var(--color-green-sapians-500)]'
 	}
 
+	// SAP-65: Ensure consistent formatting for performance values (EUR & %) with a leading '+' on positives
+	const formatPerformance = (value: number | string, isPercent: boolean): string => {
+		if (value === null || value === undefined || value === '') return ''
+
+		// Extract numeric value regardless of input type
+		const numeric = typeof value === 'number'
+			? value
+			: parseFloat(String(value).replace(/[€%\s,]/g, '').replace(',', '.'))
+
+		if (isNaN(numeric)) return String(value)
+
+		const prefix = numeric > 0 ? '+' : ''
+		return isPercent
+			? `${prefix}${numeric.toFixed(1)}%`
+			: `${prefix}${numeric.toLocaleString()} €`
+	}
+
 	const defaultFormatter = (value: any, fund: BucketDetailData['fundsTable'][0], column: ColumnConfig) => {
-		// Handle different data types
+		// Dedicated handling for performance columns
+		if (column.dataKey === 'performancePercent' || column.dataKey === 'performanceEur') {
+			const displayValue = formatPerformance(value, column.dataKey === 'performancePercent')
+			return (
+				<span className={`font-medium ${getPerformanceColor(displayValue)}`}>
+					{displayValue}
+				</span>
+			)
+		}
+
+		// Handle other data types
 		let displayValue: string
-		
-		// Special formatting for illiquid table fields
 		if (column.dataKey === 'engagement') {
 			displayValue = typeof value === 'number' ? `${value.toLocaleString()} €` : String(value || '0 €')
 		} else if (column.dataKey === 'appele') {
@@ -87,14 +112,6 @@ export default function GenericTable({ columns, footerNote, data }: GenericTable
 			displayValue = typeof value === 'number' ? `${value.toLocaleString()} €` : String(value || '')
 		} else {
 			displayValue = typeof value === 'number' ? value.toLocaleString() : String(value || '')
-		}
-		
-		if (column.dataKey === 'performancePercent' || column.dataKey === 'performanceEur') {
-			return (
-				<span className={`font-medium ${getPerformanceColor(displayValue)}`}>
-					{displayValue}
-				</span>
-			)
 		}
 		return displayValue
 	}
@@ -168,19 +185,24 @@ export default function GenericTable({ columns, footerNote, data }: GenericTable
 							}
 							
 							if (column.footerValue) {
-								const value = column.footerValue(data)
-								const content = column.footerFormatter 
-									? column.footerFormatter(value, data)
-									: value
+								const rawValue = column.footerValue(data)
 								
+								// Apply default formatting when no custom footerFormatter is provided
+								const formattedValue = column.footerFormatter
+									? column.footerFormatter(rawValue, data)
+									: (column.dataKey === 'performancePercent' || column.dataKey === 'performanceEur')
+										? formatPerformance(rawValue, column.dataKey === 'performancePercent')
+										: rawValue
+
 								return (
 									<TableCell key={column.key} className={`px-6 py-6 text-center ${column.width || ''}`}>
 										<span className={`font-bold text-lg ${
-											column.dataKey === 'performancePercent' || column.dataKey === 'performanceEur' 
-												? getPerformanceColor(value)
+											column.dataKey === 'performancePercent' || column.dataKey === 'performanceEur'
+												? getPerformanceColor(String(formattedValue))
 												: 'text-card-foreground'
-										}`}>
-											{content}
+										}`}
+										>
+											{formattedValue}
 										</span>
 									</TableCell>
 								)

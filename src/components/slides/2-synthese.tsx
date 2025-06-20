@@ -71,7 +71,7 @@ export default function Synthese({ data }: SyntheseProps) {
 					</h1>
 					<h2 className='text-3xl font-semibold mb-4'>
 						Estimation du portefeuille :&nbsp;
-						<span className='text-current bg-primary'> {data.estimationFormatted} </span>
+						<span className='text-4xl bg-primary'> {data.estimationFormatted} </span>
 					</h2>
 					<p className='italic text-muted-foreground'>Données du 04.02.2025</p>
 				</div>

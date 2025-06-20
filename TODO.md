@@ -5,6 +5,10 @@ TODO
 [ ] ajouter phrase : "des fonds provisionnés pourront être déployés en cas de chute brutale des marchés (antichambre)"
 [ ] rajouter DPI sur slide 6
 
+[ ] Performance ajouter un +
+[ ] Performance en Blanc
+[ ] Total performance, rajouter un +
+
 moyen terme
 - ajouter antichambre sur slide 5
 - ajouter antichambre sur ingest command

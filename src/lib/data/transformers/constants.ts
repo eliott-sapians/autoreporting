@@ -47,12 +47,6 @@ export const COLOR_SCHEMES = {
 		'CT': '#F4F3EE',
 		'LTL': '#D8D8D8', 
 		'LTI': '#A1DFF0',
-		'Core': '#F4F3EE',
-		'Satellite': '#D8D8D8',
-		'Provision': '#A1DFF0',
-		'Long-terme': '#3b82f6',
-		'Court-terme': '#10b981', 
-		'Unknown': '#6b7280'
 	},
 	strategies: {
 		'Cash': '#C5C5B4', // rgb(197,197,180)
@@ -60,8 +54,11 @@ export const COLOR_SCHEMES = {
 		'Monétaire': '#003C62', // rgb(0,60,98)
 		'Private equity': '#FF6E1E', // rgb(255,110,30)
 		'Dette Privée': '#8E3200', // rgb(142,50,0)
+		'Infras': '#FF9961', // rgb(255, 153, 97)
+		'Club Deal': '#FFC72C', // Orange Yellow
 		'Actions': '#46CDA9', // rgb(70,205,169)
 		'Crypto': '#FFFF69', // rgb(255,255,105)
+		'Commodités': '#009678', // rgb(0,150,120)
 		'Produit Structuré': '#009678', // rgb(0,150,120)
 		'Unknown': '#6b7280'
 	}

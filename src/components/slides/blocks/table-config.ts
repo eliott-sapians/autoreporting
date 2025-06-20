@@ -27,6 +27,7 @@ export const liquidTableConfig: ColumnConfig[] = [
 		header: 'VALORISATION',
 		align: 'center',
 		dataKey: 'valorisation',
+		width: 'w-48',
 		footerValue: (data) => data.bucketInfo.totalFormatted
 	},
 	{
@@ -102,9 +103,10 @@ export const illiquidTableConfig: ColumnConfig[] = [
 	},
 	{
 		key: 'appele',
-		header: 'APPELÉ (%)',
+		header: '% APPELÉ',
 		align: 'center',
 		dataKey: 'appele',
+		width: 'w-32',
 		footerValue: (data) => {
 			// Calculate average appelé percentage
 			const totalAppele = data.fundsTable.reduce((sum, fund) => {

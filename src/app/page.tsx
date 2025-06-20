@@ -57,7 +57,7 @@ function PortfolioTable({ portfolios }: { portfolios: Portfolio[] }) {
 					<TableRow>
 						<TableHead>ID Portfolio</TableHead>
 						<TableHead>Nom du Client</TableHead>
-						<TableHead>Dernière Date d'Extraction</TableHead>
+						<TableHead>Date du dernier extract</TableHead>
 						<TableHead className="text-right">Actions</TableHead>
 						<TableHead className="text-right">Export PDF</TableHead>
 					</TableRow>
