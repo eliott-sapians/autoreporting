@@ -6,6 +6,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLe
 import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell, LabelList } from 'recharts'
 import { customPieLabelFormatter } from '@/components/ui/custom-pie-label'
 import type { SyntheseData } from '@/lib/data/slide-interfaces'
+import { liquidTableFooterNote } from './blocks/table-config'
 
 interface SyntheseProps {
 	data: SyntheseData | null
@@ -78,7 +79,7 @@ export default function Synthese({ data }: SyntheseProps) {
 							({data.portfolioPerformanceFormatted})
 						</span>
 					</h2>
-					<p className='italic text-muted-foreground'>Données du 04.02.2025</p>
+					<p className='italic text-muted-foreground'>Performance depuis l'ouverture du contrat, à date du {data.extractDate}</p>
 				</div>
 				<div className='flex-1 grid grid-cols-1 print:grid-cols-2 xl:grid-cols-2 gap-8 min-h-0'>
 					{/* First chart block: Répartition par poche */}

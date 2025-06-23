@@ -8,7 +8,7 @@ import type {
 import { BUCKET_MAPPING, mapToBucketCode, COLOR_SCHEMES } from './constants'
 import { formatCurrency } from './utils'
 import { getStrategyAllocation } from './allocation-transformers'
-import { formatFrenchMonthYear } from '../french-localization'
+import { formatFrenchMonthYear, formatDDMMYYYY } from '../french-localization'
 
 /**
  * Main slide transformers for the 6 presentation slides
@@ -106,7 +106,8 @@ export function transformToSyntheseData(apiResponse: PortfolioDataApiResponse): 
 		portfolioPerformancePercentage,
 		portfolioPerformanceFormatted,
 		repartitionParPoche: bucketChart,
-		allocationStrategique: strategyChart
+		allocationStrategique: strategyChart,
+		extractDate: formatDDMMYYYY(apiResponse.data.portfolio.extractDate)
 	}
 }
 
@@ -188,6 +189,7 @@ export function transformToZoomData(apiResponse: PortfolioDataApiResponse): Zoom
 	})
 
 	return {
-		buckets
+		buckets,
+		extractDate: formatDDMMYYYY(apiResponse.data.portfolio.extractDate)
 	}
 } 

@@ -57,7 +57,7 @@ export const COLOR_SCHEMES = {
 		'Infras': '#FF9961', // rgb(255, 153, 97)
 		'Club Deal': '#FFC72C', // Orange Yellow
 		'Actions': '#46CDA9', // rgb(70,205,169)
-		'Crypto': '#FFFF69', // rgb(255,255,105)
+		'Crypto': '#9C9C2D', // rgb(156, 156, 45)
 		'Commodités': '#009678', // rgb(0,150,120)
 		'Produit Structuré': '#009678', // rgb(0,150,120)
 		'Unknown': '#6b7280'

@@ -62,6 +62,7 @@ export interface SyntheseData {
 	portfolioPerformanceFormatted: string // Formatted performance (e.g., "+12.5%")
 	repartitionParPoche: ChartDataPoint[] // Bucket allocation chart
 	allocationStrategique: ChartDataPoint[] // Strategy allocation chart
+	extractDate: string // Extraction date from portfolio metadata
 }
 
 /**
@@ -82,6 +83,7 @@ export interface ZoomData {
 			percentage: number // percentage within this bucket
 		}>
 	}>
+	extractDate: string
 }
 
 /**

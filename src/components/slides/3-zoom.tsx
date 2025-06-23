@@ -66,7 +66,7 @@ export default function Zoom({ data }: ZoomProps) {
 						<span className='text-current bg-primary'>différentes poches </span>
 					</h1>
 					<p className='italic text-muted-foreground'>
-						Performance depuis l'ouverture du contrat, à date du 04.02.2025
+						Performance depuis l'ouverture du contrat, à date du {data.extractDate}
 					</p>
 				</div>
 				<div className='flex-1 grid grid-cols-1 print:grid-cols-3 xl:grid-cols-3 gap-8 min-h-0'>
