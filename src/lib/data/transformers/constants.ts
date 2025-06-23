@@ -60,6 +60,7 @@ export const COLOR_SCHEMES = {
 		'Crypto': '#9C9C2D', // rgb(156, 156, 45)
 		'Commodités': '#009678', // rgb(0,150,120)
 		'Produit Structuré': '#009678', // rgb(0,150,120)
+		'Allocation Passive': '#006400', //Vert foncé
 		'Unknown': '#6b7280'
 	}
 } as const 

@@ -46,7 +46,11 @@
 [data-theme="sapians"] {
   /* Original Sapians specific colors */
   --font-family: Outfit;
-  --color-yellow-sapians-500: rgb(255, 255, 105);
+  --color-yellow-sapians-100: rgb(255, 255, 255);
+  --color-yellow-sapians-300: rgb(255, 255, 105);
+  --color-yellow-sapians-500: rgb(255, 255, 0);
+  --color-yellow-sapians-700: rgb(255, 255, 0);
+  --color-yellow-sapians-900: rgb(156, 156, 45);
   --color-green-forest-sapians-100: rgb(130, 158, 149);
   --color-green-forest-sapians-200: rgb(100, 120, 110);
   --color-green-forest-sapians-300: rgb(80, 100, 90);
