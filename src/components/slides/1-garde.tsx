@@ -42,7 +42,7 @@ export default function Garde({ data }: GardeProps) {
 					</h3>
 					<div className='flex justify-center mt-16'>
 						<div className='text-left text-background text-lg space-y-1'>
-							<p><span>Conseiller :</span> {data.conseiller || 'Pierre Moreau'}</p>
+							<p><span>Conseiller :</span> {data.conseiller || process.env.NEXT_PUBLIC_CONSEILLER_DEFAULT}</p>
 							<p><span>Teneur de compte :</span> {data.teneurDeCompte}</p>
 							<p><span>Assureur :</span> {data.assureur}</p>
 							<p><span>Numéro de compte :</span> {data.numeroDeCompte}</p>
