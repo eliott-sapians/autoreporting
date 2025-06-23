@@ -62,11 +62,13 @@ export function getStrategyAllocation(apiResponse: PortfolioDataApiResponse): Ar
 		return acc
 	}, {} as Record<string, number>)
 
-	return Object.entries(strategyTotals).map(([strategy, value]) => ({
-		name: strategy,
-		value,
-		color: getStrategyColor(strategy)
-	}))
+	return Object.entries(strategyTotals)
+		.filter(([_, value]) => value > 0) // Only include strategies with positive valuation
+		.map(([strategy, value]) => ({
+			name: strategy,
+			value,
+			color: getStrategyColor(strategy)
+		}))
 }
 
 /**
@@ -96,11 +98,13 @@ export function getBucketAllocation(apiResponse: PortfolioDataApiResponse): Arra
 		return acc
 	}, {} as Record<string, number>)
 
-	return Object.entries(bucketTotals).map(([bucket, value]) => ({
-		name: bucket,
-		value,
-		color: COLOR_SCHEMES.buckets[bucket as keyof typeof COLOR_SCHEMES.buckets] || '#6b7280'
-	}))
+	return Object.entries(bucketTotals)
+		.filter(([_, value]) => value > 0) // Only include buckets with positive valuation
+		.map(([bucket, value]) => ({
+			name: bucket,
+			value,
+			color: COLOR_SCHEMES.buckets[bucket as keyof typeof COLOR_SCHEMES.buckets] || '#6b7280'
+		}))
 }
 
 /**

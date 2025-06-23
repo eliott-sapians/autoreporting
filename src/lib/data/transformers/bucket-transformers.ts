@@ -90,7 +90,16 @@ function transformToBucketDetailData(
 		// Different data for LTI bucket vs others
 		if (targetBucketCode === 'LTI') {
 			const appele = balance > 0 ? ((valuation - pnl_eur) / balance) * 100 : 0
-			const tvpi = (valuation - pnl_eur) > 0 ? valuation / (valuation - pnl_eur) : 0
+			// Fix TVPI calculation: if nothing has been called (appele = 0), TVPI should be 1
+			// TVPI = Total Value / Paid In Capital
+			// If paid in capital is 0, we can't divide by 0, so return 1 (or null to show N/A)
+			let tvpi: number
+			if (costBasis <= 0) {
+				// Nothing has been called or negative cost basis
+				tvpi = 1
+			} else {
+				tvpi = valuation / costBasis
+			}
 			
 			return {
 				...baseFund,
@@ -109,18 +118,21 @@ function transformToBucketDetailData(
 	})
 
 	// Create funds chart data (% of each fund within bucket)
-	const fundsChart: ChartDataPoint[] = bucketFunds.map(fund => {
-		const valuation = fund.valuation_eur || 0
-		const percentage = bucketTotalValuation > 0 ? (valuation / bucketTotalValuation) * 100 : 0
-		
-		return {
-			name: fund.asset_name || fund.label || 'Unknown Fund',
-			value: valuation,
-			color: getStrategyColor(fund.strategy),
-			percentage,
-			formatted: formatCurrency(valuation)
-		}
-	})
+	// Filter out funds with zero valuation from charts
+	const fundsChart: ChartDataPoint[] = bucketFunds
+		.filter(fund => (fund.valuation_eur || 0) > 0) // Only include funds with positive valuation
+		.map(fund => {
+			const valuation = fund.valuation_eur || 0
+			const percentage = bucketTotalValuation > 0 ? (valuation / bucketTotalValuation) * 100 : 0
+			
+			return {
+				name: fund.asset_name || fund.label || 'Unknown Fund',
+				value: valuation,
+				color: getStrategyColor(fund.strategy),
+				percentage,
+				formatted: formatCurrency(valuation)
+			}
+		})
 
 	const result: BucketDetailData = {
 		bucketInfo: {
@@ -226,12 +238,20 @@ export function computeEngagementTVPI(apiResponse: PortfolioDataApiResponse): Fu
 		const valuation = fund.valuation_eur || 0
 		const pnl_eur = fund.pnl_eur || 0
 		const balance = fund.balance || 0
+		const costBasis = valuation - pnl_eur
 		
 		// Calculate engagement: (valuation - pnl) / balance
-		const engagement = balance > 0 ? (valuation - pnl_eur) / balance : 0
+		const engagement = balance > 0 ? costBasis / balance : 0
 		
 		// Calculate TVPI: valuation / (valuation - pnl)
-		const tvpi = (valuation - pnl_eur) > 0 ? valuation / (valuation - pnl_eur) : 0
+		// Fix: if nothing has been called (cost basis = 0), TVPI should be 1
+		let tvpi: number
+		if (costBasis <= 0) {
+			// Nothing has been called or negative cost basis
+			tvpi = 1
+		} else {
+			tvpi = valuation / costBasis
+		}
 
 		return {
 			name: fund.asset_name || fund.label || 'Unknown Fund',

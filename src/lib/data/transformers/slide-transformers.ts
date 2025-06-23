@@ -74,16 +74,18 @@ export function transformToSyntheseData(apiResponse: PortfolioDataApiResponse): 
 		return acc
 	}, {} as Record<string, number>)
 
-	const bucketChart: ChartDataPoint[] = Object.entries(bucketTotals).map(([bucket, value]) => {
-		const percentage = totalValuation > 0 ? (value / totalValuation) * 100 : 0
-		return {
-			name: bucket,
-			value,
-			color: COLOR_SCHEMES.buckets[bucket as keyof typeof COLOR_SCHEMES.buckets] || '#6b7280',
-			percentage,
-			formatted: formatCurrency(value)
-		}
-	})
+	const bucketChart: ChartDataPoint[] = Object.entries(bucketTotals)
+		.filter(([_, value]) => value > 0) // Only include buckets with positive valuation
+		.map(([bucket, value]) => {
+			const percentage = totalValuation > 0 ? (value / totalValuation) * 100 : 0
+			return {
+				name: bucket,
+				value,
+				color: COLOR_SCHEMES.buckets[bucket as keyof typeof COLOR_SCHEMES.buckets] || '#6b7280',
+				percentage,
+				formatted: formatCurrency(value)
+			}
+		})
 
 	// Get strategy allocation data
 	const strategyAllocation = getStrategyAllocation(apiResponse)
@@ -165,11 +167,14 @@ export function transformToZoomData(apiResponse: PortfolioDataApiResponse): Zoom
 		const performancePercentage = costBasis > 0 ? ((data.totalValuation / costBasis) - 1) * 100 : 0
 		
 		// Build array with strategy-level aggregation and percentage within bucket
-		const fundsWithPercentage = Object.entries(data.strategies).map(([strategyName, strategyValuation]) => ({
-			name: strategyName,
-			valuation: strategyValuation,
-			percentage: data.totalValuation > 0 ? (strategyValuation / data.totalValuation) * 100 : 0
-		}))
+		// Filter out strategies with zero valuation from charts
+		const fundsWithPercentage = Object.entries(data.strategies)
+			.filter(([_, strategyValuation]) => strategyValuation > 0) // Only include strategies with positive valuation
+			.map(([strategyName, strategyValuation]) => ({
+				name: strategyName,
+				valuation: strategyValuation,
+				percentage: data.totalValuation > 0 ? (strategyValuation / data.totalValuation) * 100 : 0
+			}))
 		
 		return {
 			bucketCode,
