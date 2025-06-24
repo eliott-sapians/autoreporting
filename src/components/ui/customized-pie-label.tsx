@@ -9,17 +9,18 @@ interface CustomizedLabelProps {
 	innerRadius?: number
 	outerRadius?: number
 	name?: string
+	distanceMultiplier?: number
 }
 
 const RADIAN = Math.PI / 180
 
-export const CustomizedLabel = ({ cx = 0, cy = 0, midAngle = 0, innerRadius = 0, outerRadius = 0, name }: CustomizedLabelProps) => {
+export const CustomizedLabel = ({ cx = 0, cy = 0, midAngle = 0, innerRadius = 0, outerRadius = 0, name, distanceMultiplier = 1.3 }: CustomizedLabelProps) => {
 	// Guard against missing name
 	if (!name) return null
 
 	// ---------- Position calculations ----------
 	// Adjust the multiplier to change the distance of the label from the chart
-	const radius = innerRadius + (outerRadius - innerRadius) * 1.3
+	const radius = innerRadius + (outerRadius - innerRadius) * distanceMultiplier
 	const x = cx + radius * Math.cos(-midAngle * RADIAN)
 	const y = cy + radius * Math.sin(-midAngle * RADIAN)
 

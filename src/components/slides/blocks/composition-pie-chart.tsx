@@ -26,7 +26,7 @@ export default function CompositionPieChart({ chartConfig, chartData }: Composit
                 isAnimationActive={false}
                 stroke='#FFFFFF'
                 strokeWidth={2}
-                label={<CustomizedLabel />}
+                label={<CustomizedLabel distanceMultiplier={1.15} />}
             >
                 {chartData.map((entry) => (
                     <Cell key={entry.key} fill={entry.color} />
