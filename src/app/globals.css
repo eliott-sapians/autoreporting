@@ -157,7 +157,6 @@
     align-items: stretch !important;
   }
 }
-
 /* Print styles for PDF export */
 @media print {
   @page {

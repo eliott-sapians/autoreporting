@@ -120,6 +120,8 @@ export default function GenericDetailPage({ config, data }: GenericDetailPagePro
 												outerRadius={200}
 												labelLine={false}
 												isAnimationActive={false}
+												stroke='#FFFFFF'
+												strokeWidth={2}
 											>
 												{data.fundsChart.map((entry, index: number) => (
 													<Cell key={`cell-${index}`} fill={entry.color} />
