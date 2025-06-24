@@ -2,14 +2,27 @@ TODO
 [x] Changer slide zoom de fonds par fonds à stratégie. 
 [x] Updater les couleurs des fonds
 [x] faire sur slide 4 5 6 la div  qui a la date en dessous de la div avec les 3 colonnes, pour pas de scroll
-[ ] ajouter phrase : "des fonds provisionnés pourront être déployés en cas de chute brutale des marchés (antichambre)"
-[ ] rajouter DPI sur slide 6
-[ ] Changer Conseiller
-[ ] Changer AMC stratégie > Allocation Passive
 
 [ ] Performance ajouter un +
-[ ] Total performance, rajouter un +
+[x] Total performance, rajouter un +
+
+
+[ ] Changer Conseiller
+[ ] JMR pb de visu, moitié du mot hors cadre, réduire la taille du graphique (slide 3)
+[ ] Contrat lombard vs wealins
+    - corine
+    - aurelie
+    - léon
+    - gérald 
+
+[ ] assurance vie vs contrat de capitalisation
+[ ] réorganiser par logique les fonds dans xlsx
+[ ] remettre à jour les fonds non-cotés > afficher PNL en nominal, remettre comme donné par quintet le PNL des fonds non-cotés
+
+
 
 moyen terme
 - ajouter antichambre sur slide 5
 - ajouter antichambre sur ingest command
+
+
