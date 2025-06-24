@@ -1,7 +1,7 @@
 import { ChartContainer, ChartConfig, ChartLegendContent, ChartLegend } from '@/components/ui/chart'
-import { PieChart, Pie, Cell, LabelList } from 'recharts'
+import { PieChart, Pie, Cell } from 'recharts'
 import { ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
-import { customPieLabelFormatter } from '@/components/ui/custom-pie-label'
+import { CustomizedLabel } from '@/components/ui/customized-pie-label'
 
 interface CompositionPieChartProps {
     chartConfig: ChartConfig
@@ -21,25 +21,16 @@ export default function CompositionPieChart({ chartConfig, chartData }: Composit
                 nameKey='name'
                 cx='50%'
                 cy='50%'
-                outerRadius={180}
+                outerRadius={150}
                 labelLine={true}
                 isAnimationActive={false}
+                stroke='#FFFFFF'
+                strokeWidth={2}
+                label={<CustomizedLabel />}
             >
                 {chartData.map((entry) => (
                     <Cell key={entry.key} fill={entry.color} />
                 ))}
-                <LabelList
-                    dataKey="name"
-                    className="fill-white font-medium text-base"
-                    stroke="none"
-                    fontSize={14}
-                    formatter={(value: any, name: any, props: any) => {
-                        console.log('LabelList formatter - value:', value, 'name:', name, 'props:', props)
-                        const result = customPieLabelFormatter({ value, name, ...props })
-                        console.log('LabelList formatter result:', result)
-                        return result
-                    }}
-                />
             </Pie>
             </PieChart>
         </ChartContainer>

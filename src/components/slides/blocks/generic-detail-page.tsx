@@ -7,6 +7,7 @@ import { ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { Pie, Cell, PieChart, LabelList } from 'recharts'
 import { ChartContainer } from '@/components/ui/chart'
 import { customPieLabelFormatter } from '@/components/ui/custom-pie-label'
+import { CustomizedLabel } from '@/components/ui/customized-pie-label'
 import TableDetail from './table-detail'
 import TableIlliquid from './table-illiquid'
 
@@ -117,21 +118,16 @@ export default function GenericDetailPage({ config, data }: GenericDetailPagePro
 												nameKey='name'
 												cx='50%' 
 												cy='50%' 
-												outerRadius={200}
-												labelLine={false}
+												outerRadius={125}
+												labelLine={true}
 												isAnimationActive={false}
 												stroke='#FFFFFF'
 												strokeWidth={2}
+												label={<CustomizedLabel />}
 											>
 												{data.fundsChart.map((entry, index: number) => (
 													<Cell key={`cell-${index}`} fill={entry.color} />
 												))}
-												<LabelList
-													dataKey="name"
-													className="fill-white font-medium text-base"
-													stroke="none"
-													formatter={customPieLabelFormatter}
-												/>
 											</Pie>
 										</PieChart>
 									</ChartContainer>

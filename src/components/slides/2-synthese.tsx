@@ -5,6 +5,7 @@ import Footer from '@/components/ui/footer'
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart'
 import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell, LabelList } from 'recharts'
 import { customPieLabelFormatter } from '@/components/ui/custom-pie-label'
+import { CustomizedLabel } from '@/components/ui/customized-pie-label'
 import type { SyntheseData } from '@/lib/data/slide-interfaces'
 import { liquidTableFooterNote } from './blocks/table-config'
 
@@ -184,25 +185,16 @@ export default function Synthese({ data }: SyntheseProps) {
 											nameKey='name'
 											cx='50%' 
 											cy='50%' 
-											outerRadius={200} 
-											labelLine={false}
+											outerRadius={150} 
+											labelLine={true}
 											isAnimationActive={false}
+											stroke='#FFFFFF'
+											strokeWidth={2}
+											label={<CustomizedLabel />}
 										>
-											<ChartLegend 
-												content={<ChartLegendContent className='flex-col items-start justify-start' />} 
-												layout='vertical'
-												align='right'
-												verticalAlign='middle'
-											/>
 											{allocationData.map((entry) => (
 												<Cell key={entry.key} fill={entry.color} />
 											))}
-											<LabelList
-												dataKey="name"
-												className="fill-white font-medium text-base"
-												stroke="none"
-												formatter={customPieLabelFormatter}
-											/>
 										</Pie>
 									</PieChart>
 								</ChartContainer>
