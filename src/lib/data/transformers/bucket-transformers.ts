@@ -90,22 +90,11 @@ function transformToBucketDetailData(
 		// Different data for LTI bucket vs others
 		if (targetBucketCode === 'LTI') {
 			const appele = balance > 0 ? ((valuation - pnl_eur) / balance) * 100 : 0
-			// Fix TVPI calculation: if nothing has been called (appele = 0), TVPI should be 1
-			// TVPI = Total Value / Paid In Capital
-			// If paid in capital is 0, we can't divide by 0, so return 1 (or null to show N/A)
-			let tvpi: number
-			if (costBasis <= 0) {
-				// Nothing has been called or negative cost basis
-				tvpi = 1
-			} else {
-				tvpi = valuation / costBasis
-			}
-			
 			return {
 				...baseFund,
 				engagement: balance,
 				appele,
-				tvpi,
+				performanceEur: formatCurrency(pnl_eur),
 				valorisation: valuation // Keep as number for LTI
 			}
 		} else {

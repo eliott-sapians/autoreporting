@@ -21,12 +21,12 @@ export default function CompositionPieChart({ chartConfig, chartData }: Composit
                 nameKey='name'
                 cx='50%'
                 cy='50%'
-                outerRadius={150}
+                outerRadius={130}
                 labelLine={true}
                 isAnimationActive={false}
                 stroke='#FFFFFF'
                 strokeWidth={2}
-                label={<CustomizedLabel distanceMultiplier={1.15} />}
+                label={<CustomizedLabel distanceMultiplier={1.2} />}
             >
                 {chartData.map((entry) => (
                     <Cell key={entry.key} fill={entry.color} />

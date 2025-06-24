@@ -86,7 +86,8 @@ export const illiquidTableConfig: ColumnConfig[] = [
 		key: 'strategie',
 		header: 'STRATÉGIE',
 		align: 'center',
-		dataKey: 'strategie'
+		dataKey: 'strategie',
+		width: 'w-48'
 	},
 	{
 		key: 'engagement',
@@ -116,25 +117,26 @@ export const illiquidTableConfig: ColumnConfig[] = [
 		}
 	},
 	{
-		key: 'tvpi',
-		header: 'TVPI',
-		align: 'center',
-		dataKey: 'tvpi',
-		width: 'w-32',
-		footerValue: (data) => {
-			// Calculate average TVPI
-			const totalTVPI = data.fundsTable.reduce((sum, fund) => {
-				return sum + (fund.tvpi || 0)
-			}, 0)
-			return `${(totalTVPI / data.fundsTable.length).toFixed(2)}`
-		}
-	},
-	{
 		key: 'valorisation',
 		header: 'VALORISATION',
 		align: 'center',
 		dataKey: 'valorisation',
 		footerValue: (data) => data.bucketInfo.totalFormatted
+	},
+	{
+		key: 'performanceEur',
+		header: 'PERFORMANCE (EUR)',
+		align: 'center',
+		dataKey: 'performanceEur',
+		width: 'w-48',
+		footerValue: (data) => {
+			// Calculate total performance EUR for the bucket
+			const totalPerformance = data.fundsTable.reduce((sum, fund) => {
+				const perfEur = parseFloat((fund.performanceEur as string)?.replace(/[€\s,]/g, '') || '0')
+				return sum + perfEur
+			}, 0)
+			return `${totalPerformance.toLocaleString()} €`
+		}
 	}
 ]
 

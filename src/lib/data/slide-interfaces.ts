@@ -105,7 +105,6 @@ export interface BucketDetailData {
 		performanceEur?: string // Performance EUR
 		engagement?: number // For LTI: balance
 		appele?: number // For LTI: (valuation-performance)/engagement %
-		tvpi?: number // For LTI: TVPI
 	}>
 	fundsChart: ChartDataPoint[] // % of each fund within bucket
 	restantADeployer?: number // For LTI only: engagement - appelé

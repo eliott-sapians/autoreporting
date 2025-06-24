@@ -106,23 +106,6 @@ export default function GenericTable({ columns, footerNote, data }: GenericTable
 			displayValue = typeof value === 'number' ? `${value.toLocaleString()} €` : String(value || '0 €')
 		} else if (column.dataKey === 'appele') {
 			displayValue = typeof value === 'number' ? `${value.toFixed(1)}%` : String(value || '0.0%')
-		} else if (column.dataKey === 'tvpi') {
-			// Format TVPI with two decimals and apply color coding
-			const numericTvpi = typeof value === 'number' 
-				? value 
-				: parseFloat(String(value).replace(',', '.').replace(/[^0-9.\-]/g, ''))
-			const colorClass = numericTvpi < 1
-				? 'text-[var(--color-orange-sapians-500)]'
-				: numericTvpi === 1
-					? 'text-muted-foreground'
-					: 'text-[var(--color-green-sapians-500)]'
-
-			displayValue = numericTvpi.toFixed(2)
-			return (
-				<span className={`font-medium ${colorClass}`}>
-					{displayValue}
-				</span>
-			)
 		} else if (column.dataKey === 'valorisation') {
 			displayValue = typeof value === 'number' ? `${value.toLocaleString()} €` : String(value || '')
 		} else {
@@ -214,15 +197,6 @@ export default function GenericTable({ columns, footerNote, data }: GenericTable
 										<span className={`font-bold text-lg ${
 											column.dataKey === 'performancePercent' || column.dataKey === 'performanceEur'
 												? getPerformanceColor(String(formattedValue))
-											: column.dataKey === 'tvpi'
-												? (() => {
-													const numericTvpi = parseFloat(String(formattedValue).replace(',', '.').replace(/[^0-9.\-]/g, ''))
-													return numericTvpi < 1
-														? 'text-[var(--color-orange-sapians-500)]'
-														: numericTvpi === 1
-															? 'text-muted-foreground'
-															: 'text-[var(--color-green-sapians-500)]'
-												})()
 											: 'text-card-foreground'
 										}`}>
 											{formattedValue}
