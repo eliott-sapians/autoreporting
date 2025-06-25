@@ -49,19 +49,20 @@ export const COLOR_SCHEMES = {
 		'LTI': '#A1DFF0',
 	},
 	strategies: {
-		'Cash': '#C5C5B4', // rgb(197,197,180) // violet
-		'Obligations': '#A55FD7', // Fallback lavender  // bleu foncé
-		'Monétaire': '#003C62', // rgb(0,60,98) // violet
+		'Cash': '#c08fe9', // violet
+		'Obligations': '#005082', // bleu foncé
+		'Monétaire': '#a55fd7',  // vipolet
 		'Private equity': '#FF6E1E', // rgb(255,110,30) // orange
-		'Dette Privée': '#8E3200', // rgb(142,50,0) // gris foncé
-		'Infras': '#FF9961', // rgb(255, 153, 97) // jaune
-		'Club Deal': '#FFC72C', // Orange Yellow // jaune
-		'Actions': '#46CDA9', // rgb(70,205,169) // bleu marine
-		'Crypto': '#9C9C2D', // rgb(156, 156, 45) // vert clair
-		'Commodités': '#009678', // rgb(0,150,120) // vert clair
-		'Or': '#009678', // rgb(0,150,120) // vert clair
-		'Produit Structuré': '#009678', // rgb(0,150,120) // bleu clair marine
-		'Allocation Passive': '#006400', //Vert foncé // bleu marine
+		'Dette Privée': '#757d7b', // rgb(142,50,0) // gris foncé
+		'Infras': '#9c9c2d', // rgb(255, 153, 97) // jaune
+		'Club Deal': '#F7FF54', // Orange Yellow // jaune
+		'Immobilier': '#F7FF54', // Orange Yellow // jaune
+		'Actions': '#67C5FF', // rgb(70,205,169) // bleu marine
+		'Crypto': '#7ddcbc', // rgb(156, 156, 45) // vert clair
+		'Commodités': '#46cd9a', // rgb(0,150,120) // vert clair
+		'Or': '#7ddcbc', // rgb(0,150,120) // vert clair
+		'Produit Structuré': '#9bb9c7', // rgb(0,150,120) // bleu clair marine
+		'Allocation Passive': '#67C5FF', //Vert foncé // bleu marine
 		'Unknown': '#6b7280'
 	}
 } as const 

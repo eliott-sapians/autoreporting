@@ -48,6 +48,35 @@ export default function GenericTable({ columns, footerNote, data }: GenericTable
 
 	const fundData = data.fundsTable
 
+	// Build order of strategies based on first appearance
+	const strategyOrder: string[] = []
+	fundData.forEach(fund => {
+		if (!strategyOrder.includes(fund.strategie)) {
+			strategyOrder.push(fund.strategie)
+		}
+	})
+
+	// Utility: safely extract a numeric valuation regardless of type/format
+	const parseValuation = (val: string | number | undefined): number => {
+		if (typeof val === 'number') return val
+		if (!val) return 0
+		return parseFloat(String(val).replace(/[€\s,]/g, '').replace(',', '.')) || 0
+	}
+
+	const sortedFunds = [...fundData].sort((a, b) => {
+		const strategyIndexA = strategyOrder.indexOf(a.strategie)
+		const strategyIndexB = strategyOrder.indexOf(b.strategie)
+
+		if (strategyIndexA !== strategyIndexB) {
+			return strategyIndexA - strategyIndexB
+		}
+
+		// Same strategy → sort by valuation ascending
+		const valA = parseValuation(a.valorisation)
+		const valB = parseValuation(b.valorisation)
+		return valA - valB
+	})
+
 	// Fixed heights
 	const headerHeight = 96 // h-24 = 6rem = 96px
 	const footerHeight = 96 // h-24 = 6rem = 96px
@@ -57,12 +86,12 @@ export default function GenericTable({ columns, footerNote, data }: GenericTable
 	const resolvedFooterNote = typeof footerNote === 'function' ? footerNote(data) : footerNote
 	const footerNoteHeight = resolvedFooterNote ? 32 : 0 // Roughly 2rem
 	// Calculate if we need to compress rows
-	const naturalTableHeight = headerHeight + (fundData.length * naturalBodyRowHeight) + footerHeight + footerNoteHeight
+	const naturalTableHeight = headerHeight + (sortedFunds.length * naturalBodyRowHeight) + footerHeight + footerNoteHeight
 	const needsCompression = naturalTableHeight > tableHeight
 	
 	// Calculate actual row height
 	const bodyRowHeight = needsCompression 
-		? Math.max(48, (tableHeight - headerHeight - footerHeight - footerNoteHeight) / fundData.length) // Minimum 48px per row
+		? Math.max(48, (tableHeight - headerHeight - footerHeight - footerNoteHeight) / sortedFunds.length) // Minimum 48px per row
 		: naturalBodyRowHeight
 
 	const getPerformanceColor = (value: string): string => {
@@ -134,13 +163,13 @@ export default function GenericTable({ columns, footerNote, data }: GenericTable
 					</TableRow>
 				</TableHeader>
 				<TableBody className="text-base">
-					{fundData.map((fund, index) => (
+					{sortedFunds.map((fund, index) => (
 						<TableRow 
 							key={fund.libelle}
 							className={`
 								transition-colors hover:bg-[var(--color-grey-sapians-300)]/50
 								${index % 2 === 0 ? 'bg-[var(--color-grey-sapians-100)]' : 'bg-[var(--color-grey-sapians-200)]'}
-								${index === fundData.length - 1 ? '' : 'border-b border-border'}
+								${index === sortedFunds.length - 1 ? '' : 'border-b border-border'}
 							`}
 							style={{ height: `${bodyRowHeight}px` }}
 						>
