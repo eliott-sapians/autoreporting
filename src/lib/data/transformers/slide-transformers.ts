@@ -28,7 +28,7 @@ export function transformToGardeData(apiResponse: PortfolioDataApiResponse): Gar
 		portfolioName: portfolio.name,
 		conseiller: '', // Leave blank for now
 		teneurDeCompte: 'Quintet', // Fixed value
-		assureur: 'Wealins', // Fixed value
+		assureur: process.env.NEXT_PUBLIC_CONTRACTOR_DEFAULT || 'Wealins', // Use env default
 		numeroDeCompte: portfolio.business_portfolio_id,
 		dateExtraction: formatFrenchMonthYear(portfolio.extractDate)
 	}

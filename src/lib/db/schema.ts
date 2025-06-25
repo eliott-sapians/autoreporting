@@ -7,7 +7,10 @@ export const portfolio = pgTable('portfolio', {
 	business_portfolio_id: text('business_portfolio_id').unique().notNull(), // Business ID from Excel (e.g., "K00149JV/KLX")
 	name: text('name'),
 	client_email: text('client_email').unique().notNull(),
-	created_at: timestamp('created_at', { withTimezone: true }).defaultNow()
+	created_at: timestamp('created_at', { withTimezone: true }).defaultNow(),
+	contractor: text('contractor'), // New: Nom du contractant (assureur)
+	consultant: text('consultant'), // New: Consultant / conseiller par défaut
+	contract_type: text('contract_type') // New: Type de contrat (ex: Assurance vie Luxembourgeoise)
 })
 
 // Portfolio data table with 11 business columns (A-K from Excel)

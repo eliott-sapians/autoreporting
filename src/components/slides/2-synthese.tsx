@@ -69,7 +69,7 @@ export default function Synthese({ data }: SyntheseProps) {
 				<div className='text-justify mb-8 flex-shrink-0'>
 					<h1 className='text-5xl font-bold mb-16'>
 						Synthèse de votre contrat&nbsp;
-							<span className='text-current bg-primary'>d'assurance vie luxembourgeoise </span>
+							<span className='text-current bg-primary'>{`d'${process.env.NEXT_PUBLIC_CONTRACT_TYPE || 'assurance vie luxembourgeoise'} `}</span>
 					</h1>
 					<h2 className='text-3xl font-semibold mb-4'>
 						Estimation du portefeuille :&nbsp;
